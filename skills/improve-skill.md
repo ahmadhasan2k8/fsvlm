@@ -39,7 +39,7 @@ escalation: |
 
 ## Purpose
 
-Recursive autoresearch on the skill files. Karpathy's loop, where:
+Documented protocol for running Karpathy's commit-or-revert loop on skill files:
 
 - **The single editable file** = `skills/<skill_name>.md`
 - **The single objective metric** = held-out assertion pass-rate from the skill's eval set
@@ -47,6 +47,13 @@ Recursive autoresearch on the skill files. Karpathy's loop, where:
 
 The 60/40 train/test split + 3-samples-per-query stabiliser come straight from the
 [Anthropic skill-creator eval methodology](https://github.com/anthropics/skills).
+
+> **Honest scope.** Like `/autoresearch` and `/improve-skills-auto`, this is an orchestrator
+> skill that needs a runtime to drive (it makes conditional decisions about whether to commit
+> or revert based on eval results). v0.1 ships the procedure below + the
+> `skills/_run.sh meta-eval` dispatcher; the loop body needs Claude Code, another agent
+> runtime, or manual execution. No committed evidence of this loop having self-improved a
+> shipped skill.
 
 ## Procedure
 

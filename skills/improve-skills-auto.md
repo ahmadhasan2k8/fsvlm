@@ -39,7 +39,22 @@ The meta-loop driver. One invocation = one full sweep of:
 /meta-eval (before) → /improve-skill (per candidate) → /meta-eval (after)
 ```
 
-with a global rollback if the catalog regressed in aggregate. Designed for cron or `/loop`.
+with a global rollback if the catalog regressed in aggregate.
+
+> **Honest scope.** Same as `/autoresearch`: this is an orchestrator skill that needs a
+> runtime to interpret its conditional logic. v0.1 ships:
+>
+> - the documented procedure below
+> - `skills/_run.sh` dispatcher for the procedural sub-skills (`meta-eval`,
+>   `improve-skill`)
+> - eval JSONs for every skill under `skills/evals/`
+>
+> v0.1 does **not** ship a turnkey runner that drives this loop unattended. To actually
+> execute it, drive from Claude Code (`/improve-skills-auto`), from another agent runtime
+> (OpenAI Agents SDK, CrewAI), or manually step through the procedure. There is no committed
+> evidence in this release of the meta-loop having actually self-improved a skill (no
+> `research/skill_improvements/` outputs). PRs that turn this into a turnkey runner are
+> welcome.
 
 ## Procedure
 

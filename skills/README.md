@@ -1,15 +1,34 @@
 # fsvlm Skills Catalog
 
-Self-evaluating, runtime-agnostic playbooks for getting from **zero to a paper** with fsvlm.
-Every skill is one Markdown file with YAML frontmatter (`name`, `description`, `inputs`,
-`eval_artifact`, `pass_criteria`, `escalation`) plus a procedural body. Skills wrap fsvlm CLI
-commands and produce machine-checkable JSON output, so a calling runtime — Claude Code, OpenAI
-Agents SDK, CrewAI, or a plain shell loop — can chain them without bespoke glue.
+Runtime-agnostic Markdown playbooks for getting from **zero to a paper** with fsvlm. Every
+skill is one Markdown file with YAML frontmatter (`name`, `description`, `inputs`,
+`eval_artifact`, `pass_criteria`, `escalation`) plus a procedural body.
 
-> **Adaptive, not hardcoded.** Every skill takes `dataset`, `backend`, `categories`, `n_values`,
-> `seeds` etc. as parameters. Nothing in this catalog is wired to MVTec or Gemma 4 specifically;
-> they are defaults that work for the demonstration backend, replaceable for any new
-> `LabelReader` or `ModelBackend`.
+> **What's a "skill" here, concretely?** Two kinds:
+>
+> - **Procedural skills** (10): `setup`, `train`, `inspect`, `validate`, `serve`, `sweep`,
+>   `verdict`, `tiered-eval`, `plot`, `meta-eval`. These wrap a single underlying CLI command
+>   or script. They are **directly executable** via `bash skills/_run.sh <name> [args]` — the
+>   `_run.sh` dispatcher is real, ships in v0.1, and works from cron / Make / shell.
+> - **Orchestrator skills** (5): `autoresearch`, `improve-skill`, `improve-skills-auto`,
+>   `expert-review`, `debug`. These compose other skills via conditional logic ("if verdict
+>   says X, dispatch /sweep with these params; if expert says halt, halt"). They are
+>   **documented protocols, not turnkey runners** — they need a runtime that can interpret
+>   natural-language procedure markdown (Claude Code, OpenAI Agents SDK, CrewAI) or a human
+>   stepping through them manually. Direct shell invocation returns an explicit "needs a
+>   runtime" error.
+>
+> Eval JSONs and the skill-self-improvement loop (`/improve-skill`,
+> `/improve-skills-auto`) follow the
+> [Anthropic skill-creator pattern](https://github.com/anthropics/skills) but no shipped
+> v0.1 evidence exists of the meta-loop having actually self-improved a skill — the loop is
+> documented end-to-end and the eval JSONs are real, but the runner that closes the loop
+> needs the runtime above. PRs welcome.
+
+> **Adaptive, not hardcoded.** Every procedural skill takes `dataset`, `backend`,
+> `categories`, `n_values`, `seeds` etc. as parameters. Nothing in this catalog is wired to
+> MVTec or Gemma 4 specifically; they are defaults that work for the demonstration backend,
+> replaceable for any new `LabelReader` or `ModelBackend`.
 
 ---
 

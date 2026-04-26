@@ -34,8 +34,25 @@ escalation: |
 ## Purpose
 
 The orchestrator. One invocation = one full pass through the loop documented in
-`docs/autoresearch.md`. Designed to be wrapped in a `/loop` (Claude Code), a cron job, or a
-plain `while true; do …; sleep 60; done` shell loop for unattended multi-day research.
+`docs/autoresearch.md`.
+
+> **Honest scope.** This skill is an **orchestrator** — its procedure makes conditional
+> decisions ("if verdict says X, dispatch /sweep with these params; if it says Y, halt") that
+> need a runtime to interpret. Three paths to actually run it:
+>
+> 1. **Claude Code:** drop `skills/autoresearch.md` into `~/.claude/skills/` and invoke as
+>    `/autoresearch` — the agent reads the procedure markdown and dispatches sub-skills via
+>    `skills/_run.sh`.
+> 2. **Another agent runtime** (OpenAI Agents SDK, CrewAI, your own orchestrator): register
+>    the procedure as a tool whose body executes the steps below, calling `skills/_run.sh
+>    <sub-skill>` for each procedural sub-skill.
+> 3. **Manual:** read the procedure below and execute the steps yourself, calling
+>    `skills/_run.sh` for sub-skills as you go.
+>
+> Direct shell invocation (`skills/_run.sh autoresearch`) returns an explicit "needs a
+> runtime" error pointing at this section. There is no turnkey runner shipped in v0.1; the
+> v0.1 deliverable is the documented protocol + the `_run.sh` dispatcher for the procedural
+> sub-skills it invokes.
 
 ## Procedure
 
