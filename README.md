@@ -1,8 +1,8 @@
 # fsvlm
 
 **A few-shot VLM benchmarker that fits on a 16 GB laptop GPU. Train an industrial defect
-detector with as few as 2 labeled images, on your own hardware, with provenance on every
-result row and a self-improving skill catalog wrapping the workflow.**
+detector with as few as 2 labeled images, on your own hardware, with git-SHA + recipe-version
+provenance on v0.1+ result rows and a 15-skill catalog of runtime-agnostic playbooks.**
 
 [![CI](https://github.com/ahmadhasan2k8/fsvlm/actions/workflows/ci.yml/badge.svg)](https://github.com/ahmadhasan2k8/fsvlm/actions/workflows/ci.yml)
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache_2.0-blue.svg)](LICENSE)
@@ -63,8 +63,8 @@ near ceiling.** See [docs/research-log.md](docs/research-log.md) for the deeper 
 | Score-extractor disclosed as methodology axis | n/a | n/a | ❌ | **✅ v0.1 cascade** |
 | Pre-registered taxonomy with frozen timestamp | ❌ | ❌ | ❌ | **✅** |
 | Append-only result log (git SHA + recipe version per row) | ❌ | ❌ | ❌ | **✅ for v0.1+ rows** |
-| Autoresearch loop adapted from Karpathy | n/a | n/a | n/a | **✅ + meta-skill self-improvement** |
-| Self-improving skill catalog (Anthropic-eval style) | n/a | n/a | n/a | **✅ 15 skills with eval JSONs** |
+| Autoresearch loop pattern + reference drivers | n/a | n/a | n/a | **✅ docs + bash drivers** |
+| Skill catalog with declarative eval JSONs (Anthropic schema) | n/a | n/a | n/a | **✅ 15 skills + reference harness** |
 
 This table compares fsvlm's *measurement infrastructure*, not head-to-head AUROC. Numbers from
 WinCLIP+ / PromptAD / AnomalyGPT / Triad come from their published papers and are **not yet
@@ -149,22 +149,30 @@ One-PR recipes for each are in [docs/autoresearch.md § 6](docs/autoresearch.md)
 
 ## The skill catalog — 15 playbooks for the "0 → paper" path
 
-Every routine workflow ships as a [self-evaluating, runtime-agnostic skill](skills/README.md).
-Each skill is one Markdown file with YAML frontmatter (`name`, `description`, `inputs`,
-`eval_artifact`, `pass_criteria`, `escalation`) plus a procedural body. Adapt to Claude Code,
-OpenAI Agents SDK, CrewAI, or plain shell.
+Every routine workflow ships as a [Markdown playbook with YAML frontmatter](skills/README.md)
+declaring `name`, `description`, `inputs`, `eval_artifact`, `pass_criteria`, and `escalation`.
+A runtime (Claude Code, OpenAI Agents SDK, CrewAI, your own orchestrator, or plain shell)
+reads the frontmatter + body and executes the procedure.
 
 - **Core (6)** — `setup`, `train`, `inspect`, `validate`, `serve`, `debug`
 - **Research loop (5)** — `sweep`, `verdict`, `tiered-eval`, `plot`, `autoresearch`
 - **Expert review (1)** — `expert-review` (parameterised by role: training-specialist,
   domain-specialist, your role)
-- **Meta layer (3)** — `meta-eval`, `improve-skill`, `improve-skills-auto` — the catalog
-  improves itself via the [Anthropic skill-creator eval pattern](https://github.com/anthropics/skills)
-  with a catalog-level rollback guard
+- **Meta layer (3)** — `meta-eval`, `improve-skill`, `improve-skills-auto` — the documented
+  pattern for letting a runtime self-improve skill files based on the
+  [Anthropic skill-creator eval pattern](https://github.com/anthropics/skills)
 
 Each skill ships with a sibling `skills/evals/<name>.eval.json` declaring (prompt, expected
-trigger, assertions). The portable harness at `scripts/run_skill_eval.py` runs them against any
-agent runtime; the meta-loop auto-improves skill files when their eval pass-rate drops.
+trigger, assertions) following Anthropic's eval-set schema.
+
+> **Honest scope of v0.1:** the skills are reference Markdown + eval JSONs. The portable
+> harness at `scripts/run_skill_eval.py` runs the eval suite against the
+> Anthropic Messages API (requires `ANTHROPIC_API_KEY`); the `claude-code` and `openai-sdk`
+> runtime adapters are explicit stubs in v0.1 — they describe how to wire each runtime but
+> need a real implementation per stack. The meta-improvement loop (`improve-skill`,
+> `improve-skills-auto`) is documented end-to-end but has not yet self-improved any
+> shipped skill in committed evidence; treat it as a documented protocol, not a turnkey
+> capability. PRs that turn either into a turnkey runner are welcome.
 
 > The two distinctive contributions on top of [Karpathy's autoresearch loop](https://fortune.com/2026/03/17/andrej-karpathy-loop-autonomous-ai-agents-future/)
 > are **expert-agent consultation as a separate step from the verdict classifier**

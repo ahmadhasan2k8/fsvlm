@@ -25,10 +25,11 @@ Benchmark targets were chosen as the "respectable suite" typical of anomaly-dete
 
 Pre-registered methodology commitments were frozen early: append-only results JSON with
 git-hash provenance per row, ≥3 seeds per reported number, fixed held-out test splits, and a
-pre-registered "distinctive vs subtle" defect taxonomy (frozen 2026-04-20) that we would
-consult *after* results landed to check predictions.
+pre-registered "distinctive vs subtle" defect taxonomy (with a frozen ISO timestamp in
+`research/defect_taxonomy.json`) that we would consult *after* results landed to check
+predictions.
 
-## Model version mismatch (2026-04-19)
+## Model version mismatch
 
 The first smoke sweep failed immediately with `NotImplementedError: unsloth/gemma-4-E4B-it
 is not supported in your current Unsloth version!`. We had installed `unsloth 2026.4.2`;
@@ -69,7 +70,7 @@ threshold was degenerate (every image scored above threshold). Implication: **AU
 only threshold-independent statistic we can use as headline.** F1 can be misleading on
 class-imbalanced test sets.
 
-## Power disruption mid-sweep (2026-04-20)
+## Power disruption mid-sweep
 
 A power loss killed the sweep subprocess during DeepPCB zero-shot inference (~260 of 1,000
 images processed). The append-per-run write pattern saved 18 of 21 rows cleanly. On resume,
@@ -164,7 +165,7 @@ heterogeneous anomaly categories where dataset metadata is thin.
 
 ## Metal_nut — a documented failure mode
 
-Metal_nut produced an immediate red flag: across all 6 Pass-2a cells (3 label arms × 2 seeds),
+Metal_nut produced an immediate red flag: across all 6 label-source-ablation cells (3 label arms × 2 seeds),
 F1, precision, recall, and threshold were **identical to four decimal places**
 (F1 = 0.8136, P = 0.6857, R = 1.000, threshold ≈ 0.4378). AUROC varied in a band
 [0.70, 0.75] across seeds — so the score distribution was moving — but the threshold optimizer
@@ -196,7 +197,7 @@ choice" table, alongside the four interventions tried.
 
 ## Recipe bump didn't help (null result)
 
-Pass 2b explicitly tested whether larger adapter capacity fixes anything. Same three
+A targeted ablation tested whether larger adapter capacity fixes anything. Same three
 categories × same seeds, changing only LoRA rank 8 → 16, LR 2e-4 → 1e-4, scale 1.0 → 0.5.
 
 All three cells regressed slightly:
@@ -207,10 +208,10 @@ All three cells regressed slightly:
 | MVTec metal_nut (metadata) | 0.735 | 0.719 | −0.016 |
 | VisA candle (agent) | 0.961 | 0.955 | −0.006 |
 
-**Conclusion: Pass 1's rank=8 / LR=2e-4 recipe was well-chosen.** The bump hurt more than it
-helped. This is a cheap, negative result that rules out the obvious first thing a reviewer
-would ask ("did you try bigger rank?"). The null is logged in `research/dataset_size_results
-.json` with `recipe_version=v0.2-rank16-lr1e4-fix` for future comparison.
+**Conclusion: the original rank=8 / LR=2e-4 recipe was well-chosen.** The bump hurt more
+than it helped. This is a cheap, negative result that rules out the obvious first thing a
+reader would ask ("did you try bigger rank?"). The null is logged in
+`research/dataset_size_results.json` with a distinct `recipe_version` for future comparison.
 
 ## The AUROC-vs-N curve sweep — headline figure
 
@@ -250,13 +251,14 @@ degeneracy.
 
 Both rules await further testing on 21 more categories (a coverage-expansion sweep, pending).
 
-## The reviewer-critique pivot: is fine-tuning actually doing anything?
+## ICL-vs-FT ablation: is fine-tuning actually doing anything?
 
 A critical methodological concern surfaced: our N=2 result sounds like "2 examples fine-tune
 a model to 0.94" — but it could equally be "2 examples used as contrastive-matching references
-with frozen CLIP reach 0.94." WinCLIP+ (CVPR 2023) reports 0.984 on hazelnut at K=4 *without
-any fine-tuning*, using frozen-CLIP + reference examples. If in-context-learning on Gemma 4
-achieves similar numbers to our fine-tune at matched N, the fine-tuning contribution evaporates.
+in the model's context window reach 0.94." WinCLIP+ (CVPR 2023) reports 0.984 on hazelnut at
+K=4 *without any fine-tuning*, using frozen-CLIP + reference examples. If in-context-learning
+on Gemma 4 achieves similar numbers to our fine-tune at matched N, the fine-tuning
+contribution evaporates.
 
 We ran this as an explicit head-to-head ablation — **ICL vs fine-tune at matched N, same base
 model, same test splits, same extractor.**
@@ -276,7 +278,7 @@ that category at any N we tested. The picture is: fine-tune wins at extreme-few-
 in context. This is a richer finding than "fine-tune always wins" — the
 two methods are complementary across the N spectrum.
 
-## Literature corrections (web-verified 2026-04-21)
+## Literature corrections (web-verified)
 
 Prior references cited in early drafts were partially wrong. Corrected numbers:
 
@@ -318,8 +320,8 @@ Decisions made early that we stuck with:
 - **Pre-registered taxonomy** (distinctive / subtle / mixed) frozen before results landed.
 - **Append-only results log** with `git_hash` + `recipe_version` per row.
 - **Fixed held-out test splits** per dataset; no cross-category leakage.
-- **Null results logged honestly** (Pass 2b recipe bump, Pass 6 stratified sampling, metal_nut
-  failure mode) rather than buried.
+- **Null results logged honestly** (recipe-bump ablation, stratified-sampling rescue,
+  metal_nut failure mode) rather than buried.
 
 These are documented commitments, not discovered after-the-fact. The project repo's
 `research/defect_taxonomy.json` carries the frozen taxonomy with a timestamp. The
