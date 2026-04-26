@@ -91,6 +91,10 @@ No cloud round-trip, no per-month subscription, no telemetry by default.
 
 ## Install and try in 30 seconds
 
+Three ways to use this — pick whichever matches your tooling.
+
+### Option 1 — Direct CLI (no agent runtime)
+
 ```bash
 pip install git+https://github.com/ahmadhasan2k8/fsvlm
 fsvlm setup --check                                       # detect GPU, verify deps
@@ -98,19 +102,59 @@ python examples/quickstart/make_dataset.py                # 20 synthetic images
 python examples/quickstart/check_pipeline.py              # 4 PASS checks, no GPU needed
 ```
 
-If those four checks pass, your install is healthy. Move on to real training.
+If those four checks pass, your install is healthy. Move on to real training:
 
 ```bash
 fsvlm setup                                                # download Gemma 4 E4B-it (4-bit)
 fsvlm train --images ./my-data/                            # good/ + defect/ subdirs
 fsvlm inspect new-image.jpg --adapter ~/.fsvlm/adapters/latest/
+fsvlm ui                                                   # SAM-assisted Gradio annotation + training
 ```
 
-Or open the Gradio app for SAM-assisted point-prompt annotation + training:
+### Option 2 — Claude Code (recommended if you have it — auto-loads everything)
 
 ```bash
-fsvlm ui
+git clone https://github.com/ahmadhasan2k8/fsvlm
+cd fsvlm
+pip install -e .
+claude
 ```
+
+That's the whole setup. Claude Code reads the public [`.claude/`](.claude/) directory and:
+
+- **Auto-discovers all 15 skills** as slash-commands. Type `/setup`, `/train`, `/sweep`,
+  `/verdict`, `/plot`, `/autoresearch` — Claude reads the procedure markdown and runs the
+  underlying CLI for you, asking only when it hits a real decision point.
+- **Loads the safety hook** at [`.claude/hooks/block-dangerous.sh`](.claude/hooks/block-dangerous.sh)
+  so every shell command Claude issues is screened first — refuses recursive force-deletes,
+  force-push, hard reset, deletion of training images, dropping database tables, sudo, and
+  ~12 other foot-gun patterns. Saves you from yourself.
+- **Knows about the 2 expert sub-agents** at [`.claude/agents/`](.claude/agents/) (a VLM
+  fine-tuning specialist and a defect-detection specialist) so `/expert-review` works out
+  of the box. Both are also useful templates for forking into your own
+  domain-specialist sub-agents (security, perf, accessibility, API contract, etc.).
+
+See [`.claude/README.md`](.claude/README.md) for the full layout and what's deliberately
+private.
+
+### Option 3 — Other agent runtimes (Cursor, OpenAI Agents SDK, CrewAI, your own)
+
+The 15 skills are runtime-agnostic Markdown playbooks with structured YAML frontmatter
+declaring `inputs`, `eval_artifact`, `pass_criteria`, and `escalation`. Two paths:
+
+- **For procedural skills** (`setup`, `train`, `inspect`, `validate`, `serve`, `sweep`,
+  `verdict`, `tiered-eval`, `plot`, `meta-eval` — the 10 that wrap a single CLI command):
+  invoke directly via `bash skills/_run.sh <name> [args]`. Works from cron, Make, CI,
+  whatever. No agent needed.
+- **For orchestrator skills** (`autoresearch`, `improve-skill`, `improve-skills-auto`,
+  `expert-review`, `debug` — the 5 that compose other skills with conditional logic):
+  register the skill markdown as a tool in your agent runtime; the runtime reads the
+  procedure body, dispatches sub-skills via `_run.sh`, and handles the stop/pause/ask
+  decision points.
+
+The `skills/evals/<name>.eval.json` files follow the
+[Anthropic skill-creator eval schema](https://github.com/anthropics/skills) — your runtime
+can use them to grade trigger/output quality.
 
 ---
 
@@ -170,19 +214,8 @@ The 10 procedural skills: `setup`, `train`, `inspect`, `validate`, `serve`, `swe
 `verdict`, `tiered-eval`, `plot`, `meta-eval`. The `_run.sh` dispatcher is real, ships in
 v0.1, and resolves your local Python interpreter automatically.
 
-### Using these with Claude Code
-
-The repo ships a public [`.claude/`](.claude/) directory that wires the 15 skills as
-slash-commands and installs a safety hook. Clone, `cd` in, run `claude`, and:
-
-- All 15 skills are auto-discovered as `/setup`, `/train`, `/sweep`, `/verdict`, etc.
-- The PreToolUse hook at [`.claude/hooks/block-dangerous.sh`](.claude/hooks/block-dangerous.sh)
-  refuses to run `rm -rf`, `git push --force`, `git reset --hard`, deletion of training
-  images, dropping database tables, and ~12 other common foot-gun patterns. Trivial to copy
-  into other repos.
-
-See [`.claude/README.md`](.claude/README.md) for the full layout and what's deliberately
-NOT shipped (project-specific sub-agents).
+For the auto-loading-into-Claude-Code path see [Option 2 of the install section](#option-2--claude-code-recommended-if-you-have-it--auto-loads-everything)
+above; for non-Claude-Code agent runtimes see Option 3.
 
 ### 🤝 Orchestrator skills (5) — semi-autonomous, need a runtime
 
