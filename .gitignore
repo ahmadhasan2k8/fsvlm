@@ -1,0 +1,65 @@
+# Python build / packaging
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Tests / cache
+.pytest_cache/
+unsloth_compiled_cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Datasets — large, downloaded separately
+research/mvtec_data/
+research/mvtec_hazelnut/
+research/datasets/visa/
+research/datasets/deeppcb/
+research/datasets/real_iad/
+research/datasets/mvtec_loco/
+research/phase0_output/
+research/phase0_output_e4b/
+*.tar
+*.tar.gz
+*.tar.xz
+
+# Run-time logs / scratch state from sweeps
+research/logs/
+research/autoresearch_state.json
+research/launch_readiness.json
+research/phase_status.json
+
+# Model artifacts
+*.safetensors
+*.bin
+*.gguf
+
+# Local workspace — drafts, scratch, private notes (not part of the repo)
+_local/
+.local/
+notes.local/
+*.private.md
+*.private.txt
+
+# Claude Code project config
+CLAUDE.md
+.claude/
+
+# Generated figures that get regenerated from research/dataset_size_results.json —
+# committed copies live under docs/figures/, but ad-hoc per-cell generic outputs
+# from research/plots.py do not need to be tracked.
+docs/figures/auroc_vs_n_*.png
+docs/figures/per_cell_table.*
+docs/figures/manifest.json

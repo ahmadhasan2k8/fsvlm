@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "purpose": "Pre-registered a-priori tagging of each defect subtype as either 'distinctive' (semantically identifiable — broken, missing part, contamination, large crack) or 'subtle' (within-category variation — color shift, minor bend, surface roughness). Tagged BEFORE Pass 3/4 runs so post-hoc cherry-picking is impossible. Used to test the hypothesis: 'N=30 fine-tune works when defect is distinctive; fails when defect is subtle.'",
+  "methodology": "Tagging based on each subtype's VISUAL character from the dataset's public examples, without reference to any training/eval result. A subtype is 'distinctive' if a naive human could describe it in one phrase (e.g. 'hole in the shell', 'missing component'); 'subtle' if description requires quantitative reference ('slightly darker', 'minor bend'). Inevitably subjective at the margin; documented here exactly as committed.",
+  "frozen_at": "2026-04-20T12:30:00-07:00",
+  "mvtec_ad": {
+    "bottle": {
+      "broken_large": "distinctive",
+      "broken_small": "subtle",
+      "contamination": "distinctive"
+    },
+    "cable": {
+      "bent_wire": "distinctive",
+      "cable_swap": "distinctive",
+      "combined": "distinctive",
+      "cut_inner_insulation": "distinctive",
+      "cut_outer_insulation": "distinctive",
+      "missing_cable": "distinctive",
+      "missing_wire": "distinctive",
+      "poke_insulation": "subtle"
+    },
+    "capsule": {
+      "crack": "subtle",
+      "faulty_imprint": "subtle",
+      "poke": "subtle",
+      "scratch": "subtle",
+      "squeeze": "subtle"
+    },
+    "carpet": {
+      "color": "subtle",
+      "cut": "distinctive",
+      "hole": "distinctive",
+      "metal_contamination": "distinctive",
+      "thread": "subtle"
+    },
+    "grid": {
+      "bent": "subtle",
+      "broken": "distinctive",
+      "glue": "distinctive",
+      "metal_contamination": "distinctive",
+      "thread": "subtle"
+    },
+    "hazelnut": {
+      "crack": "distinctive",
+      "cut": "distinctive",
+      "hole": "distinctive",
+      "print": "distinctive"
+    },
+    "leather": {
+      "color": "subtle",
+      "cut": "distinctive",
+      "fold": "subtle",
+      "glue": "distinctive",
+      "poke": "subtle"
+    },
+    "metal_nut": {
+      "bent": "subtle",
+      "color": "subtle",
+      "flip": "subtle",
+      "scratch": "subtle"
+    },
+    "pill": {
+      "color": "subtle",
+      "combined": "subtle",
+      "contamination": "distinctive",
+      "crack": "subtle",
+      "faulty_imprint": "subtle",
+      "pill_type": "subtle",
+      "scratch": "subtle"
+    },
+    "screw": {
+      "manipulated_front": "subtle",
+      "scratch_head": "subtle",
+      "scratch_neck": "subtle",
+      "thread_side": "subtle",
+      "thread_top": "subtle"
+    },
+    "tile": {
+      "crack": "distinctive",
+      "glue_strip": "distinctive",
+      "gray_stroke": "distinctive",
+      "oil": "distinctive",
+      "rough": "subtle"
+    },
+    "toothbrush": {
+      "defective": "distinctive"
+    },
+    "transistor": {
+      "bent_lead": "distinctive",
+      "cut_lead": "distinctive",
+      "damaged_case": "distinctive",
+      "misplaced": "distinctive"
+    },
+    "wood": {
+      "color": "subtle",
+      "combined": "subtle",
+      "hole": "distinctive",
+      "liquid": "distinctive",
+      "scratch": "subtle"
+    },
+    "zipper": {
+      "broken_teeth": "distinctive",
+      "combined": "subtle",
+      "fabric_border": "subtle",
+      "fabric_interior": "subtle",
+      "rough": "subtle",
+      "split_teeth": "distinctive",
+      "squeezed_teeth": "subtle"
+    }
+  },
+  "visa": {
+    "candle": {"default": "distinctive", "rationale": "dark spots, chunks of wax, missing wicks are visually identifiable"},
+    "capsules": {"default": "mixed", "rationale": "bubbles/discolor are subtle; misshape/scratches are distinctive — roughly 50/50"},
+    "cashew": {"default": "mixed", "rationale": "burn/breakage/hole distinctive; different_color/small_scratches subtle"},
+    "chewinggum": {"default": "distinctive", "rationale": "cracks, missing regions, color shifts are clear"},
+    "fryum": {"default": "distinctive", "rationale": "broken parts, burns, missing pieces are clear; surface_roughness is subtle"},
+    "macaroni1": {"default": "subtle", "rationale": "small color variations, minor cracks, similarity to normal pasta variation"},
+    "macaroni2": {"default": "subtle", "rationale": "similar to macaroni1 — pasta surface variations dominate"},
+    "pcb1": {"default": "distinctive", "rationale": "missing components, wrong components are structural"},
+    "pcb2": {"default": "distinctive", "rationale": "same as pcb1 — component-level identification"},
+    "pcb3": {"default": "distinctive", "rationale": "same"},
+    "pcb4": {"default": "distinctive", "rationale": "same"},
+    "pipe_fryum": {"default": "distinctive", "rationale": "structural damage to pipe shape"}
+  },
+  "deeppcb": {
+    "pcb": {
+      "open": "distinctive",
+      "short": "distinctive",
+      "mousebite": "distinctive",
+      "spur": "distinctive",
+      "copper": "subtle",
+      "pin-hole": "distinctive"
+    }
+  },
+  "aggregate_counts": {
+    "mvtec_distinctive_categories": ["bottle", "cable", "hazelnut", "tile", "toothbrush", "transistor"],
+    "mvtec_subtle_categories": ["capsule", "metal_nut", "pill", "screw"],
+    "mvtec_mixed_categories": ["carpet", "grid", "leather", "wood", "zipper"],
+    "visa_distinctive_categories": ["candle", "chewinggum", "fryum", "pcb1", "pcb2", "pcb3", "pcb4", "pipe_fryum"],
+    "visa_subtle_categories": ["macaroni1", "macaroni2"],
+    "visa_mixed_categories": ["capsules", "cashew"]
+  },
+  "hypothesis_to_test": "Pass 4 (Tier A completion at N=30) — AUROC on distinctive categories exceeds 0.85 on at least 80% of cats. AUROC on subtle categories stays below 0.80 regardless of intervention, and reproduces metal_nut's degenerate F1 pattern on a subset. Mixed categories scatter in between. If this prediction holds across 27 categories, the tiger-analogy taxonomy is validated as a predictive rule and becomes a paper contribution.",
+  "notes": [
+    "Pass 1 results (post-hoc check against taxonomy): hazelnut (distinctive) 0.949, candle (distinctive) 0.956, DeepPCB (distinctive) 0.835, bottle (distinctive) 0.672, fryum (distinctive) 0.828, pcb1 (distinctive) 0.748, metal_nut (subtle) 0.731-degenerate. 6/7 distinctive categories reach AUROC > 0.67; 1/1 subtle category is degenerate. Consistent with the hypothesis but N is too small to confirm.",
+    "bottle's relatively weak lift (0.513 → 0.672) despite distinctive label is worth noting — broken_small variant may be dragging the average. Could subset to broken_large + contamination only to test.",
+    "The taxonomy is deliberately binary; in practice each category is a mixture. Paper should report per-category AND stratified-by-tag numbers so reviewers can inspect the grouping."
+  ]
+}

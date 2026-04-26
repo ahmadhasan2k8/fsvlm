@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "skill": "improve-skills-auto",
+  "evals": [
+    {
+      "eval_id": 0,
+      "eval_name": "nightly-meta-loop",
+      "prompt": "Kick off the nightly skill-improvement loop.",
+      "expected_skill": "improve-skills-auto",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "improve-skills-auto"},
+        {"name": "produced_eval_artifact", "type": "file_exists", "value": "research/skill_meta_loop_state.json"}
+      ]
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "before-release-skill-pass",
+      "prompt": "Before I tag v0.2, run the meta-loop and rollback any global regression.",
+      "expected_skill": "improve-skills-auto",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "improve-skills-auto"},
+        {"name": "regression_guard_armed", "type": "json_field_in_set", "path": "status", "value": ["ok", "rolled_back_global_regression", "aborted_dirty_tree", "aborted_ci_red"]}
+      ]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "single-skill-not-meta",
+      "prompt": "Just improve the /train skill specifically.",
+      "expected_skill": "improve-skill",
+      "assertions": [
+        {"name": "did_not_trigger_meta", "type": "trigger_negation", "value": "improve-skills-auto"},
+        {"name": "skill_triggered", "type": "trigger", "value": "improve-skill"}
+      ]
+    }
+  ]
+}

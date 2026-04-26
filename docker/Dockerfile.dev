@@ -1,0 +1,35 @@
+# Phase 0: Development container with CUDA 12.8 (Blackwell/RTX 5080 support)
+FROM nvidia/cuda:12.8.0-devel-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONUNBUFFERED=1
+
+# System dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3.12 \
+    python3.12-dev \
+    python3.12-venv \
+    python3-pip \
+    git \
+    curl \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+# Make python3.12 the default
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1 \
+    && update-alternatives --install /usr/bin/python python /usr/bin/python3.12 1
+
+# Upgrade pip
+RUN python -m pip install --upgrade pip setuptools wheel
+
+# Install PyTorch with CUDA 12.8 (Blackwell support)
+RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
+
+# Install Phase 0 experiment dependencies
+COPY experiments/requirements-phase0.txt /tmp/requirements-phase0.txt
+RUN pip install -r /tmp/requirements-phase0.txt
+
+WORKDIR /workspace
+
+# Default: drop into shell
+CMD ["/bin/bash"]

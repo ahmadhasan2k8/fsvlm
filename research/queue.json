@@ -1,0 +1,220 @@
+{
+  "schema_version": 2,
+  "current_pass": 6,
+  "current_pass_description": "Pass 3 still running. Pass 5b (ICL ablation) is queued IMMEDIATELY AFTER Pass 3 — it is the paper-viability gate. If fine-tune ≫ ICL, sprint to NeurIPS E&D. If fine-tune ≈ ICL, target CVPR 2027 VAND with reframed paper.",
+  "overarching_research_question": "How few natural-language-labeled images are enough to fine-tune a modern VLM (Gemma 4 E4B-it via QLoRA) into a useful industrial defect detector, and WHICH KINDS of defects obey this 'tiger-analogy' (few-shot suffices because the model already has relevant priors) vs. WHICH KINDS don't?",
+  "passes": [
+    {
+      "id": "pass1-smoke",
+      "status": "completed",
+      "verdict_summary": "All 14 N=30 cells keep. Mean AUROC lift +0.26 across 7 cats."
+    },
+    {
+      "id": "pass2a-label-source-ablation",
+      "status": "completed",
+      "verdict_summary": "Label-source is nuanced, not universal winner. metadata wins on MVTec; agent wins on VisA candle; thin is within 0.01 of best on all cells."
+    },
+    {
+      "id": "pass2b-recipe-update",
+      "status": "completed",
+      "verdict_summary": "NULL — rank=16/LR=1e-4/scale=0.5 did not improve over Pass 1 rank=8 recipe. Pass 1 recipe confirmed as well-chosen default."
+    },
+    {
+      "id": "pass6-metal-nut-stratified-rescue",
+      "status": "completed",
+      "verdict_summary": "NULL — stratified subtype sampling did not break metal_nut's degenerate F1=0.8136. 12 runs across 4 interventions all converge on the same degenerate solution. Metal_nut is a CONFIRMED honest failure mode."
+    },
+    {
+      "id": "pass3-curve-with-tiny-N",
+      "description": "AUROC-vs-N curves on 3 cleanest categories, extended with tiny-N at the low end to test the tiger-analogy at its limit. Drop metal_nut (confirmed degenerate). Add N=1 and N=3 alongside the existing N values. If even N=1 or N=3 produces useful lift on distinctive categories, we have a paper figure showing 'one shot is enough for some defects.'",
+      "status": "pending_user_approval",
+      "hypothesis_primary": "Curves on hazelnut + candle + DeepPCB show a knee between N=10-30. N=30 reaches >= 90% of full-train AUROC.",
+      "hypothesis_tiger": "Tiger-analogy test at the low end: if N=1 or N=3 already achieves AUROC >= 0.80 on distinctive-defect categories (hazelnut, candle, DeepPCB per defect_taxonomy.json), the 'one-shot tiger' story is supported — a strong standalone paper figure. If N=1 looks like zero-shot but N=10 already approaches N=30, the knee is in the single-digit-N region and that's the finding.",
+      "configs": {
+        "datasets": [
+          "mvtec",
+          "visa",
+          "deeppcb"
+        ],
+        "categories": [
+          "hazelnut",
+          "candle",
+          "pcb"
+        ],
+        "n_values": [
+          1,
+          3,
+          5,
+          10,
+          20,
+          30,
+          40,
+          60,
+          100
+        ],
+        "seeds": [
+          42,
+          1337,
+          7
+        ],
+        "label_source": "metadata",
+        "recipe_version": "v0.3-curve",
+        "lora_rank": 8,
+        "lr": 0.0002,
+        "notes": "metadata labels universally (simpler paper story). N=1 and N=3 added per user's tiger-analogy hypothesis."
+      },
+      "expected_runs": 81,
+      "expected_hours": 18,
+      "unblocks_on": "user approval"
+    },
+    {
+      "id": "pass4-tier-a-completion-with-taxonomy-test",
+      "description": "Fill remaining 12 MVTec + 9 VisA categories at N=30 with 3 seeds. Use the pre-registered defect_taxonomy.json to predict which will succeed (distinctive) vs which will reproduce metal_nut-style failure (subtle). If the taxonomy is predictive, it becomes a paper contribution as a practical rule-of-thumb.",
+      "status": "deferred_until_icl_decision",
+      "hypothesis_primary": "Metadata-labeled N=30 QLoRA fine-tuning of Gemma 4 E4B-it reaches AUROC >= 0.85 on at least 80% of distinctive-dominant MVTec+VisA categories and fails (<0.80 or degenerate F1) on at least 75% of subtle-dominant categories per defect_taxonomy.json.",
+      "hypothesis_taxonomy": "The 'distinctive vs subtle' tagging in defect_taxonomy.json is PREDICTIVE — checked via ROC-style clustering of per-category AUROC against taxonomy tags. If positive, this is a standalone paper contribution: a practical rule-of-thumb for when fsvlm-style few-shot will succeed or fail, without running the experiment first.",
+      "hypothesis_extractor_generalizability": "Also re-run v0.1-extractor zero-shots on all 21 new categories to test whether the +0.15 to +0.34 AUROC recovery (our primary-candidate paper contribution) generalizes across MVTec's full suite, not just the 4 we sampled in Pass 2.",
+      "configs": {
+        "datasets": [
+          "mvtec",
+          "visa"
+        ],
+        "categories_mvtec": [
+          "cable",
+          "capsule",
+          "carpet",
+          "grid",
+          "leather",
+          "pill",
+          "screw",
+          "tile",
+          "toothbrush",
+          "transistor",
+          "wood",
+          "zipper"
+        ],
+        "categories_visa": [
+          "capsules",
+          "cashew",
+          "chewinggum",
+          "macaroni1",
+          "macaroni2",
+          "pcb2",
+          "pcb3",
+          "pcb4",
+          "pipe_fryum"
+        ],
+        "n_values": [
+          0,
+          30
+        ],
+        "seeds": [
+          42,
+          1337,
+          7
+        ],
+        "label_source": "metadata",
+        "recipe_version": "v0.3-tier-a",
+        "lora_rank": 8,
+        "lr": 0.0002
+      },
+      "pre_registered_predictions": {
+        "distinctive_predicted_win": [
+          "mvtec/cable",
+          "mvtec/tile",
+          "mvtec/toothbrush",
+          "mvtec/transistor",
+          "visa/chewinggum",
+          "visa/pcb2",
+          "visa/pcb3",
+          "visa/pcb4",
+          "visa/pipe_fryum"
+        ],
+        "subtle_predicted_loss": [
+          "mvtec/capsule",
+          "mvtec/pill",
+          "mvtec/screw",
+          "visa/macaroni1",
+          "visa/macaroni2"
+        ],
+        "mixed_predicted_scatter": [
+          "mvtec/carpet",
+          "mvtec/grid",
+          "mvtec/leather",
+          "mvtec/wood",
+          "mvtec/zipper",
+          "visa/capsules",
+          "visa/cashew"
+        ]
+      },
+      "expected_runs": 84,
+      "expected_hours": 10,
+      "unblocks_on": "pass5b completed + user decision on paper framing"
+    },
+    {
+      "id": "pass5-baselines-stratified",
+      "description": "Baselines on the same splits: Anomalib PatchCore (first — SOTA classical), WinCLIP+ (if reproducible — most-cited few-shot VLM), PromptAD (if reproducible), raw HF+PEFT (no unsloth, no us). Stratify results by distinctive-vs-subtle taxonomy to test: does the 'tiger-analogy wins for distinctive, classical wins for subtle' pattern we observed in Pass 1-6 hold when compared against these baselines?",
+      "status": "pending_user_approval",
+      "hypothesis_primary": "Anomalib PatchCore dominates on texture-periodic and subtle categories (carpet, grid, wood, metal_nut, pill, screw). fsvlm matches or approaches classical on distinctive categories and wins on VLM-unique axes (description, reasoning).",
+      "hypothesis_extractor_generalizability": "Run WinCLIP+ outputs through BOTH our v0 and v0.1 extractor style analyses. If WinCLIP+'s published numbers change under our extraction correction, the extractor-methodology finding generalizes to the frozen-CLIP literature too — a big methodology claim.",
+      "expected_hours": 8,
+      "unblocks_on": "user approval"
+    },
+    {
+      "id": "pass5b-icl-ablation",
+      "description": "In-context-learning (ICL) ablation — the ablation that answers the sharpest reviewer critique: 'your N=2 fine-tune result just shows contrastive-example matching works; you don't need fine-tuning at all.' We answer by running Gemma 4 itself in ICL mode (no weight updates, just prompt with reference examples) at matched N on the SAME test splits Pass 3 used, then comparing fine-tuned-Gemma-4 vs ICL-Gemma-4 head-to-head. If the fine-tuned advantage is < 0.02 AUROC, the reviewer is right and the paper pivots fully to the extractor-methodology + description-quality + taxonomy contributions (which ICL cannot touch).",
+      "status": "queued_after_pass3",
+      "hypothesis_primary": "Fine-tuned-Gemma-4 at N=2 does NOT meaningfully beat ICL-Gemma-4 at N=2 on distinctive-defect AUROC. If confirmed, the 'tiger-analogy via fine-tuning' story weakens and we lean on other contributions.",
+      "implementation_sketch": [
+        "Script: experiments/icl_baseline.py",
+        "For each (category, N in {2, 4, 8}, seed in {42, 1337, 7}):",
+        "  1. Sample N training examples (balanced good+defect) using same sampler as the sweep",
+        "  2. Build a multi-image chat template: '[img_good1] [img_defect1] [img_good2] [img_defect2] ... Classify this: [test_img]. PASS or FAIL?'",
+        "  3. Feed through base (unfinetuned) Gemma 4 — no adapter, no weight updates",
+        "  4. Extract score via v0.1 logit-probability extractor",
+        "  5. Compute AUROC on same held-out test split as Pass 3",
+        "  6. Write row with recipe_version='v0.4-icl-baseline', notes=['label_source=icl', 'n_shots=N']",
+        "Pairs with Pass 3 rows via identical (dataset, category, n, seed) for direct comparison. Delta = fine-tuned AUROC − ICL AUROC per cell."
+      ],
+      "cells_to_run": [
+        "mvtec/hazelnut × N ∈ {2, 4, 8} × 3 seeds — our strongest fine-tuned result",
+        "visa/candle × N ∈ {2, 4, 8} × 3 seeds",
+        "deeppcb/pcb × N ∈ {2, 4, 8} × 3 seeds — where we'd claim 'first few-shot on DeepPCB'"
+      ],
+      "expected_runs": 27,
+      "expected_hours": 4,
+      "notes": [
+        "This is the 'save the paper from a brutal reviewer' ablation. If fine-tuning beats ICL convincingly → tiger-analogy stays as a paper claim. If not → the paper's central contributions become (a) extractor methodology (+0.15 to +0.34 AUROC recovery), (b) description-quality eval (Pass 7), (c) pre-registered taxonomy predictive rule, (d) practical deployability (storage + inference cost of adapter vs retrieval DB).",
+        "ICL at N=8+ may exceed Gemma 4's context capacity with multi-image prompts. Cap at N=8 shots; if even that OOMs, reduce max_image_size and re-try.",
+        "WinCLIP+ / PromptAD in Pass 5 compare against FROZEN CLIP + retrieval. Pass 5b specifically isolates Gemma-4-family capability: fine-tuned vs ICL — no cross-model-family confound."
+      ]
+    },
+    {
+      "id": "pass7-description-quality-eval",
+      "description": "Test a VLM-unique capability that classical methods (PatchCore, WinCLIP+) structurally cannot match. Take the best Pass 4 adapters per category; for each held-out test image, run the adapter with a 'describe what is wrong' prompt instead of PASS/FAIL scoring. Grade the generated descriptions against (a) dataset-metadata ground truth (subtype name + location if available) and (b) a small human-eval sample. Metrics: BLEU/ROUGE vs ground truth, defect-type accuracy, location-mention rate, and human quality rating on 30 samples.",
+      "status": "pending_user_approval",
+      "hypothesis_primary": "fsvlm's fine-tuned adapter produces natural-language descriptions that accurately identify defect type and location on distinctive-defect categories. Classical methods produce a score, not a description, so this is an incomparable capability. If descriptions are accurate on >80% of distinctive-defect test images, this becomes the VLM-unique-capability contribution the paper needs to differentiate from frozen-CLIP baselines.",
+      "hypothesis_tiger_interaction": "Description quality should correlate with the distinctive/subtle taxonomy from defect_taxonomy.json. Expect rich accurate descriptions on distinctive categories ('a large crack on the upper-right of the hazelnut shell'); poor or generic on subtle categories ('the metal nut looks normal but may have slight discoloration'). If description quality DROPS systematically on subtle categories, we have another axis validating the taxonomy.",
+      "implementation_sketch": [
+        "Script: experiments/describe_eval.py",
+        "Input: adapter path per category (from Pass 4), held-out test images, defect metadata from dataset",
+        "Prompt: 'Examine this {category}. If it has a defect, describe what is wrong and where. If normal, say so.'",
+        "Metrics: defect-class-mention (does text include the subtype word?), location-mention (top/bottom/edge/center mentioned?), BLEU against metadata-derived reference descriptions, human quality rating on 30-image sample (1-5 Likert)",
+        "Compute per-category and stratified-by-taxonomy-tag"
+      ],
+      "expected_hours": 4,
+      "unblocks_on": "user approval AND pass4 completed"
+    }
+  ],
+  "global_kill_conditions": [
+    "disk_free_gb < 20",
+    "training_failures_in_a_row >= 5"
+  ],
+  "global_notes": [
+    "Every run carries git_hash + recipe_version + status.",
+    "Paper framing is deferred until after Pass 3/4/5/7 all land. Candidate frames: (A) 'N=30 is enough for tiger-like defects' with extractor as secondary; (B) 'Extractor choice dominates architecture' with few-shot as secondary; (C) 'A taxonomy-based rule for when VLM few-shot works' with both subsidiary findings as evidence.",
+    "The pre-registered defect_taxonomy.json is frozen at 2026-04-20T12:30. Any retroactive change to the tagging invalidates the statistical test and must be documented as a methodology failure.",
+    "Pass 7 is CRITICAL if we want to differentiate from frozen-CLIP baselines — it tests the VLM's unique capability (generating text) that classical methods fundamentally cannot do."
+  ],
+  "data_driven_over_deadline_driven": true
+}

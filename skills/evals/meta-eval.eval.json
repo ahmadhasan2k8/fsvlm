@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "skill": "meta-eval",
+  "evals": [
+    {
+      "eval_id": 0,
+      "eval_name": "skill-health-report",
+      "prompt": "Run the skill eval suite and tell me which skills are failing the most.",
+      "expected_skill": "meta-eval",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "meta-eval"},
+        {"name": "produced_eval_artifact", "type": "file_exists", "value": "~/.fsvlm/skill_health.json"}
+      ]
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "before-release-check",
+      "prompt": "Before I cut v0.1.1, do a full skill-eval pass to confirm nothing regressed.",
+      "expected_skill": "meta-eval",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "meta-eval"}
+      ]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "improve-one-skill-not-aggregate",
+      "prompt": "The /train skill has been failing — improve it.",
+      "expected_skill": "improve-skill",
+      "assertions": [
+        {"name": "did_not_trigger_meta_eval", "type": "trigger_negation", "value": "meta-eval"},
+        {"name": "skill_triggered", "type": "trigger", "value": "improve-skill"}
+      ]
+    }
+  ]
+}

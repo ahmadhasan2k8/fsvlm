@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "skill": "validate",
+  "evals": [
+    {
+      "eval_id": 0,
+      "eval_name": "labeled-test-set-metrics",
+      "prompt": "Evaluate ~/.fsvlm/adapters/myadapter/ on the held-out test set under /data/test/ and give me a confusion matrix.",
+      "expected_skill": "validate",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "validate"},
+        {"name": "produced_eval_artifact", "type": "file_exists", "value_template": "${output_dir}/validation_report.json"},
+        {"name": "num_test_positive", "type": "json_field_gte", "path": "metrics.num_test", "value": 1}
+      ]
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "html-report-requested",
+      "prompt": "Validate the latest adapter on /data/test/ and produce an HTML report I can share.",
+      "expected_skill": "validate",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "validate"},
+        {"name": "html_format", "type": "input_contains", "path": "report_format", "value": "html"}
+      ]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "no-labels-not-validate",
+      "prompt": "Run inference on /data/incoming/ — I don't have labels.",
+      "expected_skill": "inspect",
+      "assertions": [
+        {"name": "did_not_trigger_validate", "type": "trigger_negation", "value": "validate"},
+        {"name": "skill_triggered", "type": "trigger", "value": "inspect"}
+      ]
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "n-shot-curve-not-validate",
+      "prompt": "Run a sweep across N=2,5,10,30 on three seeds.",
+      "expected_skill": "sweep",
+      "assertions": [
+        {"name": "did_not_trigger_validate", "type": "trigger_negation", "value": "validate"},
+        {"name": "skill_triggered", "type": "trigger", "value": "sweep"}
+      ]
+    }
+  ]
+}

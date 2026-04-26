@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "skill": "train",
+  "evals": [
+    {
+      "eval_id": 0,
+      "eval_name": "labeled-folder-default-backend",
+      "prompt": "I have 50 images of plastic parts in /data/parts/, half good half defective. Get me an adapter.",
+      "expected_skill": "train",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "train"},
+        {"name": "images_path_passed", "type": "input_eq", "path": "images", "value": "/data/parts/"},
+        {"name": "produced_eval_artifact", "type": "file_exists", "value_template": "${adapter_dir}/metrics.json"},
+        {"name": "f1_above_baseline", "type": "json_field_gte", "path": "f1", "value": 0.5},
+        {"name": "auroc_above_baseline", "type": "json_field_gte", "path": "auroc", "value": 0.55}
+      ]
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "explicit-recipe-knobs",
+      "prompt": "Train on /data/parts/ with rank=16 and 5 epochs.",
+      "expected_skill": "train",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "train"},
+        {"name": "lora_rank_passed", "type": "input_eq", "path": "lora_rank", "value": 16},
+        {"name": "epochs_passed", "type": "input_eq", "path": "epochs", "value": 5}
+      ]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "auto-research-sweep-requested",
+      "prompt": "I'm not sure what hyperparameters work best on my dataset. Try a few configs and pick the best.",
+      "expected_skill": "train",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "train"},
+        {"name": "sweep_param_inferred", "type": "input_eq", "path": "sweep", "value": true}
+      ]
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "inference-not-train",
+      "prompt": "Run my existing adapter on a new folder of test images.",
+      "expected_skill": "inspect",
+      "assertions": [
+        {"name": "did_not_trigger_train", "type": "trigger_negation", "value": "train"},
+        {"name": "skill_triggered", "type": "trigger", "value": "inspect"}
+      ]
+    },
+    {
+      "eval_id": 4,
+      "eval_name": "n-shot-curve-not-train",
+      "prompt": "I want AUROC at N=2, 5, 10, 20, 30 across three seeds.",
+      "expected_skill": "sweep",
+      "assertions": [
+        {"name": "did_not_trigger_train", "type": "trigger_negation", "value": "train"},
+        {"name": "skill_triggered", "type": "trigger", "value": "sweep"}
+      ]
+    },
+    {
+      "eval_id": 5,
+      "eval_name": "qwen-vl-backend",
+      "prompt": "Train on /data/parts/ using Qwen-VL as the backend.",
+      "expected_skill": "train",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "train"},
+        {"name": "backend_param_passed", "type": "input_eq", "path": "backend", "value": "qwen-vl"}
+      ]
+    }
+  ]
+}

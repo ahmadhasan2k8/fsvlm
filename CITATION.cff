@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use fsvlm in research or product work, please cite it using the metadata below."
+type: software
+title: "fsvlm: Few-shot Fine-tuning Benchmarker for Vision-Language Models"
+version: 0.1.0
+date-released: 2026-04-21
+url: "https://github.com/ahmadhasan2k8/fsvlm"
+repository-code: "https://github.com/ahmadhasan2k8/fsvlm"
+license: Apache-2.0
+authors:
+  - family-names: "Hasan"
+    given-names: "Ahmad Jarjis"
+keywords:
+  - "defect detection"
+  - "visual inspection"
+  - "vision-language models"
+  - "Gemma 4"
+  - "LoRA"
+  - "QLoRA"
+  - "few-shot learning"
+  - "industrial anomaly detection"
+  - "benchmarking"
+  - "score extraction"
+  - "unsloth"
+abstract: >
+  fsvlm is a fully open-source benchmarking framework for vision-language models in the
+  few-shot anomaly-detection setting. It provides an end-to-end pipeline — SAM-assisted
+  interactive labeling, QLoRA fine-tuning (built on unsloth), tiered zero-shot / few-shot /
+  full-train evaluation, and a token-logit-probability score extractor — plus reproducible
+  benchmarks on MVTec AD, VisA, and DeepPCB. Released under the Apache 2.0 License for
+  both research and commercial use; citation appreciated for academic work.

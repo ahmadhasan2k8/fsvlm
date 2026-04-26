@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "skill": "setup",
+  "evals": [
+    {
+      "eval_id": 0,
+      "eval_name": "fresh-machine-detect-and-download",
+      "prompt": "I just installed fsvlm on my new RTX 5080 laptop. Get me ready to start training.",
+      "expected_skill": "setup",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "setup"},
+        {"name": "produced_eval_artifact", "type": "file_exists", "value": "~/.fsvlm/setup_status.json"},
+        {"name": "gpu_detected_recorded", "type": "json_field_eq", "path": "gpu_detected", "value": true},
+        {"name": "deps_ok_recorded", "type": "json_field_eq", "path": "deps_ok", "value": true}
+      ]
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "check-only-no-download",
+      "prompt": "Quick sanity check: does fsvlm see my GPU and have its dependencies? Don't download anything yet.",
+      "expected_skill": "setup",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "setup"},
+        {"name": "check_only_inferred", "type": "input_eq", "path": "check_only", "value": true},
+        {"name": "did_not_trigger_train", "type": "trigger_negation", "value": "train"}
+      ]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "switch-backend",
+      "prompt": "I want to try Qwen-VL instead of Gemma. Set up that backend.",
+      "expected_skill": "setup",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "setup"},
+        {"name": "backend_param_passed", "type": "input_contains", "path": "backend", "value": "qwen"}
+      ]
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "inference-only-should-not-trigger-setup",
+      "prompt": "Run my existing adapter on /data/incoming/img.jpg.",
+      "expected_skill": "inspect",
+      "assertions": [
+        {"name": "did_not_trigger_setup", "type": "trigger_negation", "value": "setup"},
+        {"name": "skill_triggered", "type": "trigger", "value": "inspect"}
+      ]
+    },
+    {
+      "eval_id": 4,
+      "eval_name": "model-not-found-error-recovery",
+      "prompt": "I'm getting a 'model not found' error when I try to inspect. Help.",
+      "expected_skill": "setup",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "setup"},
+        {"name": "produced_eval_artifact", "type": "file_exists", "value": "~/.fsvlm/setup_status.json"}
+      ]
+    }
+  ]
+}

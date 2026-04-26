@@ -1,0 +1,200 @@
+[
+  {
+    "dataset": "hazelnut",
+    "tier": "tier1_zeroshot",
+    "auroc": 0.919,
+    "f1": 0.923,
+    "precision": 0.943,
+    "recall": 0.943,
+    "accuracy": 0.9,
+    "threshold": 0.5,
+    "num_test": 110,
+    "elapsed_seconds": 420.0,
+    "confusion_matrix": [
+      [
+        33,
+        7
+      ],
+      [
+        4,
+        66
+      ]
+    ]
+  },
+  {
+    "dataset": "hazelnut",
+    "tier": "tier2_fewshot",
+    "auroc": 0.9620454545454545,
+    "f1": 0.9285714285714286,
+    "precision": 0.9122807017543859,
+    "recall": 0.9454545454545454,
+    "accuracy": 0.9157894736842105,
+    "threshold": 0.006692850962281227,
+    "num_test": 95,
+    "elapsed_seconds": 434.5555317401886,
+    "confusion_matrix": [
+      [
+        35,
+        5
+      ],
+      [
+        3,
+        52
+      ]
+    ]
+  },
+  {
+    "dataset": "hazelnut",
+    "tier": "tier3_full",
+    "auroc": 0.9739285714285715,
+    "f1": 0.9066666666666666,
+    "precision": 0.85,
+    "recall": 0.9714285714285714,
+    "accuracy": 0.9066666666666666,
+    "threshold": 0.622459352016449,
+    "num_test": 75,
+    "elapsed_seconds": 1937.3817729949951,
+    "confusion_matrix": [
+      [
+        34,
+        6
+      ],
+      [
+        1,
+        34
+      ]
+    ]
+  },
+  {
+    "dataset": "bottle",
+    "tier": "tier1_zeroshot",
+    "auroc": 0.7400793650793651,
+    "f1": 0.863013698630137,
+    "precision": 0.7590361445783133,
+    "recall": 1.0,
+    "accuracy": 0.7590361445783133,
+    "threshold": 0.1,
+    "num_test": 83,
+    "elapsed_seconds": 144.62334728240967,
+    "confusion_matrix": [
+      [
+        0,
+        20
+      ],
+      [
+        0,
+        63
+      ]
+    ]
+  },
+  {
+    "dataset": "bottle",
+    "tier": "tier2_fewshot",
+    "auroc": 0.7869791666666667,
+    "f1": 0.8478260869565217,
+    "precision": 0.8863636363636364,
+    "recall": 0.8125,
+    "accuracy": 0.7941176470588235,
+    "threshold": 0.22270014882087708,
+    "num_test": 68,
+    "elapsed_seconds": 297.21474266052246,
+    "confusion_matrix": [
+      [
+        15,
+        5
+      ],
+      [
+        9,
+        39
+      ]
+    ]
+  },
+  {
+    "dataset": "bottle",
+    "tier": "tier3_full",
+    "auroc": 0.8500000000000001,
+    "f1": 0.8484848484848485,
+    "precision": 0.8235294117647058,
+    "recall": 0.875,
+    "accuracy": 0.8076923076923077,
+    "threshold": 0.11920291930437088,
+    "num_test": 52,
+    "elapsed_seconds": 917.8483688831329,
+    "confusion_matrix": [
+      [
+        14,
+        6
+      ],
+      [
+        4,
+        28
+      ]
+    ]
+  },
+  {
+    "dataset": "metal_nut",
+    "tier": "tier1_zeroshot",
+    "auroc": 0.5,
+    "f1": 0.8942307692307693,
+    "precision": 0.808695652173913,
+    "recall": 1.0,
+    "accuracy": 0.808695652173913,
+    "threshold": 0.75,
+    "num_test": 115,
+    "elapsed_seconds": 303.71418738365173,
+    "confusion_matrix": [
+      [
+        0,
+        22
+      ],
+      [
+        0,
+        93
+      ]
+    ]
+  },
+  {
+    "dataset": "metal_nut",
+    "tier": "tier2_fewshot",
+    "auroc": 0.7835081585081585,
+    "f1": 0.8813559322033898,
+    "precision": 0.7878787878787878,
+    "recall": 1.0,
+    "accuracy": 0.79,
+    "threshold": 6.144174221844878e-06,
+    "num_test": 100,
+    "elapsed_seconds": 466.4321985244751,
+    "confusion_matrix": [
+      [
+        1,
+        21
+      ],
+      [
+        0,
+        78
+      ]
+    ]
+  },
+  {
+    "dataset": "metal_nut",
+    "tier": "tier3_full",
+    "auroc": 0.8573500967117988,
+    "f1": 0.8571428571428571,
+    "precision": 0.7758620689655172,
+    "recall": 0.9574468085106383,
+    "accuracy": 0.782608695652174,
+    "threshold": 1.3007128472963814e-05,
+    "num_test": 69,
+    "elapsed_seconds": 1112.7362341880798,
+    "confusion_matrix": [
+      [
+        9,
+        13
+      ],
+      [
+        2,
+        45
+      ]
+    ]
+  }
+]

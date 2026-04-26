@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "skill": "plot",
+  "evals": [
+    {
+      "eval_id": 0,
+      "eval_name": "auroc-vs-n-figures",
+      "prompt": "Generate AUROC-vs-N curves for every category in my results JSON, ready to drop into a paper.",
+      "expected_skill": "plot",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "plot"},
+        {"name": "figures_includes_auroc_vs_n", "type": "input_contains_value", "path": "figures", "value": "auroc_vs_n"}
+      ]
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "latex-table-output",
+      "prompt": "Give me a per-cell summary table in LaTeX so I can paste it into Overleaf.",
+      "expected_skill": "plot",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "plot"},
+        {"name": "figures_includes_table", "type": "input_contains_value", "path": "figures", "value": "per_cell_table"}
+      ]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "filter-one-recipe",
+      "prompt": "Plot only the rows from recipe_version v0.3-curve.",
+      "expected_skill": "plot",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "plot"},
+        {"name": "filter_recipe_passed", "type": "input_eq", "path": "filter_recipe", "value": "v0.3-curve"}
+      ]
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "raw-numbers-not-plot",
+      "prompt": "What's the verdict on my latest cohort? Just the status counts.",
+      "expected_skill": "verdict",
+      "assertions": [
+        {"name": "did_not_trigger_plot", "type": "trigger_negation", "value": "plot"},
+        {"name": "skill_triggered", "type": "trigger", "value": "verdict"}
+      ]
+    }
+  ]
+}

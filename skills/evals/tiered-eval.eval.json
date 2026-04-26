@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "skill": "tiered-eval",
+  "evals": [
+    {
+      "eval_id": 0,
+      "eval_name": "monotonic-lift-check",
+      "prompt": "Before I run the full N-shot sweep on MVTec hazelnut, prove fine-tuning actually helps over zero-shot.",
+      "expected_skill": "tiered-eval",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "tiered-eval"},
+        {"name": "category_hazelnut", "type": "input_eq", "path": "category", "value": "hazelnut"}
+      ]
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "compare-three-tiers",
+      "prompt": "Show me zero-shot, few-shot at N=30, and full-train numbers on the same test split for VisA candle.",
+      "expected_skill": "tiered-eval",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "tiered-eval"},
+        {"name": "few_shot_n_30", "type": "input_eq", "path": "few_shot_n", "value": 30}
+      ]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "full-curve-not-tiered",
+      "prompt": "I want AUROC at every N from 2 to 100 for hazelnut.",
+      "expected_skill": "sweep",
+      "assertions": [
+        {"name": "did_not_trigger_tiered", "type": "trigger_negation", "value": "tiered-eval"},
+        {"name": "skill_triggered", "type": "trigger", "value": "sweep"}
+      ]
+    }
+  ]
+}

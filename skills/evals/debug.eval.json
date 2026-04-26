@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "skill": "debug",
+  "evals": [
+    {
+      "eval_id": 0,
+      "eval_name": "training-crashed-with-error",
+      "prompt": "fsvlm train just crashed with 'CUDA out of memory'. What's wrong?",
+      "expected_skill": "debug",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "debug"},
+        {"name": "focus_relevant", "type": "input_in_set", "path": "focus", "value": ["gpu", "all"]}
+      ]
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "adapter-loads-but-predicts-constant",
+      "prompt": "My adapter loads but every prediction is the same value. Help diagnose.",
+      "expected_skill": "debug",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "debug"},
+        {"name": "focus_adapter", "type": "input_eq", "path": "focus", "value": "adapter"}
+      ]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "import-error",
+      "prompt": "I get 'ImportError: bitsandbytes wheel for CUDA 12.6 missing' when I run fsvlm setup.",
+      "expected_skill": "debug",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "debug"},
+        {"name": "focus_deps", "type": "input_eq", "path": "focus", "value": "deps"}
+      ]
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "everything-works-no-debug-needed",
+      "prompt": "I have 50 images of plastic parts in /data/parts/. Get me an adapter.",
+      "expected_skill": "train",
+      "assertions": [
+        {"name": "did_not_trigger_debug", "type": "trigger_negation", "value": "debug"},
+        {"name": "skill_triggered", "type": "trigger", "value": "train"}
+      ]
+    }
+  ]
+}

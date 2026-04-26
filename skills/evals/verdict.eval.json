@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "skill": "verdict",
+  "evals": [
+    {
+      "eval_id": 0,
+      "eval_name": "classify-fresh-sweep-rows",
+      "prompt": "I just finished a sweep — classify the new rows so I know which configs are wins, regressions, or noise.",
+      "expected_skill": "verdict",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "verdict"},
+        {"name": "produced_eval_artifact", "type": "file_exists", "value": "research/dataset_size_results.json"}
+      ]
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "dry-run-requested",
+      "prompt": "Show me what verdicts you'd assign to my latest cohort but don't write them yet.",
+      "expected_skill": "verdict",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "verdict"},
+        {"name": "write_false", "type": "input_eq", "path": "write", "value": false}
+      ]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "specific-recipe-cohort",
+      "prompt": "Classify only the rows from the v0.4-icl-baseline recipe.",
+      "expected_skill": "verdict",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "verdict"},
+        {"name": "recipe_passed", "type": "input_eq", "path": "recipe_version", "value": "v0.4-icl-baseline"}
+      ]
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "no-rows-yet-not-verdict",
+      "prompt": "I want to start running benchmarks on my dataset. Where do I begin?",
+      "expected_skill": "sweep",
+      "assertions": [
+        {"name": "did_not_trigger_verdict", "type": "trigger_negation", "value": "verdict"}
+      ]
+    }
+  ]
+}

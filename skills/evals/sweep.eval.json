@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "skill": "sweep",
+  "evals": [
+    {
+      "eval_id": 0,
+      "eval_name": "n-shot-curve-three-categories",
+      "prompt": "Run AUROC at N=2,5,10,20,30,60 across three seeds on MVTec hazelnut, VisA candle, and DeepPCB.",
+      "expected_skill": "sweep",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "sweep"},
+        {"name": "n_values_passed", "type": "input_eq", "path": "n_values", "value": [2, 5, 10, 20, 30, 60]},
+        {"name": "seeds_at_least_three", "type": "input_length_gte", "path": "seeds", "value": 3}
+      ]
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "single-cell-not-sweep",
+      "prompt": "Just train one adapter on /data/parts/ at 30 examples.",
+      "expected_skill": "train",
+      "assertions": [
+        {"name": "did_not_trigger_sweep", "type": "trigger_negation", "value": "sweep"},
+        {"name": "skill_triggered", "type": "trigger", "value": "train"}
+      ]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "compare-backends-on-same-data",
+      "prompt": "Compare Gemma-4 against Qwen-VL on MVTec hazelnut at N=30 across three seeds.",
+      "expected_skill": "sweep",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "sweep"},
+        {"name": "categories_includes_hazelnut", "type": "input_contains_value", "path": "categories", "value": "hazelnut"}
+      ]
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "tiered-not-sweep",
+      "prompt": "Compare zero-shot vs few-shot vs full-train on MVTec hazelnut so I know fine-tuning actually helps before I run the full N curve.",
+      "expected_skill": "tiered-eval",
+      "assertions": [
+        {"name": "did_not_trigger_sweep", "type": "trigger_negation", "value": "sweep"},
+        {"name": "skill_triggered", "type": "trigger", "value": "tiered-eval"}
+      ]
+    }
+  ]
+}

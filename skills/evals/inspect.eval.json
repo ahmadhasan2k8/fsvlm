@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "skill": "inspect",
+  "evals": [
+    {
+      "eval_id": 0,
+      "eval_name": "single-image-default-adapter",
+      "prompt": "Run defect detection on /data/incoming/img.jpg.",
+      "expected_skill": "inspect",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "inspect"},
+        {"name": "target_passed", "type": "input_eq", "path": "target", "value": "/data/incoming/img.jpg"}
+      ]
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "batch-folder",
+      "prompt": "Inspect every image in /data/batch/ and write the results as JSON.",
+      "expected_skill": "inspect",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "inspect"},
+        {"name": "output_format_json", "type": "input_eq", "path": "output_format", "value": "json"}
+      ]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "ground-truth-eval-not-inspect",
+      "prompt": "I have ground-truth labels for /data/test/ — give me precision, recall, and AUROC for my adapter.",
+      "expected_skill": "validate",
+      "assertions": [
+        {"name": "did_not_trigger_inspect", "type": "trigger_negation", "value": "inspect"},
+        {"name": "skill_triggered", "type": "trigger", "value": "validate"}
+      ]
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "explicit-adapter-path",
+      "prompt": "Use the adapter at ~/work/myadapter-v3/ to classify /data/incoming/.",
+      "expected_skill": "inspect",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "inspect"},
+        {"name": "adapter_param_passed", "type": "input_contains", "path": "adapter", "value": "myadapter-v3"}
+      ]
+    }
+  ]
+}

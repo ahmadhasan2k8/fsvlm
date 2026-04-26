@@ -1,0 +1,35 @@
+# Phase 0: Development compose — GPU passthrough + volume mounts
+#
+# Usage:
+#   docker compose -f docker/docker-compose.dev.yml build
+#   docker compose -f docker/docker-compose.dev.yml run --rm dev bash
+#   docker compose -f docker/docker-compose.dev.yml run --rm dev python experiments/phase0_validation.py --data /data --download-data
+
+services:
+  dev:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.dev
+    volumes:
+      # Mount source code (editable)
+      - ..:/workspace
+      # Mount HuggingFace model cache (avoid re-downloading)
+      - ${HF_HOME:-~/.cache/huggingface}:/root/.cache/huggingface
+      # Mount dataset directory (read-only)
+      - ${DATA_DIR:-./data}:/data:ro
+      # Mount output directory (for adapters and results)
+      - ${OUTPUT_DIR:-./phase0_output}:/output
+    environment:
+      - CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-0}
+      - HF_TOKEN=${HF_TOKEN:-}
+      - TRANSFORMERS_CACHE=/root/.cache/huggingface/hub
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    working_dir: /workspace
+    stdin_open: true
+    tty: true

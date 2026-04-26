@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "skill": "expert-review",
+  "evals": [
+    {
+      "eval_id": 0,
+      "eval_name": "training-dynamics-question",
+      "prompt": "My sweep shows AUROC dropping from N=60 to N=100. Healthy training or overfitting?",
+      "expected_skill": "expert-review",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "expert-review"},
+        {"name": "role_training_specialist", "type": "input_eq", "path": "role", "value": "training-specialist"}
+      ]
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "domain-failure-mode",
+      "prompt": "I just got AUROC 0.51 on metal_nut after 4 different recipe tweaks. What kind of defect is this and is the VLM just wrong tool?",
+      "expected_skill": "expert-review",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "expert-review"},
+        {"name": "role_domain_specialist", "type": "input_eq", "path": "role", "value": "domain-specialist"}
+      ]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "verdict-locked-no-review-needed",
+      "prompt": "Verdict says all my new rows are noop. Move on?",
+      "expected_skill": "expert-review",
+      "assertions": [
+        {"name": "skill_triggered_or_skipped_with_reason", "type": "trigger_or_explicit_skip", "value": "expert-review"}
+      ]
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "single-image-not-expert-review",
+      "prompt": "Run the adapter on /data/img.jpg.",
+      "expected_skill": "inspect",
+      "assertions": [
+        {"name": "did_not_trigger_expert_review", "type": "trigger_negation", "value": "expert-review"},
+        {"name": "skill_triggered", "type": "trigger", "value": "inspect"}
+      ]
+    }
+  ]
+}

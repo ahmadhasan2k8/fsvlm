@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "skill": "serve",
+  "evals": [
+    {
+      "eval_id": 0,
+      "eval_name": "rest-api-default-port",
+      "prompt": "Stand up a REST API for my adapter so the team can post images at it.",
+      "expected_skill": "serve",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "serve"},
+        {"name": "mode_rest", "type": "input_eq", "path": "mode", "value": "rest"}
+      ]
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "gradio-ui",
+      "prompt": "Launch the annotation UI so I can label new images interactively.",
+      "expected_skill": "serve",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "serve"},
+        {"name": "mode_ui", "type": "input_eq", "path": "mode", "value": "ui"}
+      ]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "watch-folder",
+      "prompt": "Watch /data/incoming/ for new images and run them through the adapter as they land.",
+      "expected_skill": "serve",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "serve"},
+        {"name": "mode_watch", "type": "input_eq", "path": "mode", "value": "watch"},
+        {"name": "watch_dir_passed", "type": "input_eq", "path": "watch_dir", "value": "/data/incoming/"}
+      ]
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "single-inference-not-serve",
+      "prompt": "Just run my adapter on this one image: /data/sample.jpg.",
+      "expected_skill": "inspect",
+      "assertions": [
+        {"name": "did_not_trigger_serve", "type": "trigger_negation", "value": "serve"},
+        {"name": "skill_triggered", "type": "trigger", "value": "inspect"}
+      ]
+    }
+  ]
+}

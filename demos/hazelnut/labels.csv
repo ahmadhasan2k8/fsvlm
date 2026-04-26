@@ -1,0 +1,6 @@
+image_path,label,description
+good/good_0000.png,good,Clean hazelnut
+good/good_0001.png,good,Normal surface
+good/good_0002.png,good,No defects
+defect/defect_crack_0000.png,defect,Visible crack
+defect/defect_crack_0001.png,defect,Surface damage

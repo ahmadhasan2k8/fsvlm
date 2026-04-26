@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FSVLM Validation Report</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; padding: 2rem; }
+  .container { max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+  h2 { font-size: 1.2rem; margin: 1.5rem 0 0.75rem; color: #555; }
+  .subtitle { color: #888; font-size: 0.9rem; margin-bottom: 1.5rem; }
+  .card { background: white; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1rem; }
+  .metric { text-align: center; }
+  .metric-value { font-size: 1.8rem; font-weight: 700; }
+  .metric-label { font-size: 0.8rem; color: #888; text-transform: uppercase; }
+  .good { color: #22c55e; }
+  .warn { color: #f59e0b; }
+  .bad { color: #ef4444; }
+  table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
+  th, td { padding: 0.5rem 1rem; text-align: center; border: 1px solid #e5e5e5; }
+  th { background: #f9f9f9; font-weight: 600; font-size: 0.85rem; }
+  td { font-size: 0.95rem; }
+  .failure-list { list-style: none; }
+  .failure-item { padding: 0.75rem 0; border-bottom: 1px solid #eee; display: flex; gap: 1rem; align-items: center; }
+  .failure-item:last-child { border-bottom: none; }
+  .failure-badge { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+  .badge-fp { background: #fef3c7; color: #92400e; }
+  .badge-fn { background: #fee2e2; color: #991b1b; }
+  .failure-path { font-family: monospace; font-size: 0.8rem; color: #666; }
+  .failure-conf { font-size: 0.85rem; color: #888; }
+  footer { text-align: center; color: #aaa; font-size: 0.75rem; margin-top: 2rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>FSVLM Validation Report</h1>
+  <p class="subtitle">{{ num_test_samples }} test samples evaluated</p>
+
+  <div class="card">
+    <h2>Metrics</h2>
+    <div class="metrics-grid">
+      <div class="metric">
+        <div class="metric-value {% if metrics.auroc >= 0.95 %}good{% elif metrics.auroc >= 0.85 %}warn{% else %}bad{% endif %}">{{ "%.1f"|format(metrics.auroc * 100) }}%</div>
+        <div class="metric-label">AUROC</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value {% if metrics.f1 >= 0.90 %}good{% elif metrics.f1 >= 0.75 %}warn{% else %}bad{% endif %}">{{ "%.1f"|format(metrics.f1 * 100) }}%</div>
+        <div class="metric-label">F1 Score</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value {% if metrics.precision >= 0.90 %}good{% elif metrics.precision >= 0.75 %}warn{% else %}bad{% endif %}">{{ "%.1f"|format(metrics.precision * 100) }}%</div>
+        <div class="metric-label">Precision</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value {% if metrics.recall >= 0.90 %}good{% elif metrics.recall >= 0.75 %}warn{% else %}bad{% endif %}">{{ "%.1f"|format(metrics.recall * 100) }}%</div>
+        <div class="metric-label">Recall</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">{{ "%.1f"|format(metrics.accuracy * 100) }}%</div>
+        <div class="metric-label">Accuracy</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">{{ "%.3f"|format(metrics.optimal_threshold) }}</div>
+        <div class="metric-label">Threshold</div>
+      </div>
+    </div>
+  </div>
+
+  {% if confusion_matrix and confusion_matrix.matrix|length == 2 %}
+  <div class="card">
+    <h2>Confusion Matrix</h2>
+    <table>
+      <tr><th></th><th>Predicted Good</th><th>Predicted Defect</th></tr>
+      <tr><th>Actual Good</th><td>{{ confusion_matrix.matrix[0][0] }}</td><td>{{ confusion_matrix.matrix[0][1] }}</td></tr>
+      <tr><th>Actual Defect</th><td>{{ confusion_matrix.matrix[1][0] }}</td><td>{{ confusion_matrix.matrix[1][1] }}</td></tr>
+    </table>
+  </div>
+  {% endif %}
+
+  {% if failure_cases %}
+  <div class="card">
+    <h2>Failure Gallery ({{ failure_cases|length }} misclassified)</h2>
+    <ul class="failure-list">
+      {% for f in failure_cases[:20] %}
+      <li class="failure-item">
+        {% if f.actual == "defect" and f.predicted == "good" %}
+        <span class="failure-badge badge-fn">MISSED</span>
+        {% else %}
+        <span class="failure-badge badge-fp">FALSE ALARM</span>
+        {% endif %}
+        <span class="failure-path">{{ f.image_path | basename }}</span>
+        <span class="failure-conf">{{ "%.1f"|format(f.confidence * 100) }}% conf</span>
+      </li>
+      {% endfor %}
+      {% if failure_cases|length > 20 %}
+      <li class="failure-item" style="color: #888;">... and {{ failure_cases|length - 20 }} more</li>
+      {% endif %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {% if summary %}
+  <div class="card">
+    <h2>Summary</h2>
+    <p>{{ summary }}</p>
+  </div>
+  {% endif %}
+
+  <footer>Generated by FSVLM</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "skill": "improve-skill",
+  "evals": [
+    {
+      "eval_id": 0,
+      "eval_name": "single-failing-skill",
+      "prompt": "The /sweep skill is over-triggering on single-image inference prompts. Improve it.",
+      "expected_skill": "improve-skill",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "improve-skill"},
+        {"name": "skill_name_passed", "type": "input_eq", "path": "skill_name", "value": "sweep"}
+      ]
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "dry-run-preview",
+      "prompt": "Show me what edits you'd propose to /train but don't commit them.",
+      "expected_skill": "improve-skill",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "improve-skill"},
+        {"name": "dry_run_true", "type": "input_eq", "path": "dry_run", "value": true}
+      ]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "all-skills-not-single",
+      "prompt": "Run the meta-loop across every flagged skill tonight.",
+      "expected_skill": "improve-skills-auto",
+      "assertions": [
+        {"name": "did_not_trigger_improve_skill", "type": "trigger_negation", "value": "improve-skill"},
+        {"name": "skill_triggered", "type": "trigger", "value": "improve-skills-auto"}
+      ]
+    }
+  ]
+}

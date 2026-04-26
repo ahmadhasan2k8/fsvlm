@@ -1,0 +1,30 @@
+# Phase 0: ML Validation — Pinned Dependencies
+# RTX 5080 (Blackwell sm_120) requires CUDA 12.8 (cu128)
+#
+# Install order:
+#   1. pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
+#   2. pip install -r requirements-phase0.txt
+
+# Fine-tuning stack (Unsloth QLoRA)
+unsloth>=2026.4.2
+unsloth_zoo>=2026.4.2
+transformers>=4.57.6,<=5.5.0,!=5.0.0,!=5.1.0
+trl>=0.23.0,<=0.24.0
+peft>=0.18.0
+bitsandbytes>=0.45.5,!=0.46.0,!=0.48.0
+triton>=3.3.1
+
+# Evaluation
+scikit-learn>=1.5.0
+matplotlib>=3.9.0
+
+# Data handling
+Pillow>=10.4.0
+datasets>=3.0.0
+
+# Dataset download
+gdown>=5.2.0
+
+# Utilities
+numpy>=1.26.0
+tqdm>=4.66.0

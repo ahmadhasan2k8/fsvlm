@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "skill": "autoresearch",
+  "evals": [
+    {
+      "eval_id": 0,
+      "eval_name": "advance-the-research-arc",
+      "prompt": "Run the next pending pass in queue.json end-to-end and decide what to do next.",
+      "expected_skill": "autoresearch",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "autoresearch"},
+        {"name": "produced_eval_artifact", "type": "file_exists", "value": "research/autoresearch_state.json"}
+      ]
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "unattended-loop-mode",
+      "prompt": "Run the autoresearch loop unattended overnight.",
+      "expected_skill": "autoresearch",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "autoresearch"}
+      ]
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "single-skill-not-loop",
+      "prompt": "Run a sweep at N=30 on hazelnut.",
+      "expected_skill": "sweep",
+      "assertions": [
+        {"name": "did_not_trigger_autoresearch", "type": "trigger_negation", "value": "autoresearch"},
+        {"name": "skill_triggered", "type": "trigger", "value": "sweep"}
+      ]
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "dirty-tree-should-fail-gracefully",
+      "prompt": "Run autoresearch with my uncommitted experimental changes still in place.",
+      "expected_skill": "autoresearch",
+      "assertions": [
+        {"name": "skill_triggered", "type": "trigger", "value": "autoresearch"},
+        {"name": "fails_with_dirty_tree", "type": "json_field_eq", "path": "pass_status", "value": "aborted_timeout"}
+      ]
+    }
+  ]
+}
