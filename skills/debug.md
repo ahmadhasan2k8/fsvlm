@@ -28,6 +28,13 @@ escalation: |
 When something doesn't work, this skill produces a machine-readable report that names the
 specific failed check and the suggested fix.
 
+> **Honest scope.** `/debug` is an orchestrator skill — it dispatches different diagnostic
+> blocks based on the `focus` parameter and aggregates results into a single report. The
+> individual diagnostic commands below are runnable from any shell, but the dispatch logic +
+> result aggregation needs a runtime (Claude Code, an agent SDK, or you stepping through the
+> blocks manually). Direct shell invocation via `bash skills/_run.sh debug` returns a
+> "needs runtime" error pointing here.
+
 ## Procedure
 
 Run the relevant diagnostic block(s) based on `focus`:

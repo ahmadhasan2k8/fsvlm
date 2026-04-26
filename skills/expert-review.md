@@ -34,6 +34,13 @@ escalation: |
 
 ## Purpose
 
+> **Honest scope.** `/expert-review` is an orchestrator skill — its core action is calling
+> a chat-completion API (or rendering a prompt for a human reviewer) and parsing the
+> response. That dispatch + parsing needs a runtime: Claude Code can call this skill
+> directly (it IS an LLM); other runtimes need to wire it to their preferred API; manual
+> mode renders the prompt and you paste the response back. Direct shell invocation via
+> `bash skills/_run.sh expert-review` returns a "needs runtime" error pointing here.
+
 The Tier-1 contribution of fsvlm's autoresearch adaptation: a structured review step between
 the mechanical verdict and the recipe-mutation decision. Implementable on any chat-completion
 API, or by a human peer with a templated prompt.
