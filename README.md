@@ -151,28 +151,62 @@ One-PR recipes for each are in [docs/autoresearch.md § 6](docs/autoresearch.md)
 
 Every routine workflow ships as a [Markdown playbook with YAML frontmatter](skills/README.md)
 declaring `name`, `description`, `inputs`, `eval_artifact`, `pass_criteria`, and `escalation`.
-A runtime (Claude Code, OpenAI Agents SDK, CrewAI, your own orchestrator, or plain shell)
-reads the frontmatter + body and executes the procedure.
+**Two kinds of skills, with a sharp difference in how they run:**
 
-- **Core (6)** — `setup`, `train`, `inspect`, `validate`, `serve`, `debug`
-- **Research loop (5)** — `sweep`, `verdict`, `tiered-eval`, `plot`, `autoresearch`
-- **Expert review (1)** — `expert-review` (parameterised by role: training-specialist,
-  domain-specialist, your role)
-- **Meta layer (3)** — `meta-eval`, `improve-skill`, `improve-skills-auto` — the documented
-  pattern for letting a runtime self-improve skill files based on the
-  [Anthropic skill-creator eval pattern](https://github.com/anthropics/skills)
+### ✅ Procedural skills (10) — directly runnable from shell
 
-Each skill ships with a sibling `skills/evals/<name>.eval.json` declaring (prompt, expected
-trigger, assertions) following Anthropic's eval-set schema.
+Wrap a single underlying CLI command or script. Invoke from cron / Make / your own shell
+loop / CI — no agent runtime required:
 
-> **Honest scope of v0.1:** the skills are reference Markdown + eval JSONs. The portable
-> harness at `scripts/run_skill_eval.py` runs the eval suite against the
-> Anthropic Messages API (requires `ANTHROPIC_API_KEY`); the `claude-code` and `openai-sdk`
-> runtime adapters are explicit stubs in v0.1 — they describe how to wire each runtime but
-> need a real implementation per stack. The meta-improvement loop (`improve-skill`,
-> `improve-skills-auto`) is documented end-to-end but has not yet self-improved any
-> shipped skill in committed evidence; treat it as a documented protocol, not a turnkey
-> capability. PRs that turn either into a turnkey runner are welcome.
+```bash
+bash skills/_run.sh setup --check
+bash skills/_run.sh train --images ./my-data/ --epochs 3
+bash skills/_run.sh sweep --datasets mvtec --categories hazelnut --n-values 0 30 --seeds 42
+bash skills/_run.sh verdict --results research/dataset_size_results.json --write
+bash skills/_run.sh plot  --results research/dataset_size_results.json --output docs/figures/
+```
+
+The 10 procedural skills: `setup`, `train`, `inspect`, `validate`, `serve`, `sweep`,
+`verdict`, `tiered-eval`, `plot`, `meta-eval`. The `_run.sh` dispatcher is real, ships in
+v0.1, and resolves your local Python interpreter automatically.
+
+### 🤝 Orchestrator skills (5) — semi-autonomous, need a runtime
+
+Make conditional decisions ("if verdict says X, dispatch /sweep with these params; if expert
+review says halt, halt"). They're **documented protocols, not autonomous runners** —
+something has to interpret the procedure markdown, decide when to stop / pause / ask, and
+call the procedural sub-skills via `skills/_run.sh`. Three execution paths:
+
+1. **Claude Code** (the primary intended runtime) — drop `skills/<name>.md` into
+   `~/.claude/skills/` and invoke as `/<name>`. The agent reads the procedure, makes the
+   conditional calls, asks you when it hits a fork it can't resolve.
+2. **Another agent runtime** (OpenAI Agents SDK, CrewAI, your own loop driver) — register
+   the skill's procedure as a tool whose body executes the steps, calling
+   `skills/_run.sh <sub-skill>` for each procedural sub-skill it dispatches.
+3. **Manual** — read the skill markdown and step through it yourself, calling
+   `skills/_run.sh` for sub-skills and making the decision-point judgment calls by hand.
+
+Direct shell invocation (`skills/_run.sh autoresearch`) returns an explicit "needs a
+runtime" error pointing at the three options above.
+
+The 5 orchestrator skills: `autoresearch`, `improve-skill`, `improve-skills-auto`,
+`expert-review`, `debug`.
+
+### Eval JSONs + meta-loop
+
+Each skill ships with a sibling [`skills/evals/<name>.eval.json`](skills/evals/) declaring
+(prompt, expected trigger, assertions) following the
+[Anthropic skill-creator eval schema](https://github.com/anthropics/skills). The portable
+eval harness at `scripts/run_skill_eval.py` grades skills against the Anthropic Messages
+API (needs `ANTHROPIC_API_KEY`).
+
+> **Honest scope of v0.1.** The procedural skills + `_run.sh` are turnkey. The orchestrator
+> skills are documented protocols + eval JSONs that need a runtime. The skill-self-improvement
+> meta-loop (`/improve-skill`, `/improve-skills-auto`) is documented end-to-end but has no
+> committed evidence of having actually self-improved a shipped skill — treat it as a
+> protocol, not a live capability. The harness's `claude-code` and `openai-sdk` runtime
+> adapters are stubs that describe the wiring but need per-stack implementation. PRs that
+> turn any of these into turnkey runners are welcome.
 
 > The two distinctive contributions on top of [Karpathy's autoresearch loop](https://fortune.com/2026/03/17/andrej-karpathy-loop-autonomous-ai-agents-future/)
 > are **expert-agent consultation as a separate step from the verdict classifier**
