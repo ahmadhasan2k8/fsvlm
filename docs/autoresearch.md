@@ -88,7 +88,8 @@ fsvlm CLI, writes one row per (dataset, category, N, seed) to `research/dataset_
 The driver is intentionally thin — it composes existing `fsvlm train` + `fsvlm validate`
 subprocess calls.
 
-Companion drivers exist for variants: `pass5b_driver.sh` (ICL ablation), `pass6_driver.sh`
+Companion drivers exist for variants: `research/passes/pass5b_driver.sh` (ICL ablation),
+`research/passes/pass6_driver.sh`
 (metal_nut rescue), etc. Each is a one-file shell script that pins exact recipe knobs.
 
 ### 2.3 The result log — `research/dataset_size_results.json`
