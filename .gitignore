@@ -54,8 +54,20 @@ notes.local/
 *.private.txt
 
 # Claude Code project config
+# Public: .claude/skills/ (15 symlinks), .claude/agents/ (2 expert sub-agents),
+# .claude/hooks/, .claude/settings.json, README. The autoresearch loop in
+# docs/autoresearch.md references both the skills and the sub-agents — shipping all of
+# them so what we describe is what users get.
 CLAUDE.md
-.claude/
+.claude/settings.local.json
+.claude/projects/
+.claude/skills/clean.md
+.claude/skills/docker-dev.md
+.claude/skills/launch-readiness.md
+.claude/skills/run-dataset-size-sweep.md
+.claude/skills/run-experiment.md
+.claude/skills/run-tiered-validation.md
+.claude/skills/validate-phase.md
 
 # Generated figures that get regenerated from research/dataset_size_results.json —
 # committed copies live under docs/figures/, but ad-hoc per-cell generic outputs

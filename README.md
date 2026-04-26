@@ -170,6 +170,20 @@ The 10 procedural skills: `setup`, `train`, `inspect`, `validate`, `serve`, `swe
 `verdict`, `tiered-eval`, `plot`, `meta-eval`. The `_run.sh` dispatcher is real, ships in
 v0.1, and resolves your local Python interpreter automatically.
 
+### Using these with Claude Code
+
+The repo ships a public [`.claude/`](.claude/) directory that wires the 15 skills as
+slash-commands and installs a safety hook. Clone, `cd` in, run `claude`, and:
+
+- All 15 skills are auto-discovered as `/setup`, `/train`, `/sweep`, `/verdict`, etc.
+- The PreToolUse hook at [`.claude/hooks/block-dangerous.sh`](.claude/hooks/block-dangerous.sh)
+  refuses to run `rm -rf`, `git push --force`, `git reset --hard`, deletion of training
+  images, dropping database tables, and ~12 other common foot-gun patterns. Trivial to copy
+  into other repos.
+
+See [`.claude/README.md`](.claude/README.md) for the full layout and what's deliberately
+NOT shipped (project-specific sub-agents).
+
 ### 🤝 Orchestrator skills (5) — semi-autonomous, need a runtime
 
 Make conditional decisions ("if verdict says X, dispatch /sweep with these params; if expert
