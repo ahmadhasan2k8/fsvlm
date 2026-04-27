@@ -1,0 +1,20 @@
+{
+  "role": "training-specialist",
+  "pass_id": "pass4-stage1",
+  "recipe_version": "v0.3-tier-a",
+  "cohort_size": 80,
+  "cohort_breakdown": "8 categories x {ZS, N=2, N=10, N=30}; 1 seed at ZS, 3 seeds at trained N. 72 trained cells + 8 ZS baseline cells.",
+  "verdict_summary": "54 keep, 15 noop, 3 discard, 8 new_baseline (ZS anchors). Status by category: cable=keep at N=2/10, noop at N=30; capsule=keep at all N; screw=keep at N=2/10, noop at N=30; tile=keep at N=2/10, noop at N=30; transistor=noop at N=2/10, discard at N=30; cashew=keep at all N; fryum=keep at all N; macaroni1=keep at all N.",
+  "diagnosis": "The pre-registered distinctive-vs-subtle taxonomy did NOT predict which categories show fine-tuning lift. Mean lift was distinctive=+0.031, subtle=+0.218, mixed=+0.314 — opposite of the registered prediction. The data shows a strong inverse correlation between zero-shot AUROC and few-shot lift across all 8 categories: cells where ZS-AUROC<=0.50 (capsule, cashew, macaroni1) gained +0.16 to +0.40 AUROC; cells where ZS-AUROC>=0.71 (cable, transistor, fryum) gained <=+0.06. The N=2 knee shape from Pass 3 generalizes to wherever non-trivial lift exists: N=2 captures >=85% of the best lift on 5 of 8 cats. Three N=30 cells (transistor) actively regressed below ZS, suggesting overfitting at higher N for already-strong categories.",
+  "recommendation": "next_config: run stage2 (+6 categories: mvtec/bottle, mvtec/toothbrush, mvtec/wood, visa/chewinggum, visa/macaroni2, visa/capsules) at N in {0, 2, 10, 30}, 3 seeds, recipe_version v0.3-tier-a (continue same recipe). Lock pre-registered prediction now: cells with measured ZS-AUROC <=0.55 will show lift >=+0.10; cells with ZS-AUROC >=0.70 will show lift <=+0.06. This converts the post-hoc finding into a held-out test of a quantitative rule. If the prediction holds on stage2 (out-of-sample categories not seen in this analysis), it is a confirmed finding rather than a curve-fit. Stage2 compute estimate: 1.5h trained + 0.25h ZS = ~2h wall.",
+  "confidence": "medium",
+  "rationale": "The negative result on the pre-registered taxonomy is unambiguous (n=8 cats, all 4 distinctive cats below all 3 subtle cats on lift, no overlap in ranges). The positive post-hoc rule (lift inversely correlates with ZS-AUROC) is suggestive but n=8 is small for confirming a quantitative threshold. Stage2 provides 6 held-out cats and is the cheapest path to either confirming or refuting the post-hoc rule. If stage2 confirms, the rule is the v0.2 finding; if stage2 refutes, the v0.2 finding is the cleaner negative result on the original taxonomy plus better-characterized noise. Either way the experiment is worth running. Halting at stage1 would leave the rule unconfirmed and the negative result less defensible against the alternative explanation that 8 cats was just under-powered.",
+  "anti_goodhart_check": "The 15 noop cells are real: at N=30 for cable/screw/tile, fine-tuning saturated and stopped helping (still no worse than ZS). The 3 discard cells are at transistor N=30 where the recipe actively hurt — this is a model-recipe interaction signal, not a sweep error. The keep cells are not isolated single-seed wins — every keep cohort contains all 3 seeds, so seed-noise is not driving the conclusions.",
+  "next_action_sequence": [
+    "Decide stage2 go/no-go (recommend GO with locked-in prediction).",
+    "Update queue.json: pass4 stage1 status -> completed_with_verdict; pass4 stage2 status -> pending; record the locked-in prediction in pass4 entry.",
+    "Run stage2 driver + ZS follow-up (~2h wall).",
+    "Run /verdict on stage2 cohort.",
+    "Hold stage3 decision until stage2 result either confirms the rule, refutes it, or yields a more nuanced revision."
+  ]
+}

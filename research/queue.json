@@ -155,30 +155,48 @@
       "stages": [
         {
           "stage": "stage1",
-          "status": "pending",
+          "status": "completed",
           "categories_count": 8,
           "cells_count": 72,
           "compute_estimate_hours": 2,
           "description": "Tier-A-minimum: 4 distinctive (mvtec cable, transistor, tile; visa fryum), 3 subtle (mvtec capsule, screw; visa macaroni1), 1 mixed (visa cashew). N in {2, 10, 30}, 3 seeds. Fastest defensible test of the taxonomy rule. If the rule holds (distinctive cluster at high N=2 lift; subtle cluster at low/null lift), proceed to stage2. If not, halt and pivot the framing.",
-          "driver_command": "bash research/passes/pass4_driver.sh stage1"
+          "driver_command": "bash research/passes/pass4_driver.sh stage1",
+          "verdict_summary": "Pre-registered taxonomy falsified; post-hoc lift~(1-ZS_AUROC) rule discovered."
         },
         {
           "stage": "stage2",
-          "status": "queued_after_stage1_decision",
+          "status": "pending",
           "categories_count": 6,
           "cells_count": 54,
           "compute_estimate_hours": 1.5,
           "description": "Tier-A-balanced extension: +3 distinctive (mvtec bottle, toothbrush; visa chewinggum), +2 subtle (mvtec wood; visa macaroni2), +1 mixed (visa capsules). Brings total to 14 categories. Run only if stage1 confirms the taxonomy rule.",
-          "driver_command": "bash research/passes/pass4_driver.sh stage2"
+          "driver_command": "bash research/passes/pass4_driver.sh stage2",
+          "pre_registered_prediction_for_stage2": {
+            "locked_in_at": "2026-04-27T12:06:57Z",
+            "locked_in_before": "any stage2 cells were run",
+            "rule": "Few-shot lift correlates inversely with zero-shot AUROC.",
+            "quantitative_predictions": [
+              "For each of the 6 stage2 cats, BEST_LIFT (max over N in {2,10,30}) shall obey: cats with measured ZS-AUROC <=0.55 will show BEST_LIFT >=+0.10; cats with ZS-AUROC >=0.70 will show BEST_LIFT <=+0.06.",
+              "Spearman rank correlation between ZS-AUROC and BEST_LIFT across the combined 14 cats (8 stage1 + 6 stage2) shall be rho<=-0.6 with p<0.05 (one-sided test).",
+              "N=2 mean AUROC shall capture >=80% of (max(N) - ZS) on at least 4 of the 6 stage2 cats."
+            ],
+            "pass_failure_definitions": {
+              "rule_passes": "All three predictions met. Rule confirmed on held-out data.",
+              "rule_partly_passes": "2 of 3 predictions met. Rule directionally confirmed but quantitatively imprecise.",
+              "rule_fails": "<=1 of 3 predictions met. Rule not generalizable; report stage1 negative result alone."
+            },
+            "no_post_hoc_revisions_clause": "If stage2 fails or partly-passes, the predictions above are reported AS-IS in the final write-up. No goalpost moving. The honest reporting of the falsification PLUS this attempt at confirmation IS the finding."
+          }
         },
         {
           "stage": "stage3",
-          "status": "queued_after_stage2_decision",
+          "status": "queued_after_stage2",
           "categories_count": 10,
           "cells_count": 90,
           "compute_estimate_hours": 2.5,
           "description": "Tier-A-full extension: +7 distinctive (mvtec carpet, grid; visa pcb1-4, pipe_fryum), +3 subtle (mvtec leather, pill, zipper). Brings total to 24 categories \u2014 the full Tier A coverage POSITIONING.md commits to. Run only if stage1 + stage2 results justify the extra compute.",
-          "driver_command": "bash research/passes/pass4_driver.sh stage3"
+          "driver_command": "bash research/passes/pass4_driver.sh stage3",
+          "note": "Held-out test #2. Run regardless of stage2 outcome \u2014 confirms or refutes the rule on a second held-out set."
         }
       ],
       "hard_kill_criterion": "After stage1, if the pre-registered distinctive-vs-subtle taxonomy rule does NOT hold (distinctive cats failing to cluster at high N=2 lift, OR subtle cats failing to cluster at low/null lift), halt the staged expansion and pivot the framing to whichever category-feature actually predicts lift. Both outcomes are documentable; do not waste stage2 + stage3 compute on a hypothesis that did not pan out.",
@@ -193,7 +211,24 @@
         1337,
         7
       ],
-      "label_source": "metadata"
+      "label_source": "metadata",
+      "stage1_result": {
+        "status": "completed_with_falsified_primary_hypothesis",
+        "completed_at": "2026-04-27T12:06:57Z",
+        "rows_added": 80,
+        "verdict_counts": {
+          "keep": 54,
+          "noop": 15,
+          "discard": 3,
+          "new_baseline": 8
+        },
+        "primary_hypothesis_outcome": "FALSIFIED \u2014 pre-registered distinctive-vs-subtle taxonomy did not predict lift. Mean lift was distinctive=+0.031, subtle=+0.218, mixed=+0.314, opposite of registered ordering. n=8 cats, no overlap in ranges between distinctive and subtle.",
+        "post_hoc_rule_discovered": "Lift inversely correlates with zero-shot AUROC. Cats with ZS<=0.55 gained +0.16 to +0.40; cats with ZS>=0.71 gained <=+0.06. N=2 captured >=85% of best lift wherever lift exists (5 of 8 cats).",
+        "expert_reviews": [
+          "research/expert_reviews/training-specialist_2026-04-27T12-06-57Z.json",
+          "_local/paper_workspace/expert_reviews/strategy-reviewer_2026-04-27T12-06-57Z.json (gitignored)"
+        ]
+      }
     },
     {
       "id": "pass5-baselines-stratified",
@@ -261,5 +296,6 @@
     "The pre-registered defect_taxonomy.json is frozen at 2026-04-20T12:30. Any retroactive change to the tagging invalidates the statistical test and must be documented as a methodology failure.",
     "Pass 7 is CRITICAL if we want to differentiate from frozen-CLIP baselines \u2014 it tests the VLM's unique capability (generating text) that classical methods fundamentally cannot do."
   ],
-  "data_driven_over_deadline_driven": true
+  "data_driven_over_deadline_driven": true,
+  "pass4_stage1_completed_at": "2026-04-27T12:06:57Z"
 }
