@@ -18,12 +18,20 @@ inputs:
   - prior_reviews (list of paths, optional) — prior /expert-review outputs for context
   - llm_endpoint (string, optional) — chat-completion endpoint URL; if unset, render the
     prompt and let the user paste it into their preferred chatbot manually
-eval_artifact: research/expert_reviews/${role}_${timestamp}.json
+eval_artifact: |
+  Role-conditional path:
+    role in {training-specialist, domain-specialist, <other method roles>} →
+      research/expert_reviews/${role}_${timestamp}.json    (committed, public)
+    role == strategy-reviewer (or any role ending in -strategy) →
+      _local/paper_workspace/expert_reviews/${role}_${timestamp}.json    (gitignored, private)
 pass_criteria:
   - file exists at eval_artifact
   - JSON keys: role, diagnosis, recommendation, confidence, rationale
   - confidence in {low, medium, high}
   - recommendation is one of: "next_config: <spec>" | "halt: null result" | "halt: done" | "rollback"
+  - if eval_artifact is under research/, the file contains NONE of the forbidden phrases
+    (publishable / the paper / manuscript / submission / conference / workshop deadline /
+    arXiv / camera-ready / reviewer #N / novelty / publication-worthy)
 escalation: |
   /expert-review is the contextual-judgment step itself; it does not escalate further. Its
   output feeds the decision step (the human, or /autoresearch's decision body). If two
@@ -63,14 +71,22 @@ API, or by a human peer with a templated prompt.
      4. Confidence: low / medium / high.
      5. Rationale: 2-3 sentences explaining the recommendation.
 
-   Hard constraint on output:
-     Frame every sentence as PROJECT-DECISION reasoning, not PUBLICATION reasoning.
+   Hard constraint on output (METHOD ROLES ONLY — training-specialist,
+   domain-specialist, and any other role NOT ending in -strategy):
+     Frame every sentence as PROJECT-DECISION reasoning, not strategy reasoning.
      Do NOT use the words "publishable", "the paper", "manuscript", "submission",
      "conference", "workshop deadline", "arXiv", "camera-ready", "reviewer #N",
      "novelty", "contribution to the literature", or "publication-worthy".
      The output JSON is committed to a public repo and consumed by the autoresearch
      loop's decision step — keep it about the data and the next experimental
-     action only. Paper-strategy thinking lives elsewhere (off this loop).
+     action only. Strategy-flavored thinking has its own role (see below).
+
+   For STRATEGY ROLES (strategy-reviewer or any role ending in -strategy):
+     The constraint above is INVERTED. Strategy roles are explicitly invited to
+     reason about framing, citation requirements, venue fit, novelty arguments,
+     and how findings would land with a critical reader. The output goes to
+     _local/paper_workspace/expert_reviews/ which is gitignored — your
+     reasoning will not appear publicly. Be candid; that's the point.
 
    Output strictly as JSON:
      { "role": "<role>", "diagnosis": "...", "recommendation": "...",
@@ -98,12 +114,38 @@ monotonicity broke.
 ### `domain-specialist`
 Focus: per-category failure modes, what kinds of defects this VLM should/shouldn't see,
 whether the dataset's labeling is the bottleneck. Best for translating ML metrics into
-domain-engineering language.
+domain-engineering language. Method role — output public.
+
+### `strategy-reviewer` (private — output gitignored)
+
+Focus: framing decisions, citation requirements, venue fit, novelty arguments, the
+"how would a critical outside reader receive this?" angle. Has access to the same data
+as method roles but is explicitly invited to think strategically about how findings
+should be presented externally.
+
+The eval_artifact for this role lives at
+`_local/paper_workspace/expert_reviews/strategy-reviewer_<timestamp>.json` (gitignored).
+The role exists precisely so strategy thinking happens with the loop's full data context
+without leaking into public artifacts.
+
+Use this role when:
+  - About to lock a major framing decision (which finding leads, which is footnote)
+  - Considering citing or omitting a piece of prior work
+  - Weighing whether a result is ready for external argument vs. needs more evidence
+  - Asked "is this a real contribution, or am I overclaiming?"
+
+The pre-commit hook + the eval_artifact path constraint make it mechanically hard for
+strategy-reviewer output to land in a public commit. The honest workflow is:
+strategy-reviewer thinks freely, writes to `_local/`, you read it, you decide what (if
+anything) makes it into the public README / docs / paper draft.
 
 ### Adding a custom role
-Drop a `prompts/expert_<role>.txt` file with role-specific framing; the procedure above will
-pick it up via the `role` parameter. Keep the input/output contract identical so /autoresearch
-can consume any role's output.
+
+Drop a `prompts/expert_<role>.txt` file with role-specific framing; the procedure above
+will pick it up via the `role` parameter. Method roles output to `research/expert_reviews/`
+(public, with the forbidden-words constraint). Strategy roles must end their name in
+`-strategy` and output to `_local/paper_workspace/expert_reviews/` (private, no constraint).
+The role-name suffix is what routes the output — keep the convention to keep the guard.
 
 ## Self-evaluation
 
