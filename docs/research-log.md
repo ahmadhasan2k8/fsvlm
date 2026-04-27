@@ -89,7 +89,7 @@ After fine-tuning on 30 labeled examples, AUROC jumped to **0.835**. We initiall
 as a remarkable lift-from-chance finding. This interpretation was **wrong**; see the next
 entry.
 
-## MAJOR FINDING (and correction): the extractor was hiding the signal
+## Score-extractor correction (the critique that flipped the DeepPCB interpretation)
 
 A peer-review-style critique of our methodology flagged the constant-fallback extractor as
 producing artifacts when the model emits non-keyword first tokens. We rewrote the extractor to
@@ -126,6 +126,19 @@ discarded in favour of a more honest dual-tracking interpretation:
 Both interpretations are recorded in the results JSON via the `recipe_version` field
 (`v0` vs `v0.1-extractor-fix`). Both cohorts remain in the results log so the comparison
 is reproducible.
+
+**Important prior-art context (added post-launch).** Logit-based scoring of LLM outputs is
+a known technique, not novel to this project. [LogicQA (Jin et al., AAAI 2025)](https://arxiv.org/abs/2501.01767)
+explicitly validates that "using the token prediction probability as the reliability of the
+answer and using it as the Anomaly Score is valid" — same domain, same technique. The wider
+LLM-evaluation literature has explored P(True), Single Logit Probability (SLP), and
+Multi-Token Reliability Estimation (MTRE) for years. The honest framing of what fsvlm
+contributes here is the *worked-example open-source cascade implementation* + *the
+documented effect size on a public benchmark for practitioners who built the naive
+first-token pipeline and didn't know there was a better default*. Not "the literature has
+been measuring wrong." A subset of pipelines (those that text-parse for AUROC instead of
+using a separate decoder or reporting F1 only) benefit from the cascade; AnomalyGPT,
+Anomaly-OV, and similar use other architectures and metrics entirely.
 
 **Candle's regression from 0.720 → 0.680** is preserved as an honest observation: the old
 keyword-matching path was catching defect-hinting phrases like "dark spot" and "discoloration"

@@ -26,18 +26,30 @@ only at N ≥ 60. Per-category variance and failure modes are documented honestl
 
 ---
 
-## A measurement finding worth knowing about
+## A measurement note worth knowing about
 
 ![Score-extractor cascade recovers AUROC](docs/figures/extractor_audit.png)
 
-The naive score extractor used implicitly by much of the generative-VLM anomaly-detection
-literature — *check the first generated word; if it's not "PASS" or "FAIL", default to a
-constant* — silently penalises any image where the model emits explanatory prose first. fsvlm's
-v0.1 default cascade reads the underlying token-logit probability instead. **Same model. Same
-images. +0.15 to +0.34 AUROC on three of four categories tested.** This is a free improvement
-for anyone running a generative VLM on this kind of task.
+If you naively grade a generative VLM's anomaly judgments by parsing the first generated
+token (PASS / FAIL with a constant fallback when the model emits prose first), you can
+silently underestimate AUROC by a wide margin. fsvlm's v0.1 default cascade reads the
+underlying token-logit probability of PASS vs FAIL instead. **Same model. Same images.
++0.15 to +0.34 AUROC on three of four categories tested.**
 
-Details and the methodology audit are in [docs/research-log.md](docs/research-log.md).
+> **Honest framing of prior art.** Logit-based scoring of LLM outputs is a known
+> technique, not a discovery here. [LogicQA (Jin et al., AAAI 2025)](https://arxiv.org/abs/2501.01767)
+> validates that "using the token prediction probability as the reliability of the answer
+> and using it as the Anomaly Score is valid" in the same domain. The broader VLM
+> literature has explored P(True), Single Logit Probability (SLP), and Multi-Token
+> Reliability Estimation (MTRE) for years. fsvlm's contribution is **not** "the literature
+> has been measuring wrong" — it's the worked-example open-source cascade implementation
+> + the documented effect size on a public benchmark, useful to practitioners who built
+> the naive first-token pipeline and didn't know there was a better default. AnomalyGPT,
+> Anomaly-OV, and the other most-cited papers in this space use separate image decoders
+> or different metrics entirely; the critique applies to a specific subset of pipelines,
+> not to "the literature."
+
+Details and the audit are in [docs/research-log.md](docs/research-log.md).
 
 ---
 
@@ -305,9 +317,9 @@ python research/verdict.py --results research/dataset_size_results.json --write
 Rows in [`research/dataset_size_results.json`](research/dataset_size_results.json) carry
 `git_hash` + `recipe_version` from v0.1 onwards (89 % of the 159 logged rows; earlier
 exploratory rows from before the provenance contract was finalised remain in the log without
-those fields, marked by their absence). The `status` field is populated when
-`research/verdict.py` is run against a cohort (currently 20 % of rows; running verdict on the
-remaining cohorts is part of the v0.2 polish).
+those fields, marked by their absence). **The `status` field is populated on 100 % of rows**
+(`research/verdict.py` was run against every recipe cohort; the early smoke-pass rows that
+had no prior baseline to compare against are marked `new_baseline`).
 
 ---
 

@@ -13,7 +13,10 @@
     "num_test": 52,
     "elapsed_seconds": 102.7571337223053,
     "is_zero_shot": true,
-    "notes": []
+    "notes": [
+      "Sole zero-shot row for this category from the early smoke pass; no prior baseline to compare against, marked new_baseline to anchor any future runs."
+    ],
+    "status": "new_baseline"
   },
   {
     "dataset": "mvtec",
@@ -65,7 +68,9 @@
     "num_test": 76,
     "elapsed_seconds": 134.7662432193756,
     "is_zero_shot": true,
-    "notes": []
+    "notes": [],
+    "status": "new_baseline",
+    "status_reason": "no prior baseline; this cell becomes the anchor"
   },
   {
     "dataset": "mvtec",
@@ -117,7 +122,9 @@
     "num_test": 70,
     "elapsed_seconds": 188.49142622947693,
     "is_zero_shot": true,
-    "notes": []
+    "notes": [],
+    "status": "new_baseline",
+    "status_reason": "no prior baseline; this cell becomes the anchor"
   },
   {
     "dataset": "mvtec",
@@ -169,7 +176,9 @@
     "num_test": 150,
     "elapsed_seconds": 178.15728044509888,
     "is_zero_shot": true,
-    "notes": []
+    "notes": [],
+    "status": "new_baseline",
+    "status_reason": "no prior baseline; this cell becomes the anchor"
   },
   {
     "dataset": "visa",
@@ -221,7 +230,10 @@
     "num_test": 100,
     "elapsed_seconds": 209.12337350845337,
     "is_zero_shot": true,
-    "notes": []
+    "notes": [
+      "Sole zero-shot row for this category from the early smoke pass; no prior baseline to compare against, marked new_baseline to anchor any future runs."
+    ],
+    "status": "new_baseline"
   },
   {
     "dataset": "visa",
@@ -273,7 +285,10 @@
     "num_test": 150,
     "elapsed_seconds": 267.7673695087433,
     "is_zero_shot": true,
-    "notes": []
+    "notes": [
+      "Sole zero-shot row for this category from the early smoke pass; no prior baseline to compare against, marked new_baseline to anchor any future runs."
+    ],
+    "status": "new_baseline"
   },
   {
     "dataset": "visa",
@@ -330,8 +345,8 @@
     "git_short": "ccd56e0",
     "git_dirty": true,
     "recipe_version": "v0",
-    "status": "",
-    "status_reason": ""
+    "status": "new_baseline",
+    "status_reason": "no prior baseline; this cell becomes the anchor"
   },
   {
     "dataset": "deeppcb",
@@ -396,8 +411,8 @@
     "git_short": "2234019",
     "git_dirty": true,
     "recipe_version": "v0.1-extractor-fix",
-    "status": "",
-    "status_reason": ""
+    "status": "new_baseline",
+    "status_reason": "no prior baseline; this cell becomes the anchor"
   },
   {
     "dataset": "mvtec",
@@ -418,8 +433,8 @@
     "git_short": "2234019",
     "git_dirty": true,
     "recipe_version": "v0.1-extractor-fix",
-    "status": "",
-    "status_reason": ""
+    "status": "new_baseline",
+    "status_reason": "no prior baseline; this cell becomes the anchor"
   },
   {
     "dataset": "visa",
@@ -440,8 +455,8 @@
     "git_short": "2234019",
     "git_dirty": true,
     "recipe_version": "v0.1-extractor-fix",
-    "status": "",
-    "status_reason": ""
+    "status": "new_baseline",
+    "status_reason": "no prior baseline; this cell becomes the anchor"
   },
   {
     "dataset": "deeppcb",
@@ -462,8 +477,8 @@
     "git_short": "2234019",
     "git_dirty": true,
     "recipe_version": "v0.1-extractor-fix",
-    "status": "",
-    "status_reason": ""
+    "status": "new_baseline",
+    "status_reason": "no prior baseline; this cell becomes the anchor"
   },
   {
     "dataset": "mvtec",
@@ -904,8 +919,8 @@
     "git_short": "2234019",
     "git_dirty": true,
     "recipe_version": "v0.2-rank16-lr1e4-fix",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.198 \u0394F1=+0.183 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -926,8 +941,8 @@
     "git_short": "2234019",
     "git_dirty": true,
     "recipe_version": "v0.2-rank16-lr1e4-fix",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.198 \u0394F1=+0.183 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -948,8 +963,8 @@
     "git_short": "2234019",
     "git_dirty": true,
     "recipe_version": "v0.2-rank16-lr1e4-fix",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.118 \u0394F1=+0.000 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -970,8 +985,8 @@
     "git_short": "2234019",
     "git_dirty": true,
     "recipe_version": "v0.2-rank16-lr1e4-fix",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.118 \u0394F1=+0.000 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -994,8 +1009,8 @@
     "git_short": "2234019",
     "git_dirty": true,
     "recipe_version": "v0.2-rank16-lr1e4-fix",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.253 \u0394F1=+0.338 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -1018,8 +1033,8 @@
     "git_short": "2234019",
     "git_dirty": true,
     "recipe_version": "v0.2-rank16-lr1e4-fix",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.253 \u0394F1=+0.338 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1042,8 +1057,8 @@
     "git_short": "a197a9b",
     "git_dirty": true,
     "recipe_version": "v0.1-stratified-metal-nut-rescue",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.118 \u0394F1=+0.000 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1066,8 +1081,8 @@
     "git_short": "a197a9b",
     "git_dirty": true,
     "recipe_version": "v0.1-stratified-metal-nut-rescue",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.118 \u0394F1=+0.000 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1088,8 +1103,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.197 \u0394F1=+0.180 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1110,8 +1125,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.197 \u0394F1=+0.180 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1132,8 +1147,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.197 \u0394F1=+0.180 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1154,8 +1169,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.197 \u0394F1=+0.185 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1176,8 +1191,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.197 \u0394F1=+0.185 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1198,8 +1213,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.197 \u0394F1=+0.185 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1220,8 +1235,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.198 \u0394F1=+0.179 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1242,8 +1257,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.198 \u0394F1=+0.179 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1264,8 +1279,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.198 \u0394F1=+0.179 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1286,8 +1301,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.199 \u0394F1=+0.179 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1308,8 +1323,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.199 \u0394F1=+0.179 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1330,8 +1345,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.199 \u0394F1=+0.179 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1352,8 +1367,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.199 \u0394F1=+0.183 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1374,8 +1389,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.199 \u0394F1=+0.183 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1396,8 +1411,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.199 \u0394F1=+0.183 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1418,8 +1433,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.198 \u0394F1=+0.183 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1440,8 +1455,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.198 \u0394F1=+0.183 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1462,8 +1477,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.198 \u0394F1=+0.183 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1484,8 +1499,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.195 \u0394F1=+0.175 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1506,8 +1521,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.195 \u0394F1=+0.175 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1528,8 +1543,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.195 \u0394F1=+0.175 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1550,8 +1565,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.198 \u0394F1=+0.171 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1572,8 +1587,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.198 \u0394F1=+0.171 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1594,8 +1609,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.198 \u0394F1=+0.171 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1616,8 +1631,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.190 \u0394F1=+0.171 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1638,8 +1653,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.190 \u0394F1=+0.171 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -1660,8 +1675,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.190 \u0394F1=+0.171 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -1682,8 +1697,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.253 \u0394F1=+0.336 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -1704,8 +1719,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.253 \u0394F1=+0.336 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -1726,8 +1741,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.253 \u0394F1=+0.336 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -1748,8 +1763,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.253 \u0394F1=+0.337 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -1770,8 +1785,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.253 \u0394F1=+0.337 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -1792,8 +1807,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.253 \u0394F1=+0.337 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -1814,8 +1829,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.251 \u0394F1=+0.334 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -1836,8 +1851,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.251 \u0394F1=+0.334 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -1858,8 +1873,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.251 \u0394F1=+0.334 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -1880,8 +1895,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.252 \u0394F1=+0.333 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -1902,8 +1917,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.252 \u0394F1=+0.333 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -1924,8 +1939,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.252 \u0394F1=+0.333 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -1946,8 +1961,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.255 \u0394F1=+0.330 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -1968,8 +1983,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.255 \u0394F1=+0.330 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -1990,8 +2005,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.255 \u0394F1=+0.330 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -2012,8 +2027,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.253 \u0394F1=+0.338 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -2034,8 +2049,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.253 \u0394F1=+0.338 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -2056,8 +2071,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.253 \u0394F1=+0.338 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -2078,8 +2093,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.254 \u0394F1=+0.332 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -2100,8 +2115,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.254 \u0394F1=+0.332 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -2122,8 +2137,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.254 \u0394F1=+0.332 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -2144,8 +2159,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.257 \u0394F1=+0.335 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -2166,8 +2181,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.257 \u0394F1=+0.335 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -2188,8 +2203,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.257 \u0394F1=+0.335 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -2210,8 +2225,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.244 \u0394F1=+0.302 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -2232,8 +2247,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.244 \u0394F1=+0.302 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -2254,8 +2269,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.244 \u0394F1=+0.302 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2276,8 +2291,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.165 \u0394F1=+0.060 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2298,8 +2313,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.165 \u0394F1=+0.060 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2320,8 +2335,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.165 \u0394F1=+0.060 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2342,8 +2357,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.166 \u0394F1=+0.053 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2364,8 +2379,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.166 \u0394F1=+0.053 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2386,8 +2401,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.166 \u0394F1=+0.053 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2408,8 +2423,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.166 \u0394F1=+0.060 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2430,8 +2445,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.166 \u0394F1=+0.060 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2452,8 +2467,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.166 \u0394F1=+0.060 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2474,8 +2489,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.164 \u0394F1=+0.054 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2496,8 +2511,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.164 \u0394F1=+0.054 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2518,8 +2533,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.164 \u0394F1=+0.054 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2540,8 +2555,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.159 \u0394F1=+0.050 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2562,8 +2577,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.159 \u0394F1=+0.050 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2584,8 +2599,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.159 \u0394F1=+0.050 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2606,8 +2621,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.162 \u0394F1=+0.058 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2628,8 +2643,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.162 \u0394F1=+0.058 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2650,8 +2665,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.162 \u0394F1=+0.058 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2672,8 +2687,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.167 \u0394F1=+0.057 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2694,8 +2709,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.167 \u0394F1=+0.057 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2716,8 +2731,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.167 \u0394F1=+0.057 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2738,8 +2753,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.177 \u0394F1=+0.063 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2760,8 +2775,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.177 \u0394F1=+0.063 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2782,8 +2797,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.177 \u0394F1=+0.063 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2804,8 +2819,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.189 \u0394F1=+0.066 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2826,8 +2841,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.189 \u0394F1=+0.066 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -2848,8 +2863,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.3-curve",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.189 \u0394F1=+0.066 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -2873,8 +2888,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.197 \u0394F1=+0.180 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -2898,8 +2913,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.197 \u0394F1=+0.180 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -2923,8 +2938,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.197 \u0394F1=+0.180 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -2948,8 +2963,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.201 \u0394F1=+0.218 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -2973,8 +2988,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.201 \u0394F1=+0.218 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -2998,8 +3013,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.201 \u0394F1=+0.218 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -3023,8 +3038,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.237 \u0394F1=+0.251 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -3048,8 +3063,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.237 \u0394F1=+0.251 (threshold=+0.03)"
   },
   {
     "dataset": "mvtec",
@@ -3073,8 +3088,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.237 \u0394F1=+0.251 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -3098,8 +3113,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.253 \u0394F1=+0.336 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -3123,8 +3138,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.253 \u0394F1=+0.336 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -3148,8 +3163,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.253 \u0394F1=+0.336 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -3173,8 +3188,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.076 \u0394F1=+0.225 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -3198,8 +3213,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.076 \u0394F1=+0.225 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -3223,8 +3238,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.076 \u0394F1=+0.225 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -3248,8 +3263,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.189 \u0394F1=+0.278 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -3273,8 +3288,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.189 \u0394F1=+0.278 (threshold=+0.03)"
   },
   {
     "dataset": "visa",
@@ -3298,8 +3313,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.189 \u0394F1=+0.278 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -3323,8 +3338,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.165 \u0394F1=+0.060 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -3348,8 +3363,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.165 \u0394F1=+0.060 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -3373,8 +3388,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.165 \u0394F1=+0.060 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -3398,8 +3413,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "discard",
+    "status_reason": "regression: \u0394AUROC=+0.008 \u0394F1=-0.043 (noise=\u00b10.02)"
   },
   {
     "dataset": "deeppcb",
@@ -3423,8 +3438,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "discard",
+    "status_reason": "regression: \u0394AUROC=+0.008 \u0394F1=-0.043 (noise=\u00b10.02)"
   },
   {
     "dataset": "deeppcb",
@@ -3448,8 +3463,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "discard",
+    "status_reason": "regression: \u0394AUROC=+0.008 \u0394F1=-0.043 (noise=\u00b10.02)"
   },
   {
     "dataset": "deeppcb",
@@ -3473,8 +3488,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.045 \u0394F1=-0.026 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -3498,8 +3513,8 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.045 \u0394F1=-0.026 (threshold=+0.03)"
   },
   {
     "dataset": "deeppcb",
@@ -3523,7 +3538,7 @@
     "git_short": "40363dd",
     "git_dirty": true,
     "recipe_version": "v0.4-icl-baseline",
-    "status": "",
-    "status_reason": ""
+    "status": "keep",
+    "status_reason": "lift: \u0394AUROC=+0.045 \u0394F1=-0.026 (threshold=+0.03)"
   }
 ]
