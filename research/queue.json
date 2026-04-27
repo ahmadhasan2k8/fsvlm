@@ -72,7 +72,7 @@
       "id": "pass4-tier-a-completion-with-taxonomy-test",
       "description": "Fill remaining 12 MVTec + 9 VisA categories at N=30 with 3 seeds. Use the pre-registered defect_taxonomy.json to predict which will succeed (distinctive) vs which will reproduce metal_nut-style failure (subtle). If the taxonomy is predictive, it becomes a paper contribution as a practical rule-of-thumb.",
       "status": "pending",
-      "hypothesis_primary": "Metadata-labeled N=30 QLoRA fine-tuning of Gemma 4 E4B-it reaches AUROC >= 0.85 on at least 80% of distinctive-dominant MVTec+VisA categories and fails (<0.80 or degenerate F1) on at least 75% of subtle-dominant categories per defect_taxonomy.json.",
+      "hypothesis_primary": "Pre-registered distinctive-vs-subtle defect taxonomy predicts which categories show the N=2 fine-tuning knee (distinctive: yes; subtle: no/degenerate; mixed: scatter). Tested on 8 cats first (4D + 3S + 1M), expanded to 14 then 24 if the rule holds.",
       "hypothesis_taxonomy": "The 'distinctive vs subtle' tagging in defect_taxonomy.json is PREDICTIVE \u2014 checked via ROC-style clustering of per-category AUROC against taxonomy tags. If positive, this is a standalone paper contribution: a practical rule-of-thumb for when fsvlm-style few-shot will succeed or fail, without running the experiment first.",
       "hypothesis_extractor_generalizability": "Also re-run v0.1-extractor zero-shots on all 21 new categories to test whether the +0.15 to +0.34 AUROC recovery (our primary-candidate paper contribution) generalizes across MVTec's full suite, not just the 4 we sampled in Pass 2.",
       "configs": {
@@ -150,7 +150,50 @@
       },
       "expected_runs": 84,
       "expected_hours": 10,
-      "unblocks_on": "pass5b completed + user decision on paper framing"
+      "unblocks_on": "pass5b completed + user decision on paper framing",
+      "kind": "sweep",
+      "stages": [
+        {
+          "stage": "stage1",
+          "status": "pending",
+          "categories_count": 8,
+          "cells_count": 72,
+          "compute_estimate_hours": 2,
+          "description": "Tier-A-minimum: 4 distinctive (mvtec cable, transistor, tile; visa fryum), 3 subtle (mvtec capsule, screw; visa macaroni1), 1 mixed (visa cashew). N in {2, 10, 30}, 3 seeds. Fastest defensible test of the taxonomy rule. If the rule holds (distinctive cluster at high N=2 lift; subtle cluster at low/null lift), proceed to stage2. If not, halt and pivot the framing.",
+          "driver_command": "bash research/passes/pass4_driver.sh stage1"
+        },
+        {
+          "stage": "stage2",
+          "status": "queued_after_stage1_decision",
+          "categories_count": 6,
+          "cells_count": 54,
+          "compute_estimate_hours": 1.5,
+          "description": "Tier-A-balanced extension: +3 distinctive (mvtec bottle, toothbrush; visa chewinggum), +2 subtle (mvtec wood; visa macaroni2), +1 mixed (visa capsules). Brings total to 14 categories. Run only if stage1 confirms the taxonomy rule.",
+          "driver_command": "bash research/passes/pass4_driver.sh stage2"
+        },
+        {
+          "stage": "stage3",
+          "status": "queued_after_stage2_decision",
+          "categories_count": 10,
+          "cells_count": 90,
+          "compute_estimate_hours": 2.5,
+          "description": "Tier-A-full extension: +7 distinctive (mvtec carpet, grid; visa pcb1-4, pipe_fryum), +3 subtle (mvtec leather, pill, zipper). Brings total to 24 categories \u2014 the full Tier A coverage POSITIONING.md commits to. Run only if stage1 + stage2 results justify the extra compute.",
+          "driver_command": "bash research/passes/pass4_driver.sh stage3"
+        }
+      ],
+      "hard_kill_criterion": "After stage1, if the pre-registered distinctive-vs-subtle taxonomy rule does NOT hold (distinctive cats failing to cluster at high N=2 lift, OR subtle cats failing to cluster at low/null lift), halt the staged expansion and pivot the framing to whichever category-feature actually predicts lift. Both outcomes are documentable; do not waste stage2 + stage3 compute on a hypothesis that did not pan out.",
+      "recipe_version": "v0.3-tier-a",
+      "n_grid": [
+        2,
+        10,
+        30
+      ],
+      "seeds": [
+        42,
+        1337,
+        7
+      ],
+      "label_source": "metadata"
     },
     {
       "id": "pass5-baselines-stratified",
