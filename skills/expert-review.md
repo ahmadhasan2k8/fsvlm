@@ -63,6 +63,15 @@ API, or by a human peer with a templated prompt.
      4. Confidence: low / medium / high.
      5. Rationale: 2-3 sentences explaining the recommendation.
 
+   Hard constraint on output:
+     Frame every sentence as PROJECT-DECISION reasoning, not PUBLICATION reasoning.
+     Do NOT use the words "publishable", "the paper", "manuscript", "submission",
+     "conference", "workshop deadline", "arXiv", "camera-ready", "reviewer #N",
+     "novelty", "contribution to the literature", or "publication-worthy".
+     The output JSON is committed to a public repo and consumed by the autoresearch
+     loop's decision step — keep it about the data and the next experimental
+     action only. Paper-strategy thinking lives elsewhere (off this loop).
+
    Output strictly as JSON:
      { "role": "<role>", "diagnosis": "...", "recommendation": "...",
        "confidence": "...", "rationale": "..." }
