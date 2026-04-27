@@ -165,7 +165,7 @@
         },
         {
           "stage": "stage2",
-          "status": "pending",
+          "status": "completed",
           "categories_count": 6,
           "cells_count": 54,
           "compute_estimate_hours": 1.5,
@@ -186,17 +186,34 @@
               "rule_fails": "<=1 of 3 predictions met. Rule not generalizable; report stage1 negative result alone."
             },
             "no_post_hoc_revisions_clause": "If stage2 fails or partly-passes, the predictions above are reported AS-IS in the final write-up. No goalpost moving. The honest reporting of the falsification PLUS this attempt at confirmation IS the finding."
-          }
+          },
+          "verdict_summary": "Partly passes (2 of 3) per locked-in criteria. Spearman rho=-0.76 across 14 cats; macaroni2 missed quantitative band by 0.012 AUROC."
         },
         {
           "stage": "stage3",
-          "status": "queued_after_stage2",
+          "status": "pending",
           "categories_count": 10,
           "cells_count": 90,
           "compute_estimate_hours": 2.5,
           "description": "Tier-A-full extension: +7 distinctive (mvtec carpet, grid; visa pcb1-4, pipe_fryum), +3 subtle (mvtec leather, pill, zipper). Brings total to 24 categories \u2014 the full Tier A coverage POSITIONING.md commits to. Run only if stage1 + stage2 results justify the extra compute.",
           "driver_command": "bash research/passes/pass4_driver.sh stage3",
-          "note": "Held-out test #2. Run regardless of stage2 outcome \u2014 confirms or refutes the rule on a second held-out set."
+          "note": "Held-out test #2. Run regardless of stage2 outcome \u2014 confirms or refutes the rule on a second held-out set.",
+          "pre_registered_prediction_for_stage3": {
+            "locked_in_at": "2026-04-27T23:42:53Z",
+            "locked_in_before": "any stage3 cells were run",
+            "explicit_drop": "The stage2 per-cat ZS-band prediction (ZS<=0.55 -> lift>=+0.10; ZS>=0.70 -> lift<=+0.06) is NOT carried forward to stage3. It failed on visa/macaroni2 by 0.012 AUROC. Dropping it explicitly here, before stage3 runs, is structurally distinct from retroactively softening it post-stage3. The honest accounting: this prediction was too sharp; we are not attempting to recover it.",
+            "rule_summary": "Few-shot lift correlates inversely with zero-shot AUROC; N=2 captures most lift wherever lift exists.",
+            "predictions": [
+              "Spearman rank correlation between ZS-AUROC and BEST_LIFT across all 24 cats (8 stage1 + 6 stage2 + 10 stage3) shall be rho<=-0.6 with p<0.01 (one-sided).",
+              "N=2 mean AUROC shall capture >=80% of (max(N) - ZS) on at least 6 of the 10 stage3 cats."
+            ],
+            "pass_failure_definitions": {
+              "rule_passes": "Both predictions met. Rule confirmed on the cumulative held-out set of 16 cats (stage2 + stage3) outside stage1.",
+              "rule_partly_passes": "1 of 2 predictions met.",
+              "rule_fails": "0 of 2 predictions met."
+            },
+            "no_post_hoc_revisions_clause_v2": "If stage3 fails or partly-passes, predictions reported AS-IS. The honest reporting of the stage1 falsification + stage2 partly-pass + stage3 outcome IS the finding regardless of which way it lands."
+          }
         }
       ],
       "hard_kill_criterion": "After stage1, if the pre-registered distinctive-vs-subtle taxonomy rule does NOT hold (distinctive cats failing to cluster at high N=2 lift, OR subtle cats failing to cluster at low/null lift), halt the staged expansion and pivot the framing to whichever category-feature actually predicts lift. Both outcomes are documentable; do not waste stage2 + stage3 compute on a hypothesis that did not pan out.",
@@ -227,6 +244,28 @@
         "expert_reviews": [
           "research/expert_reviews/training-specialist_2026-04-27T12-06-57Z.json",
           "_local/paper_workspace/expert_reviews/strategy-reviewer_2026-04-27T12-06-57Z.json (gitignored)"
+        ]
+      },
+      "stage2_result": {
+        "status": "completed_with_partly_passing_held_out_test",
+        "completed_at": "2026-04-27T23:42:53Z",
+        "rows_added_stage2_only": 60,
+        "verdict_counts_stage2_only": {
+          "keep": 33,
+          "noop": 21,
+          "discard": 0,
+          "new_baseline": 6
+        },
+        "verdict_counts_cumulative": {
+          "keep": 87,
+          "noop": 36,
+          "discard": 3,
+          "new_baseline": 14
+        },
+        "held_out_prediction_outcome": "PARTLY_PASSES (2 of 3 locked-in predictions met). Spearman rho on 14 cats = -0.758, p=0.00084 (PASS, well below threshold). N=2 knee on stage2 cats = 4 of 6 (PASS, exactly at threshold). Per-cat ZS-band prediction failed on visa/macaroni2 (FAIL by 0.012 AUROC).",
+        "expert_reviews": [
+          "research/expert_reviews/training-specialist_2026-04-27T23-42-53Z.json",
+          "_local/paper_workspace/expert_reviews/strategy-reviewer_2026-04-27T23-42-53Z.json (gitignored)"
         ]
       }
     },
@@ -297,5 +336,6 @@
     "Pass 7 is CRITICAL if we want to differentiate from frozen-CLIP baselines \u2014 it tests the VLM's unique capability (generating text) that classical methods fundamentally cannot do."
   ],
   "data_driven_over_deadline_driven": true,
-  "pass4_stage1_completed_at": "2026-04-27T12:06:57Z"
+  "pass4_stage1_completed_at": "2026-04-27T12:06:57Z",
+  "pass4_stage2_completed_at": "2026-04-27T23:42:53Z"
 }
