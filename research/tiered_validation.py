@@ -153,13 +153,14 @@ def _run_base_model_inference(
     matched — a silent AUROC=0.5 artefact visible on DeepPCB (`BASED` token).
     Defect-specialist flagged in 20260420_061530 consultation.
     """
+    import os
     import torch
     import transformers.modeling_utils
     transformers.modeling_utils.caching_allocator_warmup = lambda *a, **kw: None
 
     from unsloth import FastVisionModel
 
-    model_name = "unsloth/gemma-4-E4B-it"
+    model_name = os.environ.get("FSVLM_DEFAULT_MODEL", "unsloth/gemma-4-E4B-it")
     print(f"Loading base model: {model_name}")
 
     model, tokenizer = FastVisionModel.from_pretrained(
