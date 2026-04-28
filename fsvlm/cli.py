@@ -117,6 +117,9 @@ def train(
     output: Path | None = typer.Option(None, "--output", "-o", help="Output directory for adapter"),
     epochs: int | None = typer.Option(None, "--epochs", help="Number of training epochs"),
     model: str | None = typer.Option(None, "--model", help="Model name or size label"),
+    lora_rank: int | None = typer.Option(None, "--lora-rank", help="LoRA rank (overrides config default)"),
+    lora_alpha: int | None = typer.Option(None, "--lora-alpha", help="LoRA alpha (overrides config default)"),
+    learning_rate: float | None = typer.Option(None, "--learning-rate", "--lr", help="Learning rate (overrides config default)"),
     no_sweep: bool = typer.Option(False, "--no-sweep", help="Skip auto-research sweep, use single config"),
     yes: bool = typer.Option(False, "--yes", "-y", help="Skip confirmation prompts"),
 ) -> None:
@@ -125,10 +128,15 @@ def train(
     from fsvlm.config import load_config
     from fsvlm.models.downloader import download_model, is_model_cached
     from fsvlm.models.hardware import get_model_by_name
-    from fsvlm.types import TrainingConfig
+    from fsvlm.types import LoRAConfig, TrainingConfig
 
     config = load_config()
-    tc = TrainingConfig(model_name=config.default_model)
+    tc = TrainingConfig(
+        model_name=config.default_model,
+        lora=LoRAConfig(rank=config.default_lora_rank, alpha=config.default_lora_alpha),
+        learning_rate=config.default_learning_rate,
+        num_train_epochs=config.default_max_epochs,
+    )
 
     if model:
         model_info = get_model_by_name(model)
@@ -139,6 +147,13 @@ def train(
 
     if epochs:
         tc.num_train_epochs = epochs
+
+    if lora_rank is not None:
+        tc.lora.rank = lora_rank
+    if lora_alpha is not None:
+        tc.lora.alpha = lora_alpha
+    if learning_rate is not None:
+        tc.learning_rate = learning_rate
 
     # Check model availability
     model_info = get_model_by_name(tc.model_name)

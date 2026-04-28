@@ -413,16 +413,23 @@ def write_training_csv(examples: list[TrainExample], path: Path) -> None:
 
 
 def train_via_cli(
-    csv_path: Path, output_dir: Path, epochs: int, timeout: int = 3600,
+    csv_path: Path, output_dir: Path, epochs: int,
+    lora_rank: int | None = None, learning_rate: float | None = None,
+    timeout: int = 3600,
 ) -> Path:
     """Run `fsvlm train` as a subprocess; return the trained adapter path."""
+    cmd = [
+        sys.executable, "-m", "fsvlm.cli",
+        "train", "--images", str(csv_path),
+        "--output", str(output_dir),
+        "--epochs", str(epochs), "--no-sweep", "-y",
+    ]
+    if lora_rank is not None:
+        cmd.extend(["--lora-rank", str(lora_rank), "--lora-alpha", str(lora_rank)])
+    if learning_rate is not None:
+        cmd.extend(["--learning-rate", str(learning_rate)])
     proc = subprocess.run(
-        [
-            sys.executable, "-m", "fsvlm.cli",
-            "train", "--images", str(csv_path),
-            "--output", str(output_dir),
-            "--epochs", str(epochs), "--no-sweep", "-y",
-        ],
+        cmd,
         capture_output=False,
         timeout=timeout,
     )
@@ -537,6 +544,8 @@ def run_one(
     recipe_version: str = "v0",
     label_source: str = "metadata",
     stratified_subtypes: bool = False,
+    lora_rank: int | None = None,
+    learning_rate: float | None = None,
 ) -> RunRecord:
     """Run a single (dataset, category, n, seed) benchmark."""
     git_hash, git_short, git_dirty = _git_provenance()
@@ -585,7 +594,8 @@ def run_one(
         tmpdir = Path(tempfile.mkdtemp(prefix=f"dvlm_sweep_{adapter.name}_{category}_n{n_samples}_s{seed}_"))
         csv_path = tmpdir / "labels.csv"
         write_training_csv(samples, csv_path)
-        adapter_path = train_via_cli(csv_path, tmpdir / "out", epochs=epochs)
+        adapter_path = train_via_cli(csv_path, tmpdir / "out", epochs=epochs,
+                                     lora_rank=lora_rank, learning_rate=learning_rate)
 
     scores = run_zero_shot(adapter_path, test_set, prompt)
     metrics = compute_metrics(scores, test_labels)
@@ -657,6 +667,10 @@ def main() -> None:
                         help="Distribute the defect half of the training sample proportionally "
                              "across subtypes (inferred from parent directory name, MVTec-style). "
                              "Targets metal_nut degenerate-threshold collapse — Pass 6 hypothesis.")
+    parser.add_argument("--lora-rank", type=int, default=None,
+                        help="Override LoRA rank (default uses fsvlm config / TrainingConfig default).")
+    parser.add_argument("--learning-rate", type=float, default=None,
+                        help="Override learning rate (default uses fsvlm config / TrainingConfig default).")
     args = parser.parse_args()
 
     existing = load_existing(args.output) if args.resume else []
@@ -693,6 +707,8 @@ def main() -> None:
                             recipe_version=args.recipe_version,
                             label_source=args.label_source,
                             stratified_subtypes=args.stratified_subtypes,
+                            lora_rank=args.lora_rank,
+                            learning_rate=args.learning_rate,
                         )
                     except Exception as exc:
                         print(f"  FAILED: {exc}")
