@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "current_pass": 4,
+  "current_pass": null,
   "current_pass_description": "Tier A completion: extend AUROC-vs-N curves to the remaining 24 MVTec + VisA categories at N in {2, 5, 10, 30} x 3 seeds. Tests whether the pre-registered distinctive/subtle taxonomy correctly predicts which categories show the N=2 knee vs the delayed-knee or null shape. Hard kill criterion: if the taxonomy rule does not hold, pivot the framing to whichever category-feature does predict lift. v0.2 release blocker.",
   "overarching_research_question": "How few natural-language-labeled images are enough to fine-tune a modern VLM (Gemma 4 E4B-it via QLoRA) into a useful industrial defect detector, and WHICH KINDS of defects obey this 'tiger-analogy' (few-shot suffices because the model already has relevant priors) vs. WHICH KINDS don't?",
   "passes": [
@@ -71,7 +71,7 @@
     {
       "id": "pass4-tier-a-completion-with-taxonomy-test",
       "description": "Fill remaining 12 MVTec + 9 VisA categories at N=30 with 3 seeds. Use the pre-registered defect_taxonomy.json to predict which will succeed (distinctive) vs which will reproduce metal_nut-style failure (subtle). If the taxonomy is predictive, it becomes a paper contribution as a practical rule-of-thumb.",
-      "status": "pending",
+      "status": "completed",
       "hypothesis_primary": "Pre-registered distinctive-vs-subtle defect taxonomy predicts which categories show the N=2 fine-tuning knee (distinctive: yes; subtle: no/degenerate; mixed: scatter). Tested on 8 cats first (4D + 3S + 1M), expanded to 14 then 24 if the rule holds.",
       "hypothesis_taxonomy": "The 'distinctive vs subtle' tagging in defect_taxonomy.json is PREDICTIVE \u2014 checked via ROC-style clustering of per-category AUROC against taxonomy tags. If positive, this is a standalone paper contribution: a practical rule-of-thumb for when fsvlm-style few-shot will succeed or fail, without running the experiment first.",
       "hypothesis_extractor_generalizability": "Also re-run v0.1-extractor zero-shots on all 21 new categories to test whether the +0.15 to +0.34 AUROC recovery (our primary-candidate paper contribution) generalizes across MVTec's full suite, not just the 4 we sampled in Pass 2.",
@@ -191,7 +191,7 @@
         },
         {
           "stage": "stage3",
-          "status": "pending",
+          "status": "completed",
           "categories_count": 10,
           "cells_count": 90,
           "compute_estimate_hours": 2.5,
@@ -213,7 +213,8 @@
               "rule_fails": "0 of 2 predictions met."
             },
             "no_post_hoc_revisions_clause_v2": "If stage3 fails or partly-passes, predictions reported AS-IS. The honest reporting of the stage1 falsification + stage2 partly-pass + stage3 outcome IS the finding regardless of which way it lands."
-          }
+          },
+          "verdict_summary": "RULE PASSES (2 of 2). Spearman rho across 24 cats = -0.778, p<10^-5. N=2 knee on 9 of 10 stage3 cats."
         }
       ],
       "hard_kill_criterion": "After stage1, if the pre-registered distinctive-vs-subtle taxonomy rule does NOT hold (distinctive cats failing to cluster at high N=2 lift, OR subtle cats failing to cluster at low/null lift), halt the staged expansion and pivot the framing to whichever category-feature actually predicts lift. Both outcomes are documentable; do not waste stage2 + stage3 compute on a hypothesis that did not pan out.",
@@ -266,6 +267,45 @@
         "expert_reviews": [
           "research/expert_reviews/training-specialist_2026-04-27T23-42-53Z.json",
           "_local/paper_workspace/expert_reviews/strategy-reviewer_2026-04-27T23-42-53Z.json (gitignored)"
+        ]
+      },
+      "stage3_result": {
+        "status": "completed_with_passing_held_out_test",
+        "completed_at": "2026-04-28T09:09:59Z",
+        "rows_added_stage3_only": 100,
+        "verdict_counts_stage3_only": {
+          "keep": 81,
+          "noop": 9,
+          "discard": 0,
+          "new_baseline": 10
+        },
+        "verdict_counts_cumulative": {
+          "keep": 168,
+          "noop": 45,
+          "discard": 3,
+          "new_baseline": 24
+        },
+        "held_out_prediction_outcome": "PASSES (2 of 2 locked-in predictions met). Spearman rho across 24 cats = -0.778 with p = 0.000004 (PASS, well below threshold). N=2 knee on stage3 cats = 9 of 10 (PASS, exceeded threshold by 3).",
+        "expert_reviews": [
+          "research/expert_reviews/training-specialist_2026-04-28T09-09-59Z.json",
+          "_local/paper_workspace/expert_reviews/strategy-reviewer_2026-04-28T09-09-59Z.json (gitignored)"
+        ]
+      },
+      "final_outcome": {
+        "summary": "Pass4 (full Tier A) completed at 2026-04-28T09:09:59Z. Pre-registered distinctive-vs-subtle defect taxonomy was falsified at stage1. A post-hoc rule (lift correlates inversely with zero-shot AUROC; N=2 captures most of best lift) was discovered, formalized into quantitative locked-in predictions, and tested on held-out stage2 (partly passed) and held-out stage3 (passed). Cumulative result on 24 cats: Spearman rho = -0.778, p < 10^-5; N=2 knee shape holds on 18 of 24 cats. The original taxonomy claim is falsified honestly; the rule it was replaced with is held-out-tested twice.",
+        "spearman_rho_24_cats": -0.7782,
+        "spearman_p_one_sided": 4e-06,
+        "n2_knee_passes_24_cats": 18,
+        "verdict_counts_full_tier_a": {
+          "keep": 168,
+          "noop": 45,
+          "discard": 3,
+          "new_baseline": 24
+        },
+        "rows_total_v0_3_tier_a": 240,
+        "git_commits_anchoring_held_out_structure": [
+          "e7d7856 (stage1 close-out + stage2 prediction lock)",
+          "93a9fa6 (stage2 close-out + stage3 prediction lock)"
         ]
       }
     },
@@ -337,5 +377,7 @@
   ],
   "data_driven_over_deadline_driven": true,
   "pass4_stage1_completed_at": "2026-04-27T12:06:57Z",
-  "pass4_stage2_completed_at": "2026-04-27T23:42:53Z"
+  "pass4_stage2_completed_at": "2026-04-27T23:42:53Z",
+  "pass4_completed_at": "2026-04-28T09:09:59Z",
+  "status_note": "Pass4 (full Tier A) completed. See passes[].final_outcome for the rule-passes summary. Future passes (multi-model generalization, recipe stability, ICL extension at scale) are optional follow-ups."
 }
