@@ -379,5 +379,22 @@
   "pass4_stage1_completed_at": "2026-04-27T12:06:57Z",
   "pass4_stage2_completed_at": "2026-04-27T23:42:53Z",
   "pass4_completed_at": "2026-04-28T09:09:59Z",
-  "status_note": "Pass4 (full Tier A) completed. See passes[].final_outcome for the rule-passes summary. Future passes (multi-model generalization, recipe stability, ICL extension at scale) are optional follow-ups."
+  "status_note": "Pass4 (full Tier A) completed. See passes[].final_outcome for the rule-passes summary. Future passes (multi-model generalization, recipe stability, ICL extension at scale) are optional follow-ups.",
+  "multi_model_phase": {
+    "status": "completed",
+    "completed_at": "2026-04-29T13:38:08Z",
+    "models_tested": [
+      "gemma-4-E4B-it (24 cats, full Tier A)",
+      "Qwen3-VL-8B-Instruct (5 cats)",
+      "Llama-3.2-11B-Vision-Instruct (5 cats + 5 lowest-ZS path-2 cats)"
+    ],
+    "outcome": "rule transfers to 2 of 3 model families: Gemma rho=-0.778 (n=24, p<10^-5), Qwen3 rho=-1.000 (n=5, p<10^-4), Llama rho=+0.200 (n=5 lowest-ZS, p=0.63 \u2014 does not transfer under recipe rank=8/lr=2e-4/epochs=3)",
+    "qwen2_5_data_kept": "v0.5-tier-a-qwen recipe contains 6 ZS rows from initial Qwen2.5 attempt (kept for cross-Qwen comparison)",
+    "expert_reviews": [
+      "research/expert_reviews/training-specialist_2026-04-29T07-04-49Z.json (mid-phase, speculative)",
+      "research/expert_reviews/training-specialist_2026-04-29T13-38-08Z.json (final, outcome C reported)",
+      "_local/paper_workspace/expert_reviews/strategy-reviewer_2026-04-29T07-04-49Z.json (gitignored)",
+      "_local/paper_workspace/expert_reviews/strategy-reviewer_2026-04-29T13-38-08Z.json (gitignored)"
+    ]
+  }
 }

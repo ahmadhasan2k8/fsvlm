@@ -1,0 +1,30 @@
+{
+  "role": "training-specialist",
+  "pass_id": "multi-model-cross-family",
+  "recipe_version_cohorts": [
+    "v0.5-tier-a-qwen (Qwen2.5-VL-7B-Instruct ZS-only — superseded)",
+    "v0.5-tier-a-qwen3 (Qwen3-VL-8B-Instruct full sweep)",
+    "v0.5-tier-a-llama32 (Llama-3.2-11B-Vision-Instruct sweep, in progress)"
+  ],
+  "cohort_size": "Qwen3: 35 rows (5 ZS + 30 trained). Qwen2.5: 6 ZS rows kept for comparison. Llama: 25 rows so far (5 ZS + 20 trained), 5 cells remaining.",
+  "verdict_summary": "Qwen3-VL fully completed; rule passes with rho=-1.000 across 5 cats (lift range +0.197 to +0.443). Llama-3.2 partial; on the same 5 cats, lifts are uniformly tiny (-0.004 to +0.021). Verdict statuses on multi-model rows TBD until /verdict run on the cumulative cohort.",
+  "diagnosis": "Three model families tested on the same 5-category subset (capsule, tile, wood, zipper, chewinggum) under identical recipe (rank=8, lr=2e-4, epochs=3): Gemma 4 E4B-it, Qwen3-VL-8B, Llama-3.2-11B-Vision. Headline observation: the rule (lift inversely correlates with ZS-AUROC) passes with maximum strength on Gemma and Qwen3 (rho=-1.000 on each, on the same 5 cats), but appears underpowered on Llama where all 4 cells so far show lifts in [-0.004, +0.021]. Critical detail: Llama's ZS profile on the test subset is unusually high (4 of 5 cats with ZS>=0.63, 2 of those near-ceiling at 0.979 and 0.997), which leaves no headroom for FT lift. The qualitative direction of the rule (high ZS -> tiny lift) IS satisfied on Llama, but the rank-correlation test cannot distinguish the rule's prediction from baseline noise when lift variance collapses to ~0.025.",
+  "model_specific_observations": {
+    "Gemma_4_E4B-it": "Already-characterized on 24 cats (Pass 4): rho=-0.778, p<10^-5. Mean cell time ~5-12 min. Stable across 3 seeds. Recipe (rank=8, lr=2e-4) appears well-suited.",
+    "Qwen3-VL-8B-Instruct": "rho=-1.000 on 5 cats. Per-cat reproducibility is striking: capsule N=2 trio in [0.967, 0.968], tile N=2 trio in [0.993, 0.994], wood trio at 1.000 across all seeds, zipper trio in [0.909, 0.911], chewinggum trio in [0.978, 0.984]. Cell time ~5 min. The TRL/transformers token-obfuscation bug needed a workaround patch (commit 376a4fb) — without it, Qwen FT cannot start.",
+    "Llama-3.2-11B-Vision-Instruct": "All 4 trained cells so far show lifts <=0.025. capsule trio at [0.643, 0.654, 0.649] vs ZS=0.630, lift +0.020 mean. Tile trio at [0.970, 0.974, 0.979] vs ZS=0.979, lift -0.001 mean (slight regression). Wood trio at [0.997, 0.998, 0.999] vs ZS=0.997, at-ceiling. Zipper trio at [0.759, 0.769, 0.775] vs ZS=0.768, lift +0.001. Cell time ~7-8 min (slower than Qwen3 due to 11B params). Two interpretations of the uniformly-tiny-lift pattern: (a) Llama's high-ZS profile on this subset means there's nothing for FT to add per the rule, (b) Llama-3.2's LoRA/recipe interaction differs from Gemma+Qwen and may need different hyperparameters."
+  },
+  "recommendation": "next_config: Path 2 — characterize Llama's ZS across all 24 Tier A cats (~19 ZS-only cells, ~1h compute), then pick 5 lowest-ZS cats for Llama and run trained sweep at N=2 with 3 seeds (~15 cells, ~1.5h compute). Total ~2.5-3h. This converts the current ambiguous Llama signal (rule's qualitative prediction holds, quantitative test is underpowered) into a real test of the rule on Llama-specific lift-headroom cats. Either outcome is valuable: rule confirms on Llama -> three-family confirmation, or rule fails on Llama-low-ZS -> documented model-architecture boundary.",
+  "confidence": "medium-high",
+  "rationale": "The Gemma+Qwen3 evidence (both rho=-1.000 on same 5 cats) is unambiguous: the rule transfers across these two model families in both qualitative direction and quantitative form. The Llama signal is more nuanced — uniformly-tiny lifts are simultaneously consistent with the rule's qualitative direction (high ZS -> tiny lift, all 4 cells obey this) AND uninformative for the rank-correlation test. Resolving this ambiguity requires either accepting the partial evidence (workshop-acceptable) OR running the targeted Llama-low-ZS test (path 2). Path 2 has higher ceiling (3-family confirmation if rule holds) and approximately the same expected value as path 3 (drop Llama). Recommended given the user's stated preference for the strongest possible result.",
+  "anti_goodhart_check": "All trained cells per (model, cat, N) trio show seed-noise of <=0.020 AUROC, consistent with seed-stable training. No single-seed cell drives any conclusion. The Llama partial result is being reported AS-IS; not retroactively softening the rule's quantitative form to absorb the Llama data into a passing claim.",
+  "next_action_sequence": [
+    "Wait for current Llama 5-cat sweep to finish (~30 min, 5 cells remaining as of timestamp).",
+    "Launch Llama ZS on 19 remaining Tier A cats (recipe: v0.5-tier-a-llama32-zs).",
+    "Analyze Llama 24-cat ZS profile; pick 5 lowest-ZS cats for the rule re-test.",
+    "Launch Llama trained sweep on those 5 cats × N=2 × 3 seeds (recipe: v0.5-tier-a-llama32-low-zs).",
+    "Compute per-model Spearman rho across each model's appropriate test subset.",
+    "Run /verdict on the cumulative multi-model cohort.",
+    "Update queue.json to mark multi-model phase completed; commit data + this review's siblings (final close-out)."
+  ]
+}
