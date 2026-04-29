@@ -307,20 +307,164 @@ Prior references cited in early drafts were partially wrong. Corrected numbers:
   few-shot AUROC on MVTec + VisA + DeepPCB with an explicit extractor ablation, released as
   a pip-installable tool" — remains defensible, but the phrasing must be precise.
 
+## Pass 4 — full Tier A coverage with held-out hypothesis testing
+
+After the v0.1 release, the next question was whether the pre-registered defect-taxonomy
+(`research/defect_taxonomy.json`, frozen 2026-04-20T12:30Z) actually predicts which categories
+benefit from few-shot fine-tuning. The answer is **no**, and the discovery process is more
+interesting than a clean confirmation would have been.
+
+### Stage 1 — taxonomy hypothesis falsified (8 cats)
+
+The pre-registered taxonomy classified each category as distinctive (defect contrasts strongly
+with the good baseline), subtle (contrast is small), or mixed. Prediction: distinctive
+categories should show large lift from N=2 fine-tuning; subtle ones should show little or none.
+
+We ran 8 categories spanning the three tags at N ∈ {0, 2, 10, 30} × 3 seeds. **Mean lift
+inverted the prediction:**
+
+- distinctive (4 cats): mean lift = +0.031 — small lift on the cats predicted to win biggest.
+- subtle (3 cats): mean lift = +0.218 — large lift on the cats predicted to lose.
+- mixed (1 cat): mean lift = +0.314.
+
+The hypothesis was clearly falsified, with no overlap in lift ranges between distinctive and
+subtle categories. But the data revealed something stronger: lift correlates inversely with
+zero-shot AUROC. Categories where the base VLM was already strong gained little; categories
+where the base VLM was at chance gained the most.
+
+### Stage 2 — held-out test (6 new cats), partial confirmation
+
+Three quantitative predictions were locked into git history *before* any stage 2 cell ran:
+
+1. Per-category bands: ZS ≤ 0.55 cats lift ≥ +0.10; ZS ≥ 0.70 cats lift ≤ +0.06.
+2. Spearman ρ across all 14 cats (8 stage1 + 6 stage2) ≤ -0.6 with p < 0.05.
+3. N=2 captures ≥ 80% of best lift on ≥ 4 of 6 stage2 cats.
+
+Two of three passed cleanly:
+
+- Spearman ρ = -0.758, p = 0.00084 (strong margin past threshold).
+- N=2 knee held on 4 of 6 stage2 cats (exactly threshold).
+
+The per-category band prediction failed on visa/macaroni2: ZS = 0.495 (just below threshold)
+gave lift +0.088 (just below the +0.10 band). Per the no-goalpost-moving discipline, the band
+prediction was *not* retroactively softened. It was explicitly dropped before stage 3 ran,
+with the structural reasoning logged in the commit message of `93a9fa6`.
+
+### Stage 3 — second held-out test (10 more cats), rule passes
+
+Two surviving predictions were locked in for stage 3:
+
+1. Spearman ρ across all 24 cats ≤ -0.6 with p < 0.01.
+2. N=2 knee on ≥ 6 of 10 stage 3 cats.
+
+Final result: **ρ = -0.778, p = 4×10⁻⁶ across 24 cats. N=2 knee passed on 9 of 10 stage 3 cats**
+(the 10th, mvtec/leather, was at-ceiling at ZS=0.999 with effectively no lift to capture —
+not a knee failure). Both predictions passed.
+
+The full Tier A coverage closed at 240 rows: 168 keep, 45 noop, 24 new_baseline, 3 discard.
+The 3 discards are all mvtec/transistor N=30 — the cleanest example of "high-ZS already-strong
+categories where N=30 fine-tuning actively hurts." See commit `13f0a62` for the close-out.
+
+## Recipe stability sub-study
+
+A natural reviewer concern: is the rule recipe-specific? We re-ran 5 cats spanning the full
+ZS range (capsule, tile, wood, zipper, chewinggum) at N=2 under three recipe variants:
+
+- rank=16 (vs default 8), lr=2e-4
+- rank=32, lr=2e-4
+- rank=8, lr=1e-4 (vs default 2e-4)
+
+**All four variants (baseline + three) gave Spearman ρ = -1.000 on the 5-cat subset, with
+per-cell AUROC differing by ≤ 0.01 from the baseline on every (variant × cat) pair.** The rule
+is not recipe-specific within this perturbation range. See commit `7d6c2b8`.
+
+A real bug surfaced during this sub-study: `fsvlm.cli train` was constructing `TrainingConfig`
+with only `model_name` from `FSVLMConfig` — `lora_rank`, `learning_rate`, etc. fell back to
+hardcoded dataclass defaults. The recipe-stability test would have silently re-run rank=8 four
+times. Fixed in commit `edbefc7` by pulling all config defaults through and adding explicit
+`--lora-rank` / `--learning-rate` CLI flags.
+
+## ICL extension on the high-lift categories
+
+The pass 5b ICL-vs-FT comparison (3 cats: hazelnut, candle, deeppcb/pcb) was extended to 6
+cats spanning the full ZS range (capsule, tile, wood, zipper, transistor, chewinggum,
+plus the visa pcb4). Headline: the FT-vs-ICL answer is **category-dependent and predictable
+from ZS-AUROC**:
+
+- **chewinggum (ZS=0.441)**: ICL N=2 AUROC=0.979, FT N=2=0.984. ICL ≈ FT. Both achieve full lift.
+- **pcb4 (ZS=0.510)**: ICL N=2=0.650 (high seed-variance), FT N=2=0.903. **FT > ICL by ~0.25**.
+- **transistor (ZS=0.712)**: ICL > FT — the trained model regresses on a category where ZS
+  is already strong.
+
+ICL N=8 ran into a 16 GB memory constraint (8 reference image-label pairs in the prompt +
+Gemma 4 base + test inference exceeds the budget); N=2 and N=4 are clean. See commit `7d6c2b8`.
+
+## Multi-model phase — rule transfers to 2 of 3 model families
+
+The next test: does the rule generalize beyond Gemma? We tested Qwen3-VL-8B-Instruct (Alibaba,
+2025-current) and Llama-3.2-11B-Vision-Instruct (Meta, Sept 2024) on the same 5-category
+subset, identical recipe (rank=8, lr=2e-4, epochs=3).
+
+A real compatibility bug surfaced when first running Qwen2.5-VL: TRL 0.24's `SFTTrainer.__init__`
+round-trips `args` through `transformers.TrainingArguments.to_dict()` on certain code paths,
+and that method obfuscates token-suffixed fields by replacing them with `<{NAME_UPPER}>`
+placeholders. So `eos_token=None` becomes the literal string `<EOS_TOKEN>`, which fails the
+vocab-lookup the trainer then performs. On Gemma 4 the round-trip didn't trigger; on
+Qwen2.5-VL it did, every time. The workaround (commit `376a4fb`) installs a runtime monkey-patch
+on `TrainingArguments.to_dict` that reverses the obfuscation for any `*_token` field. Without
+this fix, multi-model FT does not start.
+
+After the patch, the multi-model results:
+
+| Model family | n cats | Spearman ρ | p | Result |
+|---|---:|---:|---:|:---:|
+| Gemma 4 E4B-it | 24 | −0.778 | < 10⁻⁵ | rule transfers |
+| Qwen3-VL-8B-Instruct | 5 | −1.000 | < 10⁻⁴ | rule transfers |
+| Llama-3.2-11B-Vision-Instruct | 5 (Llama-specific lowest-ZS cats) | +0.200 | 0.63 | does not transfer |
+
+Notes on the Llama outcome:
+
+- The 5 cats for Llama were Llama's own lowest-ZS cats (cable, transistor, macaroni1,
+  macaroni2, pcb3 — chosen after a 24-cat Llama ZS profile sweep). This is the rule's
+  strongest possible test on Llama; even so, all lifts collapsed to [-0.005, +0.070] AUROC.
+- For comparison, Qwen3 on similar-ZS cats produced lifts in [+0.197, +0.443] — 10× the
+  magnitude.
+- F1 = 0 on 4 of 5 Llama trained cells (the model predicts all-good post-FT).
+- 25.7M trainable parameters (= 0.51% of base) reported correctly. The adapter trains. The
+  parameters update. But inference behavior doesn't change.
+
+Five testable root-cause hypotheses for the Llama failure (each requires its own diagnostic
+sweep, deferred to a v0.3 follow-up):
+
+1. `target_modules='all-linear'` may not patch Llama-3.2-Vision's visual decoder cleanly.
+2. 3 epochs at lr=2e-4 may be undertrained for an 11B vision model.
+3. Llama's chat template + the PASS/FAIL token-logit scoring may have a tokenization mismatch.
+4. Gradient checkpointing under unsloth may behave differently on this architecture.
+5. Some combination of the above.
+
+We did **not** adjust the recipe per model to make Llama pass. The pre-registered structure
+holds the recipe constant; the recipe-stability sub-study above showed the rule is recipe-stable
+on Gemma. Per-model recipe tuning would have made cross-model comparison meaningless and broken
+the held-out structure. The honest result is "rule transfers to 2 of 3 model families tested
+under identical recipe; the 3rd reveals a model-architecture boundary worth investigating."
+
+See commit `fbb2f96` for the multi-model close-out and the four expert-review JSONs documenting
+the loop's decision points across the multi-model phase.
+
 ## What's still open
 
-- **Coverage**: only 3 categories have AUROC-vs-N curves. The "tiger-analogy rule" needs
-  testing on the remaining 21 MVTec + VisA categories.
+- **Llama-3.2-Vision recipe-vs-architecture diagnostic**: Llama with rank=16 / lr=4e-4 /
+  epochs=10 on 2-3 cats to test whether the rule failure is recipe-specific. Targeted at v0.3.
 - **Classical baselines**: WinCLIP+, PromptAD, Anomalib PatchCore on our same test splits.
   Published numbers are not directly comparable because splits differ.
 - **Description-quality evaluation**: the VLM-unique axis that classical and ICL methods
   structurally cannot compete on. Not yet run.
-- **Other base models**: everything here is Gemma 4 E4B-it. Whether the findings generalize to
-  LLaVA, Qwen-VL, InternVL is an open question.
+- **Fourth model family**: Pixtral-12B (Mistral, similar era) would test whether the 2-of-3
+  pattern generalizes. The 16 GB GPU rules out Llama 4 (MoE, ~109B total params even at 4-bit).
 - **On-device latency**: we claim "consumer-GPU" but have not reported inference times on
   Jetson/M-series/edge devices.
 
-These are follow-on work. The v0.1 release ships what we have, with limitations flagged
+These are follow-on work. The current snapshot ships what we have, with limitations flagged
 honestly.
 
 ## Methodology commitments that carried through

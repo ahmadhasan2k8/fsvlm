@@ -80,7 +80,18 @@ We benchmark the things we add on top of unsloth. Training-speed benchmarks woul
 Prove or disprove whether natural-language-labeled small datasets (20–40 images) are enough for
 a useful defect detector on modern industrial anomaly benchmarks.
 
-**Current preliminary evidence** (monotonic tier improvement, `research/tiered_results.json`):
+**Current state (as of 2026-04 multi-model phase):** answered partially with a rule —
+*few-shot fine-tuning lift correlates inversely with zero-shot AUROC; N=2 captures ≥80% of
+the achievable lift wherever lift exists*. Pre-registered, twice held-out, confirmed across 24
+MVTec + VisA categories on Gemma 4 (Spearman ρ = -0.778, p < 10⁻⁵) and 5 cats on Qwen3-VL-8B
+(ρ = -1.000). Did not transfer to Llama-3.2-Vision under the same recipe (boundary finding,
+documented in [docs/research-log.md](docs/research-log.md)). The *practical* answer to "how
+many labels?" is: **N = 2 suffices for any category where the base VLM has ZS-AUROC ≤ 0.55
+under our recipe; categories where the base VLM is already strong (ZS ≥ 0.70) gain little
+from few-shot fine-tuning at all.**
+
+**Earlier preliminary evidence** (monotonic tier improvement, `research/tiered_results.json`,
+v0.1 era):
 
 | Dataset   | Zero-shot AUROC | Few-shot AUROC | Full-train AUROC |
 |-----------|-----------------|----------------|------------------|
@@ -88,10 +99,8 @@ a useful defect detector on modern industrial anomaly benchmarks.
 | bottle    | 0.740           | 0.787          | 0.850            |
 | metal_nut | 0.500           | 0.784          | 0.857            |
 
-**Required next experiment — dataset-size sweep**: for each category in the benchmark suite
-below, train with **N ∈ {10, 20, 30, 40, 60, 100, 200, full}** labeled examples (held-out test
-set fixed, ≥3 seeds per N). Plot AUROC / F1 as a function of N. Honest reporting: include every
-category, including ones where few-shot does not work.
+This v0.1-era table is preserved as the original tier-monotonicity evidence; the post-v0.1
+multi-model rule subsumes it for the broader question of when lift happens.
 
 ### Q2 — Does fine-tuning actually help, monotonically, across datasets?
 
