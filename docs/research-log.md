@@ -451,10 +451,46 @@ under identical recipe; the 3rd reveals a model-architecture boundary worth inve
 See commit `fbb2f96` for the multi-model close-out and the four expert-review JSONs documenting
 the loop's decision points across the multi-model phase.
 
+## Llama recipe diagnostic — exploratory
+
+After the multi-model close-out, we ran a small diagnostic to test whether the Llama failure
+was recipe-specific or architecture-specific. Three Llama cats at the multi-model phase's
+strongest test cohort (cable, transistor, macaroni2), single seed=42, with stronger recipe
+(rank=16 / lr=4e-4 / epochs=10 vs the default rank=8 / lr=2e-4 / epochs=3).
+
+Result is more nuanced than the binary "recipe fix works" or "doesn't" the diagnostic was
+hoping to settle:
+
+| cat | ZS | default-recipe lift | strong-recipe lift | net |
+|---|---:|---:|---:|---|
+| mvtec/cable | 0.430 | +0.003 | **+0.089** | strong helps a lot |
+| mvtec/transistor | 0.574 | +0.001 | **−0.019** | strong slightly hurts |
+| visa/macaroni2 | 0.545 | +0.070 | **−0.038** | strong substantially hurts |
+
+The strong recipe helps cable (where the default produced essentially no lift) but **hurts
+transistor and macaroni2** (where the default actually produced a small but meaningful lift on
+macaroni2). The pattern suggests Llama-3.2-Vision has narrower per-category 'good recipe'
+bands than Gemma 4 or Qwen3-VL — under any single fixed recipe we tested, no clean rule
+transfer emerges.
+
+**This diagnostic does NOT reframe the multi-model phase headline.** That headline (rule
+transfers to 2 of 3 model families under identical recipe) stands as the held-out test result.
+The diagnostic adds nuance: Llama IS trainable under different recipes for different cats,
+but no single recipe in the explored range (rank=8 to 16, lr=2e-4 to 4e-4, epochs=3 to 10)
+transferred the rule cleanly. A proper characterization would require a full recipe grid
+(~36 cells) on 5+ Llama cats — flagged as a v0.3 follow-up.
+
+The diagnostic was run AFTER the multi-model phase headline was committed; the no-goalpost-
+moving discipline holds. Commit reference for the diagnostic data and analysis: see the
+`v0.5-tier-a-llama32-strong-recipe` recipe_version in `research/dataset_size_results.json`,
+plus the timestamped training-specialist review in `research/expert_reviews/`.
+
 ## What's still open
 
-- **Llama-3.2-Vision recipe-vs-architecture diagnostic**: Llama with rank=16 / lr=4e-4 /
-  epochs=10 on 2-3 cats to test whether the rule failure is recipe-specific. Targeted at v0.3.
+- **Full Llama-3.2-Vision recipe characterization**: ~36-cell grid (rank × lr × epochs) on 5+
+  Llama cats with 3 seeds. Would convert the current "Llama is recipe-unstable" boundary
+  finding into either a clean per-cat recipe map OR a stronger architectural-incompatibility
+  claim. Targeted at v0.3.
 - **Classical baselines**: WinCLIP+, PromptAD, Anomalib PatchCore on our same test splits.
   Published numbers are not directly comparable because splits differ.
 - **Description-quality evaluation**: the VLM-unique axis that classical and ICL methods
