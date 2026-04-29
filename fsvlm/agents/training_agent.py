@@ -249,6 +249,54 @@ class TrainingAgent:
                     num_items_in_batch=num_items_in_batch,
                 )
 
+        # Workaround for TRL 0.24 + transformers 5.5 + unsloth + Qwen2.5-VL:
+        # transformers.TrainingArguments.to_dict() obfuscates token-suffixed
+        # fields by replacing them with literal placeholders like '<EOS_TOKEN>'.
+        # Some upstream patch chain calls to_dict() on the SFTConfig and feeds
+        # the result back through SFTConfig(**dict_args), so by the time TRL's
+        # SFTTrainer.__init__ checks args.eos_token, it sees '<EOS_TOKEN>' (a
+        # literal NOT in any model's vocab) and raises ValueError.
+        # Workaround: monkey-patch SFTTrainer.__init__ to clear args.eos_token
+        # at entry. The downstream code falls back to processing_class.eos_token
+        # which is always correct.
+        if not getattr(SFTTrainer.__init__, "_fsvlm_eos_patched", False):
+            _orig_sft_init = SFTTrainer.__init__
+            def _patched_sft_init(_self, *_a, **_kw):
+                _args = _kw.get("args") if "args" in _kw else (_a[1] if len(_a) >= 2 else None)
+                if _args is not None:
+                    # Patch the SFTConfig class itself: override the to_dict() method
+                    # so the token-obfuscation in TrainingArguments.to_dict can't
+                    # round-trip eos_token to '<EOS_TOKEN>' inside SFTTrainer.__init__.
+                    _saved_eos = getattr(_args, "eos_token", None)
+                    if _saved_eos in (None, "<EOS_TOKEN>"):
+                        # Defer to processing_class.eos_token; clear args.eos_token
+                        try:
+                            _args.eos_token = None
+                            _args.__dict__["eos_token"] = None
+                        except Exception:
+                            pass
+                return _orig_sft_init(_self, *_a, **_kw)
+            _patched_sft_init._fsvlm_eos_patched = True
+            SFTTrainer.__init__ = _patched_sft_init
+
+        # Also patch transformers.TrainingArguments.to_dict to NOT obfuscate eos_token.
+        # This is the actual root cause: TrainingArguments.to_dict replaces any field
+        # ending in '_token' with the literal '<{NAME_UPPER}>', and SFTTrainer.__init__
+        # round-trips args through to_dict() / SFTConfig(**dict_args) on certain
+        # transformers + trl version combos.
+        from transformers import TrainingArguments as _TA
+        if not getattr(_TA.to_dict, "_fsvlm_no_obfuscate", False):
+            _orig_td = _TA.to_dict
+            def _patched_to_dict(self):
+                d = _orig_td(self)
+                # Reverse the obfuscation: re-fetch real values for token-suffixed fields
+                for k in list(d.keys()):
+                    if k.endswith("_token") and isinstance(d[k], str) and d[k].startswith("<") and d[k].endswith(">"):
+                        d[k] = getattr(self, k, None)
+                return d
+            _patched_to_dict._fsvlm_no_obfuscate = True
+            _TA.to_dict = _patched_to_dict
+
         trainer = SafeSFTTrainer(
             model=model,
             processing_class=tokenizer,
