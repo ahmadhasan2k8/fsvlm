@@ -1,0 +1,1009 @@
+{
+  "n_seeds": 3,
+  "filter_default_threshold": 0.05,
+  "rows": [
+    {
+      "recipe": "v0.3-tier-a",
+      "dataset": "mvtec",
+      "category": "bottle",
+      "zs": 0.45781249999999996,
+      "n2_per_seed": [
+        0.7117187499999998,
+        0.71796875,
+        0.7242187499999999
+      ],
+      "n30_per_seed": [
+        0.6312500000000001,
+        0.6804687500000001,
+        0.62578125
+      ],
+      "n2_mean": 0.7179687499999999,
+      "n30_mean": 0.6458333333333334,
+      "lift_n30": 0.18802083333333341,
+      "ratio_point": 1.3836565096952902,
+      "ratio_ci_low": 1.1777777777777771,
+      "ratio_ci_high": 1.5567484662576685,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.3-tier-a",
+      "dataset": "mvtec",
+      "category": "capsule",
+      "zs": 0.47127329192546585,
+      "n2_per_seed": [
+        0.8590838509316769,
+        0.8680124223602484,
+        0.8695652173913044
+      ],
+      "n30_per_seed": [
+        0.8691770186335405,
+        0.8660714285714286,
+        0.8637422360248447
+      ],
+      "n2_mean": 0.8655538302277432,
+      "n30_mean": 0.8663302277432713,
+      "lift_n30": 0.39505693581780543,
+      "ratio_point": 0.9980347199475923,
+      "ratio_ci_low": 0.98165738617753,
+      "ratio_ci_high": 1.0115169463639357,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.3-tier-a",
+      "dataset": "mvtec",
+      "category": "grid",
+      "zs": 0.7777777777777777,
+      "n2_per_seed": [
+        0.9722222222222222,
+        0.9714285714285714,
+        0.9722222222222222
+      ],
+      "n30_per_seed": [
+        0.9722222222222222,
+        0.9722222222222222,
+        0.9722222222222222
+      ],
+      "n2_mean": 0.9719576719576719,
+      "n30_mean": 0.9722222222222222,
+      "lift_n30": 0.19444444444444453,
+      "ratio_point": 0.9986394557823127,
+      "ratio_ci_low": 0.9959183673469388,
+      "ratio_ci_high": 1.0,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.3-tier-a",
+      "dataset": "mvtec",
+      "category": "pill",
+      "zs": 0.36459430979978924,
+      "n2_per_seed": [
+        0.7075869336143308,
+        0.720231822971549,
+        0.7118018967334034
+      ],
+      "n30_per_seed": [
+        0.6859852476290833,
+        0.7476290832455216,
+        0.7397260273972601
+      ],
+      "n2_mean": 0.7132068844397611,
+      "n30_mean": 0.7244467860906216,
+      "lift_n30": 0.3598524762908324,
+      "ratio_point": 0.9687652513421182,
+      "ratio_ci_low": 0.9053554939981533,
+      "ratio_ci_high": 1.0803278688524587,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.3-tier-a",
+      "dataset": "mvtec",
+      "category": "zipper",
+      "zs": 0.6285860655737705,
+      "n2_per_seed": [
+        0.9382684426229508,
+        0.9375,
+        0.9364754098360655
+      ],
+      "n30_per_seed": [
+        0.9392930327868851,
+        0.9398053278688525,
+        0.9431352459016393
+      ],
+      "n2_mean": 0.9374146174863388,
+      "n30_mean": 0.9407445355191256,
+      "lift_n30": 0.3121584699453551,
+      "ratio_point": 0.9893326039387311,
+      "ratio_ci_low": 0.9826192305747042,
+      "ratio_ci_high": 0.9953309530348807,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.3-tier-a",
+      "dataset": "visa",
+      "category": "cashew",
+      "zs": 0.4794,
+      "n2_per_seed": [
+        0.7908,
+        0.8072,
+        0.776
+      ],
+      "n30_per_seed": [
+        0.7847999999999999,
+        0.7959999999999999,
+        0.8006
+      ],
+      "n2_mean": 0.7913333333333333,
+      "n30_mean": 0.7938,
+      "lift_n30": 0.31439999999999996,
+      "ratio_point": 0.9921543681085667,
+      "ratio_ci_low": 0.9432742440041714,
+      "ratio_ci_high": 1.0427000215656674,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.3-tier-a",
+      "dataset": "visa",
+      "category": "chewinggum",
+      "zs": 0.44140000000000007,
+      "n2_per_seed": [
+        0.9843999999999999,
+        0.984,
+        0.9836
+      ],
+      "n30_per_seed": [
+        0.9916,
+        0.989,
+        0.993
+      ],
+      "n2_mean": 0.984,
+      "n30_mean": 0.9912,
+      "lift_n30": 0.5497999999999998,
+      "ratio_point": 0.9869043288468536,
+      "ratio_ci_low": 0.9839255499153978,
+      "ratio_ci_high": 0.9906257608960314,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.3-tier-a",
+      "dataset": "visa",
+      "category": "macaroni1",
+      "zs": 0.5,
+      "n2_per_seed": [
+        0.6642,
+        0.6573,
+        0.6363
+      ],
+      "n30_per_seed": [
+        0.6577000000000001,
+        0.6567000000000001,
+        0.6725000000000001
+      ],
+      "n2_mean": 0.6526,
+      "n30_mean": 0.6623000000000001,
+      "lift_n30": 0.1623000000000001,
+      "ratio_point": 0.9402341343191611,
+      "ratio_ci_low": 0.839802834257547,
+      "ratio_ci_high": 1.0309912969645512,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.3-tier-a",
+      "dataset": "visa",
+      "category": "macaroni2",
+      "zs": 0.4953,
+      "n2_per_seed": [
+        0.5801000000000001,
+        0.5866,
+        0.5803
+      ],
+      "n30_per_seed": [
+        0.5829,
+        0.5591999999999999,
+        0.5866999999999999
+      ],
+      "n2_mean": 0.5823333333333334,
+      "n30_mean": 0.5762666666666666,
+      "lift_n30": 0.08096666666666658,
+      "ratio_point": 1.0749279538904914,
+      "ratio_ci_low": 0.9415680473372795,
+      "ratio_ci_high": 1.3302034428795015,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.3-tier-a",
+      "dataset": "visa",
+      "category": "pcb1",
+      "zs": 0.51,
+      "n2_per_seed": [
+        0.7298,
+        0.7584,
+        0.7431000000000001
+      ],
+      "n30_per_seed": [
+        0.7386999999999999,
+        0.7633,
+        0.7090000000000001
+      ],
+      "n2_mean": 0.7437666666666667,
+      "n30_mean": 0.737,
+      "lift_n30": 0.22699999999999998,
+      "ratio_point": 1.0298091042584436,
+      "ratio_ci_low": 0.9148646810825517,
+      "ratio_ci_high": 1.1646720919100046,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.3-tier-a",
+      "dataset": "visa",
+      "category": "pcb2",
+      "zs": 0.5,
+      "n2_per_seed": [
+        0.7287999999999999,
+        0.7175,
+        0.7058
+      ],
+      "n30_per_seed": [
+        0.7704000000000001,
+        0.7648,
+        0.7782
+      ],
+      "n2_mean": 0.7173666666666666,
+      "n30_mean": 0.7711333333333333,
+      "lift_n30": 0.27113333333333334,
+      "ratio_point": 0.8016965822473565,
+      "ratio_ci_low": 0.7590361445783131,
+      "ratio_ci_high": 0.8438749999999997,
+      "passes_080_point": true,
+      "passes_080_lower_ci": false
+    },
+    {
+      "recipe": "v0.3-tier-a",
+      "dataset": "visa",
+      "category": "pcb3",
+      "zs": 0.47,
+      "n2_per_seed": [
+        0.6805940594059406,
+        0.7221782178217822,
+        0.7064356435643564
+      ],
+      "n30_per_seed": [
+        0.6896039603960397,
+        0.6955445544554455,
+        0.7072277227722772
+      ],
+      "n2_mean": 0.703069306930693,
+      "n30_mean": 0.6974587458745874,
+      "lift_n30": 0.22745874587458748,
+      "ratio_point": 1.0246662797446313,
+      "ratio_ci_low": 0.9258560650029022,
+      "ratio_ci_high": 1.114387846291331,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.3-tier-a",
+      "dataset": "visa",
+      "category": "pcb4",
+      "zs": 0.51,
+      "n2_per_seed": [
+        0.8909900990099009,
+        0.9052475247524752,
+        0.9114851485148514
+      ],
+      "n30_per_seed": [
+        0.916039603960396,
+        0.9173267326732674,
+        0.9192079207920791
+      ],
+      "n2_mean": 0.9025742574257425,
+      "n30_mean": 0.9175247524752475,
+      "lift_n30": 0.40752475247524744,
+      "ratio_point": 0.9633138969873664,
+      "ratio_ci_low": 0.9358735306039725,
+      "ratio_ci_high": 0.9841436776959792,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.3-tier-a",
+      "dataset": "visa",
+      "category": "pipe_fryum",
+      "zs": 0.3848,
+      "n2_per_seed": [
+        0.6656,
+        0.669,
+        0.661
+      ],
+      "n30_per_seed": [
+        0.6908,
+        0.6854,
+        0.6778
+      ],
+      "n2_mean": 0.6652,
+      "n30_mean": 0.6846666666666666,
+      "lift_n30": 0.29986666666666667,
+      "ratio_point": 0.9350822587816808,
+      "ratio_ci_low": 0.9129958360727592,
+      "ratio_ci_high": 0.957816377171216,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.5-tier-a-qwen3",
+      "dataset": "mvtec",
+      "category": "bottle",
+      "zs": 0.7562499999999999,
+      "n2_per_seed": [
+        0.8492187500000001,
+        0.84140625,
+        0.8421875000000001
+      ],
+      "n30_per_seed": [
+        0.8507812499999999,
+        0.8492187499999999,
+        0.85546875
+      ],
+      "n2_mean": 0.8442708333333334,
+      "n30_mean": 0.8518229166666667,
+      "lift_n30": 0.09557291666666679,
+      "ratio_point": 0.9209809264305188,
+      "ratio_ci_low": 0.8746666666666671,
+      "ratio_ci_high": 0.9727520435967318,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.5-tier-a-qwen3",
+      "dataset": "mvtec",
+      "category": "cable",
+      "zs": 0.574468085106383,
+      "n2_per_seed": [
+        0.7775128393250184,
+        0.7743947175348496,
+        0.7727439471753484
+      ],
+      "n30_per_seed": [
+        0.7701760821716802,
+        0.7723771093176816,
+        0.7699926632428467
+      ],
+      "n2_mean": 0.7748838346784055,
+      "n30_mean": 0.7708486182440695,
+      "lift_n30": 0.19638053313768644,
+      "ratio_point": 1.0205479452054795,
+      "ratio_ci_low": 1.0083720930232554,
+      "ratio_ci_high": 1.0339352428393525,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.5-tier-a-qwen3",
+      "dataset": "mvtec",
+      "category": "capsule",
+      "zs": 0.6339285714285714,
+      "n2_per_seed": [
+        0.96777950310559,
+        0.967391304347826,
+        0.96777950310559
+      ],
+      "n30_per_seed": [
+        0.9673913043478262,
+        0.9670031055900622,
+        0.9666149068322982
+      ],
+      "n2_mean": 0.9676501035196687,
+      "n30_mean": 0.9670031055900622,
+      "lift_n30": 0.3330745341614908,
+      "ratio_point": 1.0019425019425017,
+      "ratio_ci_low": 1.000776096235933,
+      "ratio_ci_high": 1.0031104199066871,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.5-tier-a-qwen3",
+      "dataset": "mvtec",
+      "category": "carpet",
+      "zs": 0.5851063829787234,
+      "n2_per_seed": [
+        0.9962006079027356,
+        0.9958206686930092,
+        0.9962006079027356
+      ],
+      "n30_per_seed": [
+        0.996580547112462,
+        0.9962006079027356,
+        0.9973404255319149
+      ],
+      "n2_mean": 0.9960739614994935,
+      "n30_mean": 0.9967071935157041,
+      "lift_n30": 0.4116008105369807,
+      "ratio_point": 0.9984615384615386,
+      "ratio_ci_low": 0.9969278033794163,
+      "ratio_ci_high": 0.9996920234062212,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.5-tier-a-qwen3",
+      "dataset": "mvtec",
+      "category": "grid",
+      "zs": 0.7,
+      "n2_per_seed": [
+        0.9801587301587301,
+        0.9785714285714285,
+        0.976984126984127
+      ],
+      "n30_per_seed": [
+        0.976984126984127,
+        0.9761904761904762,
+        0.9777777777777777
+      ],
+      "n2_mean": 0.9785714285714285,
+      "n30_mean": 0.976984126984127,
+      "lift_n30": 0.276984126984127,
+      "ratio_point": 1.005730659025788,
+      "ratio_ci_low": 1.0,
+      "ratio_ci_high": 1.0114832535885168,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.5-tier-a-qwen3",
+      "dataset": "mvtec",
+      "category": "leather",
+      "zs": 0.5104166666666666,
+      "n2_per_seed": [
+        0.9973958333333334,
+        0.9970703125000001,
+        0.9970703125
+      ],
+      "n30_per_seed": [
+        0.9967447916666667,
+        0.9964192708333333,
+        0.9964192708333334
+      ],
+      "n2_mean": 0.9971788194444445,
+      "n30_mean": 0.9965277777777778,
+      "lift_n30": 0.48611111111111116,
+      "ratio_point": 1.0013392857142858,
+      "ratio_ci_low": 1.000892458723784,
+      "ratio_ci_high": 1.0017861129716457,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.5-tier-a-qwen3",
+      "dataset": "mvtec",
+      "category": "pill",
+      "zs": 0.7560590094836672,
+      "n2_per_seed": [
+        0.8701264488935723,
+        0.8664383561643835,
+        0.8703898840885141
+      ],
+      "n30_per_seed": [
+        0.8653846153846154,
+        0.863013698630137,
+        0.863013698630137
+      ],
+      "n2_mean": 0.8689848963821566,
+      "n30_mean": 0.8638040042149632,
+      "lift_n30": 0.10774499473129595,
+      "ratio_point": 1.048084759576201,
+      "ratio_ci_low": 1.02444987775061,
+      "ratio_ci_high": 1.0681444991789817,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.5-tier-a-qwen3",
+      "dataset": "mvtec",
+      "category": "screw",
+      "zs": 0.639344262295082,
+      "n2_per_seed": [
+        0.9530187924830067,
+        0.952219112355058,
+        0.9560175929628149
+      ],
+      "n30_per_seed": [
+        0.951219512195122,
+        0.9508196721311475,
+        0.9524190323870452
+      ],
+      "n2_mean": 0.9537518326002932,
+      "n30_mean": 0.9514860722377716,
+      "lift_n30": 0.3121418099426896,
+      "ratio_point": 1.0072587532023909,
+      "ratio_ci_low": 1.0014919011082692,
+      "ratio_ci_high": 1.014517506404782,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.5-tier-a-qwen3",
+      "dataset": "mvtec",
+      "category": "tile",
+      "zs": 0.5930232558139534,
+      "n2_per_seed": [
+        0.9940098661028894,
+        0.9933051444679352,
+        0.9936575052854123
+      ],
+      "n30_per_seed": [
+        0.9929527836504581,
+        0.992952783650458,
+        0.9922480620155039
+      ],
+      "n2_mean": 0.9936575052854123,
+      "n30_mean": 0.9927178764388067,
+      "lift_n30": 0.3996946206248533,
+      "ratio_point": 1.0023508668821628,
+      "ratio_ci_low": 1.0011747430249631,
+      "ratio_ci_high": 1.003530450132392,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.5-tier-a-qwen3",
+      "dataset": "mvtec",
+      "category": "toothbrush",
+      "zs": 0.6666666666666667,
+      "n2_per_seed": [
+        0.8277777777777778,
+        0.8222222222222222,
+        0.8416666666666667
+      ],
+      "n30_per_seed": [
+        0.8916666666666667,
+        0.888888888888889,
+        0.8416666666666668
+      ],
+      "n2_mean": 0.8305555555555556,
+      "n30_mean": 0.8740740740740741,
+      "lift_n30": 0.20740740740740737,
+      "ratio_point": 0.7901785714285714,
+      "ratio_ci_low": 0.7024793388429748,
+      "ratio_ci_high": 0.9174757281553393,
+      "passes_080_point": false,
+      "passes_080_lower_ci": false
+    },
+    {
+      "recipe": "v0.5-tier-a-qwen3",
+      "dataset": "mvtec",
+      "category": "transistor",
+      "zs": 0.575,
+      "n2_per_seed": [
+        0.6733333333333333,
+        0.6670833333333334,
+        0.6779166666666666
+      ],
+      "n30_per_seed": [
+        0.6808333333333333,
+        0.6658333333333333,
+        0.6675000000000001
+      ],
+      "n2_mean": 0.6727777777777778,
+      "n30_mean": 0.6713888888888889,
+      "lift_n30": 0.09638888888888897,
+      "ratio_point": 1.0144092219020173,
+      "ratio_ci_low": 0.9238845144356962,
+      "ratio_ci_high": 1.1094224924012146,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.5-tier-a-qwen3",
+      "dataset": "mvtec",
+      "category": "wood",
+      "zs": 0.6129032258064516,
+      "n2_per_seed": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "n30_per_seed": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "n2_mean": 1.0,
+      "n30_mean": 1.0,
+      "lift_n30": 0.3870967741935484,
+      "ratio_point": 1.0,
+      "ratio_ci_low": 1.0,
+      "ratio_ci_high": 1.0,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.5-tier-a-qwen3",
+      "dataset": "mvtec",
+      "category": "zipper",
+      "zs": 0.7131147540983607,
+      "n2_per_seed": [
+        0.9095799180327868,
+        0.9093237704918032,
+        0.9093237704918031
+      ],
+      "n30_per_seed": [
+        0.9108606557377048,
+        0.9098360655737706,
+        0.9108606557377048
+      ],
+      "n2_mean": 0.9094091530054644,
+      "n30_mean": 0.91051912568306,
+      "lift_n30": 0.19740437158469937,
+      "ratio_point": 0.994377162629758,
+      "ratio_ci_low": 0.9922279792746113,
+      "ratio_ci_high": 0.9978298611111097,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.5-tier-a-qwen3",
+      "dataset": "visa",
+      "category": "capsules",
+      "zs": 0.5,
+      "n2_per_seed": [
+        0.6546666666666667,
+        0.6485000000000001,
+        0.6488333333333334
+      ],
+      "n30_per_seed": [
+        0.6178333333333333,
+        0.6103333333333334,
+        0.631
+      ],
+      "n2_mean": 0.6506666666666667,
+      "n30_mean": 0.6197222222222223,
+      "lift_n30": 0.11972222222222229,
+      "ratio_point": 1.2584686774941993,
+      "ratio_ci_low": 1.1649703138252758,
+      "ratio_ci_high": 1.3655589123867067,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.5-tier-a-qwen3",
+      "dataset": "visa",
+      "category": "cashew",
+      "zs": 0.5,
+      "n2_per_seed": [
+        0.756,
+        0.7668,
+        0.7584000000000001
+      ],
+      "n30_per_seed": [
+        0.7866,
+        0.7827999999999999,
+        0.7872
+      ],
+      "n2_mean": 0.7604000000000001,
+      "n30_mean": 0.7855333333333333,
+      "lift_n30": 0.2855333333333333,
+      "ratio_point": 0.9119775858043431,
+      "ratio_ci_low": 0.894773519163763,
+      "ratio_ci_high": 0.9337377508166125,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.5-tier-a-qwen3",
+      "dataset": "visa",
+      "category": "chewinggum",
+      "zs": 0.54,
+      "n2_per_seed": [
+        0.9833999999999999,
+        0.9824,
+        0.9836
+      ],
+      "n30_per_seed": [
+        0.9803999999999999,
+        0.9782,
+        0.9792
+      ],
+      "n2_mean": 0.9831333333333333,
+      "n30_mean": 0.9792666666666666,
+      "lift_n30": 0.4392666666666666,
+      "ratio_point": 1.0088025497040523,
+      "ratio_ci_low": 1.0062064789585226,
+      "ratio_ci_high": 1.0114016418364247,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.5-tier-a-qwen3",
+      "dataset": "visa",
+      "category": "fryum",
+      "zs": 0.5,
+      "n2_per_seed": [
+        0.8506,
+        0.8508,
+        0.841
+      ],
+      "n30_per_seed": [
+        0.8482000000000001,
+        0.8474
+      ],
+      "n2_mean": 0.8474666666666667,
+      "n30_mean": 0.8478000000000001,
+      "lift_n30": 0.3478000000000001,
+      "ratio_point": 0.9990415947862754,
+      "ratio_ci_low": 0.9804485336400226,
+      "ratio_ci_high": 1.0095950873152946,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.5-tier-a-qwen3",
+      "dataset": "visa",
+      "category": "macaroni1",
+      "zs": 0.5,
+      "n2_per_seed": [
+        0.7070000000000001,
+        0.7077999999999999,
+        0.7126
+      ],
+      "n30_per_seed": [
+        0.7215999999999999,
+        0.7219000000000001,
+        0.7169000000000001
+      ],
+      "n2_mean": 0.7091333333333333,
+      "n30_mean": 0.7201333333333334,
+      "lift_n30": 0.2201333333333334,
+      "ratio_point": 0.9500302846759534,
+      "ratio_ci_low": 0.9344755034565677,
+      "ratio_ci_high": 0.9658223985352453,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.5-tier-a-qwen3",
+      "dataset": "visa",
+      "category": "macaroni2",
+      "zs": 0.5,
+      "n2_per_seed": [
+        0.6093999999999999,
+        0.6176,
+        0.5991
+      ],
+      "n30_per_seed": [
+        0.6062000000000001,
+        0.6087,
+        0.584
+      ],
+      "n2_mean": 0.6087,
+      "n30_mean": 0.5996333333333334,
+      "lift_n30": 0.09963333333333335,
+      "ratio_point": 1.0910003345600534,
+      "ratio_ci_low": 0.9505562422744122,
+      "ratio_ci_high": 1.286652078774617,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.5-tier-a-qwen3",
+      "dataset": "visa",
+      "category": "pcb1",
+      "zs": 0.5,
+      "n2_per_seed": [
+        0.5513,
+        0.5477000000000001,
+        0.5539000000000001
+      ],
+      "n30_per_seed": [
+        0.5656,
+        0.5762,
+        0.5941000000000001
+      ],
+      "n2_mean": 0.5509666666666667,
+      "n30_mean": 0.5786333333333333,
+      "lift_n30": 0.07863333333333333,
+      "ratio_point": 0.6481559983043669,
+      "ratio_ci_low": 0.5451647183846968,
+      "ratio_ci_high": 0.7769308943089439,
+      "passes_080_point": false,
+      "passes_080_lower_ci": false
+    },
+    {
+      "recipe": "v0.5-tier-a-qwen3",
+      "dataset": "visa",
+      "category": "pcb2",
+      "zs": 0.5,
+      "n2_per_seed": [
+        0.7579,
+        0.753,
+        0.7599
+      ],
+      "n30_per_seed": [
+        0.7508,
+        0.7586999999999999,
+        0.7467
+      ],
+      "n2_mean": 0.7569333333333333,
+      "n30_mean": 0.7520666666666667,
+      "lift_n30": 0.25206666666666666,
+      "ratio_point": 1.019307061623909,
+      "ratio_ci_low": 0.9933254809579901,
+      "ratio_ci_high": 1.0441832184839888,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.5-tier-a-qwen3",
+      "dataset": "visa",
+      "category": "pcb3",
+      "zs": 0.5,
+      "n2_per_seed": [
+        0.6573267326732672,
+        0.6588118811881188,
+        0.6547524752475247
+      ],
+      "n30_per_seed": [
+        0.6930693069306931,
+        0.6760396039603961,
+        0.6729702970297029
+      ],
+      "n2_mean": 0.6569636963696369,
+      "n30_mean": 0.6806930693069307,
+      "lift_n30": 0.18069306930693074,
+      "ratio_point": 0.8686757990867575,
+      "ratio_ci_low": 0.815555555555555,
+      "ratio_ci_high": 0.9099013657056149,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.5-tier-a-qwen3",
+      "dataset": "visa",
+      "category": "pcb4",
+      "zs": 0.5,
+      "n2_per_seed": [
+        0.9894059405940595,
+        0.9894059405940594,
+        0.9900990099009901
+      ],
+      "n30_per_seed": [
+        0.9888118811881188,
+        0.9886138613861387,
+        0.9872277227722772
+      ],
+      "n2_mean": 0.9896369636963697,
+      "n30_mean": 0.9882178217821782,
+      "lift_n30": 0.4882178217821782,
+      "ratio_point": 1.0029067802338945,
+      "ratio_ci_low": 1.0013505300830576,
+      "ratio_ci_high": 1.00494010962983,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    },
+    {
+      "recipe": "v0.5-tier-a-qwen3",
+      "dataset": "visa",
+      "category": "pipe_fryum",
+      "zs": 0.5,
+      "n2_per_seed": [
+        0.9584000000000001,
+        0.9622,
+        0.9604
+      ],
+      "n30_per_seed": [
+        0.9538,
+        0.9566,
+        0.9558
+      ],
+      "n2_mean": 0.9603333333333334,
+      "n30_mean": 0.9554,
+      "lift_n30": 0.4554,
+      "ratio_point": 1.0108329673547065,
+      "ratio_ci_low": 1.005989773557341,
+      "ratio_ci_high": 1.0156960539826903,
+      "passes_080_point": true,
+      "passes_080_lower_ci": true
+    }
+  ],
+  "threshold_curve": [
+    {
+      "threshold": 0.02,
+      "recipe": "v0.3-tier-a",
+      "qualifying": 14,
+      "pass_point_080": 14,
+      "pass_lower_080": 13,
+      "pass_rate_point": 1.0,
+      "pass_rate_lower": 0.9285714285714286
+    },
+    {
+      "threshold": 0.02,
+      "recipe": "v0.5-tier-a-qwen3",
+      "qualifying": 24,
+      "pass_point_080": 22,
+      "pass_lower_080": 22,
+      "pass_rate_point": 0.9166666666666666,
+      "pass_rate_lower": 0.9166666666666666
+    },
+    {
+      "threshold": 0.05,
+      "recipe": "v0.3-tier-a",
+      "qualifying": 14,
+      "pass_point_080": 14,
+      "pass_lower_080": 13,
+      "pass_rate_point": 1.0,
+      "pass_rate_lower": 0.9285714285714286
+    },
+    {
+      "threshold": 0.05,
+      "recipe": "v0.5-tier-a-qwen3",
+      "qualifying": 24,
+      "pass_point_080": 22,
+      "pass_lower_080": 22,
+      "pass_rate_point": 0.9166666666666666,
+      "pass_rate_lower": 0.9166666666666666
+    },
+    {
+      "threshold": 0.075,
+      "recipe": "v0.3-tier-a",
+      "qualifying": 14,
+      "pass_point_080": 14,
+      "pass_lower_080": 13,
+      "pass_rate_point": 1.0,
+      "pass_rate_lower": 0.9285714285714286
+    },
+    {
+      "threshold": 0.075,
+      "recipe": "v0.5-tier-a-qwen3",
+      "qualifying": 24,
+      "pass_point_080": 22,
+      "pass_lower_080": 22,
+      "pass_rate_point": 0.9166666666666666,
+      "pass_rate_lower": 0.9166666666666666
+    },
+    {
+      "threshold": 0.1,
+      "recipe": "v0.3-tier-a",
+      "qualifying": 13,
+      "pass_point_080": 13,
+      "pass_lower_080": 12,
+      "pass_rate_point": 1.0,
+      "pass_rate_lower": 0.9230769230769231
+    },
+    {
+      "threshold": 0.1,
+      "recipe": "v0.5-tier-a-qwen3",
+      "qualifying": 20,
+      "pass_point_080": 19,
+      "pass_lower_080": 19,
+      "pass_rate_point": 0.95,
+      "pass_rate_lower": 0.95
+    },
+    {
+      "threshold": 0.15,
+      "recipe": "v0.3-tier-a",
+      "qualifying": 13,
+      "pass_point_080": 13,
+      "pass_lower_080": 12,
+      "pass_rate_point": 1.0,
+      "pass_rate_lower": 0.9230769230769231
+    },
+    {
+      "threshold": 0.15,
+      "recipe": "v0.5-tier-a-qwen3",
+      "qualifying": 18,
+      "pass_point_080": 17,
+      "pass_lower_080": 17,
+      "pass_rate_point": 0.9444444444444444,
+      "pass_rate_lower": 0.9444444444444444
+    }
+  ]
+}

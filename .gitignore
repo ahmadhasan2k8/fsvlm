@@ -40,6 +40,8 @@ research/logs/
 research/autoresearch_state.json
 research/launch_readiness.json
 research/phase_status.json
+research/baselines/*.log
+research/baselines/__pycache__/
 
 # Model artifacts
 *.safetensors

@@ -1,0 +1,277 @@
+{
+  "schema_version": 1,
+  "method": "SHA-256 over sorted concatenated relative paths (newline-delimited)",
+  "rationale": "Identical hashes per cat across all sweep cells (any model, recipe, N) and across the WinCLIP+ baseline prove the test split is bit-identical, ruling out test-set drift / leakage / inconsistency.",
+  "rows": [
+    {
+      "dataset": "mvtec",
+      "category": "bottle",
+      "n_test_normal": 20,
+      "n_test_anomaly": 63,
+      "n_test_total": 83,
+      "test_normal_sha256": "9c66bad9c4596cba",
+      "test_anomaly_sha256": "5e6137e387841df4",
+      "test_combined_sha256": "73c649642b3a603e"
+    },
+    {
+      "dataset": "mvtec",
+      "category": "cable",
+      "n_test_normal": 58,
+      "n_test_anomaly": 92,
+      "n_test_total": 150,
+      "test_normal_sha256": "b9435ef1a24b860d",
+      "test_anomaly_sha256": "8a3bbe2ac3cca67e",
+      "test_combined_sha256": "2919102bc3983232"
+    },
+    {
+      "dataset": "mvtec",
+      "category": "capsule",
+      "n_test_normal": 23,
+      "n_test_anomaly": 109,
+      "n_test_total": 132,
+      "test_normal_sha256": "8d593be264fe3181",
+      "test_anomaly_sha256": "094e5854eb20ed60",
+      "test_combined_sha256": "535a79ae45968730"
+    },
+    {
+      "dataset": "mvtec",
+      "category": "carpet",
+      "n_test_normal": 28,
+      "n_test_anomaly": 89,
+      "n_test_total": 117,
+      "test_normal_sha256": "74c59f3f596f30c3",
+      "test_anomaly_sha256": "dbbe284bd87cf43b",
+      "test_combined_sha256": "28755bc66ee14ff2"
+    },
+    {
+      "dataset": "mvtec",
+      "category": "grid",
+      "n_test_normal": 21,
+      "n_test_anomaly": 57,
+      "n_test_total": 78,
+      "test_normal_sha256": "edb27f7548e79b5b",
+      "test_anomaly_sha256": "d38bb3217cf6047f",
+      "test_combined_sha256": "ff7fd19eb582217a"
+    },
+    {
+      "dataset": "mvtec",
+      "category": "hazelnut",
+      "n_test_normal": 40,
+      "n_test_anomaly": 70,
+      "n_test_total": 110,
+      "test_normal_sha256": "210b1d92386e975a",
+      "test_anomaly_sha256": "c90af3568c18ec8b",
+      "test_combined_sha256": "7982625bdbae81c0"
+    },
+    {
+      "dataset": "mvtec",
+      "category": "leather",
+      "n_test_normal": 32,
+      "n_test_anomaly": 92,
+      "n_test_total": 124,
+      "test_normal_sha256": "66dbd2f9112fc0ad",
+      "test_anomaly_sha256": "4e33dabd702e1fec",
+      "test_combined_sha256": "0b707e7cffd93c4d"
+    },
+    {
+      "dataset": "mvtec",
+      "category": "metal_nut",
+      "n_test_normal": 22,
+      "n_test_anomaly": 93,
+      "n_test_total": 115,
+      "test_normal_sha256": "fcc5620c23db23ac",
+      "test_anomaly_sha256": "397113801fc70333",
+      "test_combined_sha256": "4578834283c29d1f"
+    },
+    {
+      "dataset": "mvtec",
+      "category": "pill",
+      "n_test_normal": 26,
+      "n_test_anomaly": 141,
+      "n_test_total": 167,
+      "test_normal_sha256": "42bd23f8f8ecdd8d",
+      "test_anomaly_sha256": "b468d5ae8b9d5767",
+      "test_combined_sha256": "429db2320fbc1be6"
+    },
+    {
+      "dataset": "mvtec",
+      "category": "screw",
+      "n_test_normal": 41,
+      "n_test_anomaly": 119,
+      "n_test_total": 160,
+      "test_normal_sha256": "d2014d0d5fadc63e",
+      "test_anomaly_sha256": "ea67adfc2f7f3b1d",
+      "test_combined_sha256": "b2850fa49cf782ca"
+    },
+    {
+      "dataset": "mvtec",
+      "category": "tile",
+      "n_test_normal": 33,
+      "n_test_anomaly": 84,
+      "n_test_total": 117,
+      "test_normal_sha256": "2b6b5658fd09232a",
+      "test_anomaly_sha256": "827a4fdb7238ea14",
+      "test_combined_sha256": "5c4b4708d1c20a9f"
+    },
+    {
+      "dataset": "mvtec",
+      "category": "toothbrush",
+      "n_test_normal": 12,
+      "n_test_anomaly": 30,
+      "n_test_total": 42,
+      "test_normal_sha256": "dfd450720318a1ba",
+      "test_anomaly_sha256": "b1f29e1050c5eec9",
+      "test_combined_sha256": "5b16d53620bd3ad1"
+    },
+    {
+      "dataset": "mvtec",
+      "category": "transistor",
+      "n_test_normal": 60,
+      "n_test_anomaly": 40,
+      "n_test_total": 100,
+      "test_normal_sha256": "2964e33ac50db430",
+      "test_anomaly_sha256": "f5f8225aaf72547c",
+      "test_combined_sha256": "47f6d51290b23684"
+    },
+    {
+      "dataset": "mvtec",
+      "category": "wood",
+      "n_test_normal": 19,
+      "n_test_anomaly": 60,
+      "n_test_total": 79,
+      "test_normal_sha256": "37adba548f601675",
+      "test_anomaly_sha256": "c28bee3ac14f7570",
+      "test_combined_sha256": "307795860bd950a7"
+    },
+    {
+      "dataset": "mvtec",
+      "category": "zipper",
+      "n_test_normal": 32,
+      "n_test_anomaly": 119,
+      "n_test_total": 151,
+      "test_normal_sha256": "2114fed4b08eb004",
+      "test_anomaly_sha256": "eb4fe55711c979e9",
+      "test_combined_sha256": "edb2e75531765de4"
+    },
+    {
+      "dataset": "visa",
+      "category": "candle",
+      "n_test_normal": 100,
+      "n_test_anomaly": 50,
+      "n_test_total": 150,
+      "test_normal_sha256": "70e39ef630e7cad7",
+      "test_anomaly_sha256": "6acf0cb07e6b0557",
+      "test_combined_sha256": "b58c9d3ae99630c2"
+    },
+    {
+      "dataset": "visa",
+      "category": "capsules",
+      "n_test_normal": 60,
+      "n_test_anomaly": 50,
+      "n_test_total": 110,
+      "test_normal_sha256": "b876e38fb240aab8",
+      "test_anomaly_sha256": "de6c067ac5aaf54e",
+      "test_combined_sha256": "3dd7e2eb2f018284"
+    },
+    {
+      "dataset": "visa",
+      "category": "cashew",
+      "n_test_normal": 50,
+      "n_test_anomaly": 50,
+      "n_test_total": 100,
+      "test_normal_sha256": "b8f387106af02498",
+      "test_anomaly_sha256": "872e66c7cb599a5d",
+      "test_combined_sha256": "be5b2b70d00399a7"
+    },
+    {
+      "dataset": "visa",
+      "category": "chewinggum",
+      "n_test_normal": 50,
+      "n_test_anomaly": 50,
+      "n_test_total": 100,
+      "test_normal_sha256": "6160f17e04165141",
+      "test_anomaly_sha256": "6afd7a0ecfccf5c0",
+      "test_combined_sha256": "afc155c7ebf5762d"
+    },
+    {
+      "dataset": "visa",
+      "category": "fryum",
+      "n_test_normal": 50,
+      "n_test_anomaly": 50,
+      "n_test_total": 100,
+      "test_normal_sha256": "7751b2232ca0c998",
+      "test_anomaly_sha256": "cbf20672ed82f4e7",
+      "test_combined_sha256": "d02392af22c6d0c3"
+    },
+    {
+      "dataset": "visa",
+      "category": "macaroni1",
+      "n_test_normal": 100,
+      "n_test_anomaly": 50,
+      "n_test_total": 150,
+      "test_normal_sha256": "e49981a432472cbd",
+      "test_anomaly_sha256": "9e8ec2c2b1b5e839",
+      "test_combined_sha256": "affc9ab06fdfa7a9"
+    },
+    {
+      "dataset": "visa",
+      "category": "macaroni2",
+      "n_test_normal": 100,
+      "n_test_anomaly": 50,
+      "n_test_total": 150,
+      "test_normal_sha256": "0dea3c2d0b2b74f7",
+      "test_anomaly_sha256": "7a16afd8c1bb1efe",
+      "test_combined_sha256": "553141eb2d390dea"
+    },
+    {
+      "dataset": "visa",
+      "category": "pcb1",
+      "n_test_normal": 100,
+      "n_test_anomaly": 50,
+      "n_test_total": 150,
+      "test_normal_sha256": "e3d6e36d2e1e1f5f",
+      "test_anomaly_sha256": "ec999e2addb2c39b",
+      "test_combined_sha256": "42452c2ef060c3e0"
+    },
+    {
+      "dataset": "visa",
+      "category": "pcb2",
+      "n_test_normal": 100,
+      "n_test_anomaly": 50,
+      "n_test_total": 150,
+      "test_normal_sha256": "889cf14d7fcb78a2",
+      "test_anomaly_sha256": "d80f1476c3878960",
+      "test_combined_sha256": "31b7679ce642a1dc"
+    },
+    {
+      "dataset": "visa",
+      "category": "pcb3",
+      "n_test_normal": 101,
+      "n_test_anomaly": 50,
+      "n_test_total": 151,
+      "test_normal_sha256": "b6f63f0bfe855b6d",
+      "test_anomaly_sha256": "5e1aa28148836e98",
+      "test_combined_sha256": "2cf9b46a1c51a8d0"
+    },
+    {
+      "dataset": "visa",
+      "category": "pcb4",
+      "n_test_normal": 101,
+      "n_test_anomaly": 50,
+      "n_test_total": 151,
+      "test_normal_sha256": "fd791d6ae1b8997a",
+      "test_anomaly_sha256": "893b21ff55b3d057",
+      "test_combined_sha256": "dc2ea7fc3900f275"
+    },
+    {
+      "dataset": "visa",
+      "category": "pipe_fryum",
+      "n_test_normal": 50,
+      "n_test_anomaly": 50,
+      "n_test_total": 100,
+      "test_normal_sha256": "8674992481a991f0",
+      "test_anomaly_sha256": "a96c3d8311e9af38",
+      "test_combined_sha256": "6363103ee2b8387e"
+    }
+  ]
+}

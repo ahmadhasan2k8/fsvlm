@@ -1,0 +1,386 @@
+[
+  {
+    "method": "winclip_plus",
+    "dataset": "mvtec",
+    "category": "wood",
+    "k_shot": 2,
+    "seed": 42,
+    "auroc": 0.9929824561403509,
+    "n_test": 79,
+    "n_normal": 19,
+    "n_anomaly": 60,
+    "reference_images": [
+      "research/mvtec_data/wood/train/good/163.png",
+      "research/mvtec_data/wood/train/good/028.png"
+    ],
+    "elapsed_seconds": 55.91434288024902
+  },
+  {
+    "method": "winclip_plus",
+    "dataset": "mvtec",
+    "category": "pill",
+    "k_shot": 2,
+    "seed": 42,
+    "auroc": 0.9099836333878888,
+    "n_test": 167,
+    "n_normal": 26,
+    "n_anomaly": 141,
+    "reference_images": [
+      "research/mvtec_data/pill/train/good/057.png",
+      "research/mvtec_data/pill/train/good/012.png"
+    ],
+    "elapsed_seconds": 120.73743319511414
+  },
+  {
+    "method": "winclip_plus",
+    "dataset": "visa",
+    "category": "chewinggum",
+    "k_shot": 2,
+    "seed": 42,
+    "auroc": 1.0,
+    "n_test": 100,
+    "n_normal": 50,
+    "n_anomaly": 50,
+    "reference_images": [
+      "research/datasets/visa/chewinggum/Data/Images/Normal/358.JPG",
+      "research/datasets/visa/chewinggum/Data/Images/Normal/061.JPG"
+    ],
+    "elapsed_seconds": 70.12351417541504
+  },
+  {
+    "method": "winclip_plus",
+    "dataset": "visa",
+    "category": "pcb4",
+    "k_shot": 2,
+    "seed": 42,
+    "auroc": 0.8970297029702969,
+    "n_test": 151,
+    "n_normal": 101,
+    "n_anomaly": 50,
+    "reference_images": [
+      "research/datasets/visa/pcb4/Data/Images/Normal/0722.JPG",
+      "research/datasets/visa/pcb4/Data/Images/Normal/0123.JPG"
+    ],
+    "elapsed_seconds": 103.12321877479553
+  },
+  {
+    "method": "winclip_plus",
+    "dataset": "visa",
+    "category": "macaroni2",
+    "k_shot": 2,
+    "seed": 42,
+    "auroc": 0.6681999999999999,
+    "n_test": 150,
+    "n_normal": 100,
+    "n_anomaly": 50,
+    "reference_images": [
+      "research/datasets/visa/macaroni2/Data/Images/Normal/0722.JPG",
+      "research/datasets/visa/macaroni2/Data/Images/Normal/0123.JPG"
+    ],
+    "elapsed_seconds": 104.51352214813232
+  },
+  {
+    "method": "winclip_plus",
+    "dataset": "mvtec",
+    "category": "capsule",
+    "k_shot": 2,
+    "seed": 42,
+    "auroc": 0.7622656561627443,
+    "n_test": 132,
+    "n_normal": 23,
+    "n_anomaly": 109,
+    "reference_images": [
+      "research/mvtec_data/capsule/train/good/163.png",
+      "research/mvtec_data/capsule/train/good/028.png"
+    ],
+    "elapsed_seconds": 93.70797801017761
+  },
+  {
+    "method": "winclip_plus",
+    "dataset": "mvtec",
+    "category": "zipper",
+    "k_shot": 2,
+    "seed": 42,
+    "auroc": 0.9558823529411764,
+    "n_test": 151,
+    "n_normal": 32,
+    "n_anomaly": 119,
+    "reference_images": [
+      "research/mvtec_data/zipper/train/good/163.png",
+      "research/mvtec_data/zipper/train/good/028.png"
+    ],
+    "elapsed_seconds": 104.97518968582153
+  },
+  {
+    "method": "winclip_plus",
+    "dataset": "mvtec",
+    "category": "transistor",
+    "k_shot": 2,
+    "seed": 42,
+    "auroc": 0.9116666666666666,
+    "n_test": 100,
+    "n_normal": 60,
+    "n_anomaly": 40,
+    "reference_images": [
+      "research/mvtec_data/transistor/train/good/163.png",
+      "research/mvtec_data/transistor/train/good/028.png"
+    ],
+    "elapsed_seconds": 72.06579327583313
+  },
+  {
+    "method": "winclip_plus",
+    "dataset": "mvtec",
+    "category": "bottle",
+    "k_shot": 2,
+    "seed": 42,
+    "auroc": 0.9952380952380953,
+    "n_test": 83,
+    "n_normal": 20,
+    "n_anomaly": 63,
+    "reference_images": [
+      "research/mvtec_data/bottle/train/good/163.png",
+      "research/mvtec_data/bottle/train/good/028.png"
+    ],
+    "elapsed_seconds": 62.54901885986328
+  },
+  {
+    "method": "winclip_plus",
+    "dataset": "mvtec",
+    "category": "cable",
+    "k_shot": 2,
+    "seed": 42,
+    "auroc": 0.8976761619190405,
+    "n_test": 150,
+    "n_normal": 58,
+    "n_anomaly": 92,
+    "reference_images": [
+      "research/mvtec_data/cable/train/good/163.png",
+      "research/mvtec_data/cable/train/good/028.png"
+    ],
+    "elapsed_seconds": 105.72004532814026
+  },
+  {
+    "method": "winclip_plus",
+    "dataset": "mvtec",
+    "category": "carpet",
+    "k_shot": 2,
+    "seed": 42,
+    "auroc": 0.997191011235955,
+    "n_test": 117,
+    "n_normal": 28,
+    "n_anomaly": 89,
+    "reference_images": [
+      "research/mvtec_data/carpet/train/good/057.png",
+      "research/mvtec_data/carpet/train/good/012.png"
+    ],
+    "elapsed_seconds": 82.68273687362671
+  },
+  {
+    "method": "winclip_plus",
+    "dataset": "mvtec",
+    "category": "grid",
+    "k_shot": 2,
+    "seed": 42,
+    "auroc": 0.9966583124477861,
+    "n_test": 78,
+    "n_normal": 21,
+    "n_anomaly": 57,
+    "reference_images": [
+      "research/mvtec_data/grid/train/good/057.png",
+      "research/mvtec_data/grid/train/good/012.png"
+    ],
+    "elapsed_seconds": 54.64923810958862
+  },
+  {
+    "method": "winclip_plus",
+    "dataset": "mvtec",
+    "category": "leather",
+    "k_shot": 2,
+    "seed": 42,
+    "auroc": 1.0,
+    "n_test": 124,
+    "n_normal": 32,
+    "n_anomaly": 92,
+    "reference_images": [
+      "research/mvtec_data/leather/train/good/163.png",
+      "research/mvtec_data/leather/train/good/028.png"
+    ],
+    "elapsed_seconds": 87.12018918991089
+  },
+  {
+    "method": "winclip_plus",
+    "dataset": "mvtec",
+    "category": "screw",
+    "k_shot": 2,
+    "seed": 42,
+    "auroc": 0.8432055749128919,
+    "n_test": 160,
+    "n_normal": 41,
+    "n_anomaly": 119,
+    "reference_images": [
+      "research/mvtec_data/screw/train/good/057.png",
+      "research/mvtec_data/screw/train/good/012.png"
+    ],
+    "elapsed_seconds": 110.66952514648438
+  },
+  {
+    "method": "winclip_plus",
+    "dataset": "mvtec",
+    "category": "tile",
+    "k_shot": 2,
+    "seed": 42,
+    "auroc": 0.998917748917749,
+    "n_test": 117,
+    "n_normal": 33,
+    "n_anomaly": 84,
+    "reference_images": [
+      "research/mvtec_data/tile/train/good/163.png",
+      "research/mvtec_data/tile/train/good/028.png"
+    ],
+    "elapsed_seconds": 82.17901611328125
+  },
+  {
+    "method": "winclip_plus",
+    "dataset": "mvtec",
+    "category": "toothbrush",
+    "k_shot": 2,
+    "seed": 42,
+    "auroc": 0.9722222222222221,
+    "n_test": 42,
+    "n_normal": 12,
+    "n_anomaly": 30,
+    "reference_images": [
+      "research/mvtec_data/toothbrush/train/good/040.png",
+      "research/mvtec_data/toothbrush/train/good/007.png"
+    ],
+    "elapsed_seconds": 30.414371252059937
+  },
+  {
+    "method": "winclip_plus",
+    "dataset": "visa",
+    "category": "capsules",
+    "k_shot": 2,
+    "seed": 42,
+    "auroc": 0.853,
+    "n_test": 110,
+    "n_normal": 60,
+    "n_anomaly": 50,
+    "reference_images": [
+      "research/datasets/visa/capsules/Data/Images/Normal/124.JPG",
+      "research/datasets/visa/capsules/Data/Images/Normal/031.JPG"
+    ],
+    "elapsed_seconds": 76.33995199203491
+  },
+  {
+    "method": "winclip_plus",
+    "dataset": "visa",
+    "category": "cashew",
+    "k_shot": 2,
+    "seed": 42,
+    "auroc": 0.8876,
+    "n_test": 100,
+    "n_normal": 50,
+    "n_anomaly": 50,
+    "reference_images": [
+      "research/datasets/visa/cashew/Data/Images/Normal/359.JPG",
+      "research/datasets/visa/cashew/Data/Images/Normal/062.JPG"
+    ],
+    "elapsed_seconds": 69.78983211517334
+  },
+  {
+    "method": "winclip_plus",
+    "dataset": "visa",
+    "category": "fryum",
+    "k_shot": 2,
+    "seed": 42,
+    "auroc": 0.8748,
+    "n_test": 100,
+    "n_normal": 50,
+    "n_anomaly": 50,
+    "reference_images": [
+      "research/datasets/visa/fryum/Data/Images/Normal/359.JPG",
+      "research/datasets/visa/fryum/Data/Images/Normal/062.JPG"
+    ],
+    "elapsed_seconds": 69.22576308250427
+  },
+  {
+    "method": "winclip_plus",
+    "dataset": "visa",
+    "category": "macaroni1",
+    "k_shot": 2,
+    "seed": 42,
+    "auroc": 0.8414,
+    "n_test": 150,
+    "n_normal": 100,
+    "n_anomaly": 50,
+    "reference_images": [
+      "research/datasets/visa/macaroni1/Data/Images/Normal/0722.JPG",
+      "research/datasets/visa/macaroni1/Data/Images/Normal/0123.JPG"
+    ],
+    "elapsed_seconds": 103.38138818740845
+  },
+  {
+    "method": "winclip_plus",
+    "dataset": "visa",
+    "category": "pcb1",
+    "k_shot": 2,
+    "seed": 42,
+    "auroc": 0.7422,
+    "n_test": 150,
+    "n_normal": 100,
+    "n_anomaly": 50,
+    "reference_images": [
+      "research/datasets/visa/pcb1/Data/Images/Normal/0722.JPG",
+      "research/datasets/visa/pcb1/Data/Images/Normal/0123.JPG"
+    ],
+    "elapsed_seconds": 103.3239974975586
+  },
+  {
+    "method": "winclip_plus",
+    "dataset": "visa",
+    "category": "pcb2",
+    "k_shot": 2,
+    "seed": 42,
+    "auroc": 0.607,
+    "n_test": 150,
+    "n_normal": 100,
+    "n_anomaly": 50,
+    "reference_images": [
+      "research/datasets/visa/pcb2/Data/Images/Normal/0722.JPG",
+      "research/datasets/visa/pcb2/Data/Images/Normal/0123.JPG"
+    ],
+    "elapsed_seconds": 103.28503251075745
+  },
+  {
+    "method": "winclip_plus",
+    "dataset": "visa",
+    "category": "pcb3",
+    "k_shot": 2,
+    "seed": 42,
+    "auroc": 0.7112871287128713,
+    "n_test": 151,
+    "n_normal": 101,
+    "n_anomaly": 50,
+    "reference_images": [
+      "research/datasets/visa/pcb3/Data/Images/Normal/0722.JPG",
+      "research/datasets/visa/pcb3/Data/Images/Normal/0123.JPG"
+    ],
+    "elapsed_seconds": 101.19033169746399
+  },
+  {
+    "method": "winclip_plus",
+    "dataset": "visa",
+    "category": "pipe_fryum",
+    "k_shot": 2,
+    "seed": 42,
+    "auroc": 0.7812000000000001,
+    "n_test": 100,
+    "n_normal": 50,
+    "n_anomaly": 50,
+    "reference_images": [
+      "research/datasets/visa/pipe_fryum/Data/Images/Normal/359.JPG",
+      "research/datasets/visa/pipe_fryum/Data/Images/Normal/062.JPG"
+    ],
+    "elapsed_seconds": 67.34562540054321
+  }
+]
