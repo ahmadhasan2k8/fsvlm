@@ -82,12 +82,21 @@ def mvtec_train_normals(category: str) -> list[Path]:
 
 
 def mvtec_test_split(category: str) -> tuple[list[Path], list[Path]]:
+    """Match the fsvlm `MVTecAdapter.test_set()` convention exactly.
+
+    fsvlm's adapter holds out the second half of each defect subtype as the test
+    pool (the first half is borrowed for the train pool, mirroring the VisA
+    convention). Earlier versions of this function returned ALL defects per
+    subtype, which made WinCLIP+ test on a ~1.6x larger anomaly pool than fsvlm
+    did on the same cats — invalidating the matched-shot comparison on MVTec.
+    """
     base = MVTEC_ROOT / category / "test"
     test_normals = sorted((base / "good").glob("*.png"))
     test_anomalies: list[Path] = []
     for sub in sorted(base.iterdir()):
         if sub.is_dir() and sub.name != "good":
-            test_anomalies.extend(sorted(sub.glob("*.png")))
+            imgs = sorted(sub.glob("*.png"))
+            test_anomalies.extend(imgs[len(imgs) // 2:])
     return test_normals, test_anomalies
 
 

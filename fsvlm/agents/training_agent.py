@@ -212,10 +212,33 @@ class TrainingAgent:
             eval_strategy = "epoch"
             load_best = True
 
+        # Adapt grad_accum + warmup to actual dataset size. The previous defaults
+        # (grad_accum=8, warmup_steps=max(1, int(0.05*150))=7) silently disabled
+        # training at low N: with 1 train sample over 3 epochs at batch=1, the
+        # 3 forward passes never accumulate to a single optimizer step (3 // 8 = 0)
+        # and warmup_steps=7 would have starved any LR schedule on small N anyway.
+        # Compute both from the actual training pool.
+        n_train = max(1, len(train_dataset))
+        # Cap grad_accum so we get at least 1 update per epoch.
+        eff_grad_accum = max(1, min(tc.gradient_accumulation_steps,
+                                    n_train // max(1, tc.per_device_train_batch_size)))
+        total_optimizer_steps = max(
+            1,
+            (n_train * tc.num_train_epochs)
+            // (tc.per_device_train_batch_size * eff_grad_accum),
+        )
+        warmup_steps = max(1, int(total_optimizer_steps * tc.warmup_ratio))
+        logger.info(
+            f"Training schedule: n_train={n_train}, epochs={tc.num_train_epochs}, "
+            f"batch={tc.per_device_train_batch_size}, grad_accum={eff_grad_accum} "
+            f"(configured {tc.gradient_accumulation_steps}), "
+            f"total_optimizer_steps={total_optimizer_steps}, warmup_steps={warmup_steps}"
+        )
+
         training_args = SFTConfig(
             per_device_train_batch_size=tc.per_device_train_batch_size,
-            gradient_accumulation_steps=tc.gradient_accumulation_steps,
-            warmup_steps=max(1, int(tc.warmup_ratio * 150)),
+            gradient_accumulation_steps=eff_grad_accum,
+            warmup_steps=warmup_steps,
             num_train_epochs=tc.num_train_epochs,
             learning_rate=tc.learning_rate,
             fp16=False,

@@ -7,151 +7,151 @@
       "dataset": "mvtec",
       "category": "bottle",
       "n_test_normal": 20,
-      "n_test_anomaly": 63,
-      "n_test_total": 83,
+      "n_test_anomaly": 32,
+      "n_test_total": 52,
       "test_normal_sha256": "9c66bad9c4596cba",
-      "test_anomaly_sha256": "5e6137e387841df4",
-      "test_combined_sha256": "73c649642b3a603e"
+      "test_anomaly_sha256": "da5e6a0cd74d7f17",
+      "test_combined_sha256": "14fbf048dd277cdb"
     },
     {
       "dataset": "mvtec",
       "category": "cable",
       "n_test_normal": 58,
-      "n_test_anomaly": 92,
-      "n_test_total": 150,
+      "n_test_anomaly": 47,
+      "n_test_total": 105,
       "test_normal_sha256": "b9435ef1a24b860d",
-      "test_anomaly_sha256": "8a3bbe2ac3cca67e",
-      "test_combined_sha256": "2919102bc3983232"
+      "test_anomaly_sha256": "01e03d4aca202c23",
+      "test_combined_sha256": "6414b60f3eb87cb2"
     },
     {
       "dataset": "mvtec",
       "category": "capsule",
       "n_test_normal": 23,
-      "n_test_anomaly": 109,
-      "n_test_total": 132,
+      "n_test_anomaly": 56,
+      "n_test_total": 79,
       "test_normal_sha256": "8d593be264fe3181",
-      "test_anomaly_sha256": "094e5854eb20ed60",
-      "test_combined_sha256": "535a79ae45968730"
+      "test_anomaly_sha256": "62604dcddae82b1a",
+      "test_combined_sha256": "794a6a13eb967dcc"
     },
     {
       "dataset": "mvtec",
       "category": "carpet",
       "n_test_normal": 28,
-      "n_test_anomaly": 89,
-      "n_test_total": 117,
+      "n_test_anomaly": 47,
+      "n_test_total": 75,
       "test_normal_sha256": "74c59f3f596f30c3",
-      "test_anomaly_sha256": "dbbe284bd87cf43b",
-      "test_combined_sha256": "28755bc66ee14ff2"
+      "test_anomaly_sha256": "f57b6f2d3dde5f0c",
+      "test_combined_sha256": "5d352c94d63697cb"
     },
     {
       "dataset": "mvtec",
       "category": "grid",
       "n_test_normal": 21,
-      "n_test_anomaly": 57,
-      "n_test_total": 78,
+      "n_test_anomaly": 30,
+      "n_test_total": 51,
       "test_normal_sha256": "edb27f7548e79b5b",
-      "test_anomaly_sha256": "d38bb3217cf6047f",
-      "test_combined_sha256": "ff7fd19eb582217a"
+      "test_anomaly_sha256": "6b5c24ded3101ae0",
+      "test_combined_sha256": "433fe2ac9d81aecb"
     },
     {
       "dataset": "mvtec",
       "category": "hazelnut",
       "n_test_normal": 40,
-      "n_test_anomaly": 70,
-      "n_test_total": 110,
+      "n_test_anomaly": 36,
+      "n_test_total": 76,
       "test_normal_sha256": "210b1d92386e975a",
-      "test_anomaly_sha256": "c90af3568c18ec8b",
-      "test_combined_sha256": "7982625bdbae81c0"
+      "test_anomaly_sha256": "90de13567ddfc943",
+      "test_combined_sha256": "47dd085392f02b5a"
     },
     {
       "dataset": "mvtec",
       "category": "leather",
       "n_test_normal": 32,
-      "n_test_anomaly": 92,
-      "n_test_total": 124,
+      "n_test_anomaly": 48,
+      "n_test_total": 80,
       "test_normal_sha256": "66dbd2f9112fc0ad",
-      "test_anomaly_sha256": "4e33dabd702e1fec",
-      "test_combined_sha256": "0b707e7cffd93c4d"
+      "test_anomaly_sha256": "f231f648ea38ec35",
+      "test_combined_sha256": "cc44fbe9416c687f"
     },
     {
       "dataset": "mvtec",
       "category": "metal_nut",
       "n_test_normal": 22,
-      "n_test_anomaly": 93,
-      "n_test_total": 115,
+      "n_test_anomaly": 48,
+      "n_test_total": 70,
       "test_normal_sha256": "fcc5620c23db23ac",
-      "test_anomaly_sha256": "397113801fc70333",
-      "test_combined_sha256": "4578834283c29d1f"
+      "test_anomaly_sha256": "9d89128b3843a514",
+      "test_combined_sha256": "c12240eb3b41b3a5"
     },
     {
       "dataset": "mvtec",
       "category": "pill",
       "n_test_normal": 26,
-      "n_test_anomaly": 141,
-      "n_test_total": 167,
+      "n_test_anomaly": 73,
+      "n_test_total": 99,
       "test_normal_sha256": "42bd23f8f8ecdd8d",
-      "test_anomaly_sha256": "b468d5ae8b9d5767",
-      "test_combined_sha256": "429db2320fbc1be6"
+      "test_anomaly_sha256": "60d5226767dee53a",
+      "test_combined_sha256": "71acc1b45f668a67"
     },
     {
       "dataset": "mvtec",
       "category": "screw",
       "n_test_normal": 41,
-      "n_test_anomaly": 119,
-      "n_test_total": 160,
+      "n_test_anomaly": 61,
+      "n_test_total": 102,
       "test_normal_sha256": "d2014d0d5fadc63e",
-      "test_anomaly_sha256": "ea67adfc2f7f3b1d",
-      "test_combined_sha256": "b2850fa49cf782ca"
+      "test_anomaly_sha256": "3c88ae4265adf2c4",
+      "test_combined_sha256": "f562dfadf46c0522"
     },
     {
       "dataset": "mvtec",
       "category": "tile",
       "n_test_normal": 33,
-      "n_test_anomaly": 84,
-      "n_test_total": 117,
+      "n_test_anomaly": 43,
+      "n_test_total": 76,
       "test_normal_sha256": "2b6b5658fd09232a",
-      "test_anomaly_sha256": "827a4fdb7238ea14",
-      "test_combined_sha256": "5c4b4708d1c20a9f"
+      "test_anomaly_sha256": "366fc2b88cfb7eec",
+      "test_combined_sha256": "f3f9f85457486cfa"
     },
     {
       "dataset": "mvtec",
       "category": "toothbrush",
       "n_test_normal": 12,
-      "n_test_anomaly": 30,
-      "n_test_total": 42,
+      "n_test_anomaly": 15,
+      "n_test_total": 27,
       "test_normal_sha256": "dfd450720318a1ba",
-      "test_anomaly_sha256": "b1f29e1050c5eec9",
-      "test_combined_sha256": "5b16d53620bd3ad1"
+      "test_anomaly_sha256": "6028c66a35754af8",
+      "test_combined_sha256": "99130305c65a050c"
     },
     {
       "dataset": "mvtec",
       "category": "transistor",
       "n_test_normal": 60,
-      "n_test_anomaly": 40,
-      "n_test_total": 100,
+      "n_test_anomaly": 20,
+      "n_test_total": 80,
       "test_normal_sha256": "2964e33ac50db430",
-      "test_anomaly_sha256": "f5f8225aaf72547c",
-      "test_combined_sha256": "47f6d51290b23684"
+      "test_anomaly_sha256": "d6b485505c9d443b",
+      "test_combined_sha256": "e858f89418f1ad9e"
     },
     {
       "dataset": "mvtec",
       "category": "wood",
       "n_test_normal": 19,
-      "n_test_anomaly": 60,
-      "n_test_total": 79,
+      "n_test_anomaly": 31,
+      "n_test_total": 50,
       "test_normal_sha256": "37adba548f601675",
-      "test_anomaly_sha256": "c28bee3ac14f7570",
-      "test_combined_sha256": "307795860bd950a7"
+      "test_anomaly_sha256": "c7dc90cf8b7a70c3",
+      "test_combined_sha256": "50ee8dd0f4662484"
     },
     {
       "dataset": "mvtec",
       "category": "zipper",
       "n_test_normal": 32,
-      "n_test_anomaly": 119,
-      "n_test_total": 151,
+      "n_test_anomaly": 61,
+      "n_test_total": 93,
       "test_normal_sha256": "2114fed4b08eb004",
-      "test_anomaly_sha256": "eb4fe55711c979e9",
-      "test_combined_sha256": "edb2e75531765de4"
+      "test_anomaly_sha256": "d700dc11df0a5f16",
+      "test_combined_sha256": "e4e2588321036e57"
     },
     {
       "dataset": "visa",

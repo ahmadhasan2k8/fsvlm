@@ -120,6 +120,7 @@ def train(
     lora_rank: int | None = typer.Option(None, "--lora-rank", help="LoRA rank (overrides config default)"),
     lora_alpha: int | None = typer.Option(None, "--lora-alpha", help="LoRA alpha (overrides config default)"),
     learning_rate: float | None = typer.Option(None, "--learning-rate", "--lr", help="Learning rate (overrides config default)"),
+    prompt: str | None = typer.Option(None, "--prompt", help="Inspection prompt to use during training. Should match the prompt used at evaluation time so train/eval are not mismatched."),
     no_sweep: bool = typer.Option(False, "--no-sweep", help="Skip auto-research sweep, use single config"),
     yes: bool = typer.Option(False, "--yes", "-y", help="Skip confirmation prompts"),
 ) -> None:
@@ -154,6 +155,8 @@ def train(
         tc.lora.alpha = lora_alpha
     if learning_rate is not None:
         tc.learning_rate = learning_rate
+    if prompt is not None:
+        tc.inspection_prompt = prompt
 
     # Check model availability
     model_info = get_model_by_name(tc.model_name)

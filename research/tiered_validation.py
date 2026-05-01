@@ -173,10 +173,23 @@ def _run_base_model_inference(
 
     from fsvlm.utils.image import load_image
 
-    # Pre-compute PASS/FAIL token IDs once (same pattern as adapter inference)
+    # Pre-compute PASS/FAIL token IDs once (same pattern as adapter inference).
+    # Assertion guards against tokenizers that split PASS / FAIL into multiple
+    # subwords — taking [0] would silently score on the first subword (e.g. 'P'
+    # vs 'F'), which is not what the literature reports as P(PASS) vs P(FAIL).
     _tok = tokenizer.tokenizer if hasattr(tokenizer, "tokenizer") else tokenizer
-    pass_id = _tok.encode("PASS", add_special_tokens=False)[0]
-    fail_id = _tok.encode("FAIL", add_special_tokens=False)[0]
+    _pass_ids = _tok.encode("PASS", add_special_tokens=False)
+    _fail_ids = _tok.encode("FAIL", add_special_tokens=False)
+    assert len(_pass_ids) == 1, (
+        f"Tokenizer splits 'PASS' into {len(_pass_ids)} subwords {_pass_ids}; "
+        f"single-token logit scoring is invalid for this model."
+    )
+    assert len(_fail_ids) == 1, (
+        f"Tokenizer splits 'FAIL' into {len(_fail_ids)} subwords {_fail_ids}; "
+        f"single-token logit scoring is invalid for this model."
+    )
+    pass_id = _pass_ids[0]
+    fail_id = _fail_ids[0]
 
     scores = []
     for i, img_path in enumerate(image_paths):
@@ -219,11 +232,23 @@ def _run_base_model_inference(
         ).strip().upper()
         first_word = response.split()[0].rstrip(".,!:") if response.split() else ""
 
-        # Cascade: explicit keyword overrides logit probability; otherwise use the prob.
-        if first_word == "FAIL":
-            score = 0.9
-        elif first_word == "PASS":
-            score = 0.1
+        # Scoring strategy:
+        # - Default (v0.7+): logit-only — matches the trained-path
+        #   `_run_adapter_inference` scorer so ZS-vs-trained AUROC is apples-to-apples.
+        #   The earlier v0.1 cascade (keyword override 0.1/0.9 with logit fallback)
+        #   inflated apparent fine-tune lift on cats where the base model frequently
+        #   emitted "PASS" verbatim (cascade collapsed to score=0.1, destroying
+        #   AUROC ranking).
+        # - Opt-in cascade via FSVLM_ENABLE_CASCADE=1 — for backward-compat with
+        #   the v0.1 / v0.3-tier-a / v0.5-tier-a-qwen3 numbers; do NOT use for new
+        #   ZS-vs-trained comparisons.
+        if os.environ.get("FSVLM_ENABLE_CASCADE", "0") == "1":
+            if first_word == "FAIL":
+                score = 0.9
+            elif first_word == "PASS":
+                score = 0.1
+            else:
+                score = prob_fail_logit
         else:
             score = prob_fail_logit
 
@@ -475,8 +500,18 @@ def _run_adapter_inference(
     FastVisionModel.for_inference(model)
 
     _tok = tokenizer.tokenizer if hasattr(tokenizer, "tokenizer") else tokenizer
-    pass_id = _tok.encode("PASS", add_special_tokens=False)[0]
-    fail_id = _tok.encode("FAIL", add_special_tokens=False)[0]
+    _pass_ids = _tok.encode("PASS", add_special_tokens=False)
+    _fail_ids = _tok.encode("FAIL", add_special_tokens=False)
+    assert len(_pass_ids) == 1, (
+        f"Tokenizer splits 'PASS' into {len(_pass_ids)} subwords {_pass_ids}; "
+        f"single-token logit scoring is invalid for this model."
+    )
+    assert len(_fail_ids) == 1, (
+        f"Tokenizer splits 'FAIL' into {len(_fail_ids)} subwords {_fail_ids}; "
+        f"single-token logit scoring is invalid for this model."
+    )
+    pass_id = _pass_ids[0]
+    fail_id = _fail_ids[0]
 
     scores = []
     for i, img_path in enumerate(image_paths):

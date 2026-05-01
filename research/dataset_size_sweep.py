@@ -137,14 +137,20 @@ class MVTecAdapter(DatasetAdapter):
             TrainExample(p, "good", f"Normal undamaged {category.replace('_', ' ')}")
             for p in sorted(train_good_dir.glob("*.png"))
         ]
-        # Defect pool = all test-split defects (MVTec doesn't ship train defects).
-        # We hold out half for testing and use half for training (deterministic).
+        # Defect pool = first-half-per-subtype of test-split defects (MVTec doesn't
+        # ship train defects). The second half is reserved for `test_set()`.
+        # Earlier versions returned ALL defects without halving here, which meant
+        # the train pool overlapped the test pool at large N; `sample_training_set`
+        # could draw test images into training. Mirror the per-subtype halving from
+        # `test_set()` to enforce strict disjointness.
         defect: list[TrainExample] = []
         for subtype_dir in sorted(test_dir.iterdir()):
             if not subtype_dir.is_dir() or subtype_dir.name == "good":
                 continue
             subtype = subtype_dir.name
-            for p in sorted(subtype_dir.glob("*.png")):
+            images = sorted(subtype_dir.glob("*.png"))
+            train_half = images[: len(images) // 2]
+            for p in train_half:
                 defect.append(TrainExample(
                     p, "defect",
                     f"{subtype.replace('_', ' ')} defect visible on the {category.replace('_', ' ')}",
@@ -415,9 +421,16 @@ def write_training_csv(examples: list[TrainExample], path: Path) -> None:
 def train_via_cli(
     csv_path: Path, output_dir: Path, epochs: int,
     lora_rank: int | None = None, learning_rate: float | None = None,
+    prompt: str | None = None,
     timeout: int = 3600,
 ) -> Path:
-    """Run `fsvlm train` as a subprocess; return the trained adapter path."""
+    """Run `fsvlm train` as a subprocess; return the trained adapter path.
+
+    `prompt` should be the same prompt used at evaluation time so the trained
+    adapter doesn't see a different prompt than it is evaluated on (the
+    train/eval prompt mismatch suppressed measured fine-tune lift uniformly
+    in v0.3-tier-a / v0.5-tier-a-qwen3 sweeps).
+    """
     cmd = [
         sys.executable, "-m", "fsvlm.cli",
         "train", "--images", str(csv_path),
@@ -428,6 +441,8 @@ def train_via_cli(
         cmd.extend(["--lora-rank", str(lora_rank), "--lora-alpha", str(lora_rank)])
     if learning_rate is not None:
         cmd.extend(["--learning-rate", str(learning_rate)])
+    if prompt is not None:
+        cmd.extend(["--prompt", prompt])
     proc = subprocess.run(
         cmd,
         capture_output=False,
@@ -594,8 +609,10 @@ def run_one(
         tmpdir = Path(tempfile.mkdtemp(prefix=f"dvlm_sweep_{adapter.name}_{category}_n{n_samples}_s{seed}_"))
         csv_path = tmpdir / "labels.csv"
         write_training_csv(samples, csv_path)
+        # Pass the same `prompt` used at eval time so train/eval are consistent.
         adapter_path = train_via_cli(csv_path, tmpdir / "out", epochs=epochs,
-                                     lora_rank=lora_rank, learning_rate=learning_rate)
+                                     lora_rank=lora_rank, learning_rate=learning_rate,
+                                     prompt=prompt)
 
     scores = run_zero_shot(adapter_path, test_set, prompt)
     metrics = compute_metrics(scores, test_labels)

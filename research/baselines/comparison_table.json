@@ -3,15 +3,15 @@
     {
       "dataset": "mvtec",
       "category": "pill",
-      "winclip_k2_auroc": 0.9099836333878888,
+      "winclip_k2_auroc": 0.9320337197049526,
       "gemma_zs": 0.36459430979978924,
       "gemma_n2": 0.7132068844397611,
       "gemma_n30": 0.7244467860906216,
       "qwen3_zs": 0.7560590094836672,
       "qwen3_n2": 0.8689848963821566,
       "qwen3_n30": 0.8638040042149632,
-      "winclip_minus_gemma_n2": 0.1967767489481277,
-      "winclip_minus_qwen3_n2": 0.0409987370057322
+      "winclip_minus_gemma_n2": 0.21882683526519153,
+      "winclip_minus_qwen3_n2": 0.06304882332279604
     },
     {
       "dataset": "visa",
@@ -42,15 +42,15 @@
     {
       "dataset": "mvtec",
       "category": "bottle",
-      "winclip_k2_auroc": 0.9952380952380953,
+      "winclip_k2_auroc": 0.9921875,
       "gemma_zs": 0.45781249999999996,
       "gemma_n2": 0.7179687499999999,
       "gemma_n30": 0.6458333333333334,
       "qwen3_zs": 0.7562499999999999,
       "qwen3_n2": 0.8442708333333334,
       "qwen3_n30": 0.8518229166666667,
-      "winclip_minus_gemma_n2": 0.2772693452380953,
-      "winclip_minus_qwen3_n2": 0.15096726190476184
+      "winclip_minus_gemma_n2": 0.27421875000000007,
+      "winclip_minus_qwen3_n2": 0.14791666666666659
     },
     {
       "dataset": "visa",
@@ -68,15 +68,15 @@
     {
       "dataset": "mvtec",
       "category": "capsule",
-      "winclip_k2_auroc": 0.7622656561627443,
+      "winclip_k2_auroc": 0.7717391304347826,
       "gemma_zs": 0.47127329192546585,
       "gemma_n2": 0.8655538302277432,
       "gemma_n30": 0.8663302277432713,
       "qwen3_zs": 0.6339285714285714,
       "qwen3_n2": 0.9676501035196687,
       "qwen3_n30": 0.9670031055900622,
-      "winclip_minus_gemma_n2": -0.1032881740649989,
-      "winclip_minus_qwen3_n2": -0.2053844473569244
+      "winclip_minus_gemma_n2": -0.09381469979296064,
+      "winclip_minus_qwen3_n2": -0.19591097308488614
     },
     {
       "dataset": "visa",
@@ -132,19 +132,6 @@
     },
     {
       "dataset": "visa",
-      "category": "pcb4",
-      "winclip_k2_auroc": 0.8970297029702969,
-      "gemma_zs": 0.51,
-      "gemma_n2": 0.9025742574257425,
-      "gemma_n30": 0.9175247524752475,
-      "qwen3_zs": 0.5,
-      "qwen3_n2": 0.9896369636963697,
-      "qwen3_n30": 0.9882178217821782,
-      "winclip_minus_gemma_n2": -0.0055445544554455495,
-      "winclip_minus_qwen3_n2": -0.09260726072607273
-    },
-    {
-      "dataset": "visa",
       "category": "pcb1",
       "winclip_k2_auroc": 0.7422,
       "gemma_zs": 0.51,
@@ -157,17 +144,30 @@
       "winclip_minus_qwen3_n2": 0.19123333333333326
     },
     {
+      "dataset": "visa",
+      "category": "pcb4",
+      "winclip_k2_auroc": 0.8970297029702969,
+      "gemma_zs": 0.51,
+      "gemma_n2": 0.9025742574257425,
+      "gemma_n30": 0.9175247524752475,
+      "qwen3_zs": 0.5,
+      "qwen3_n2": 0.9896369636963697,
+      "qwen3_n30": 0.9882178217821782,
+      "winclip_minus_gemma_n2": -0.0055445544554455495,
+      "winclip_minus_qwen3_n2": -0.09260726072607273
+    },
+    {
       "dataset": "mvtec",
       "category": "zipper",
-      "winclip_k2_auroc": 0.9558823529411764,
+      "winclip_k2_auroc": 0.966188524590164,
       "gemma_zs": 0.6285860655737705,
       "gemma_n2": 0.9374146174863388,
       "gemma_n30": 0.9407445355191256,
       "qwen3_zs": 0.7131147540983607,
       "qwen3_n2": 0.9094091530054644,
       "qwen3_n30": 0.91051912568306,
-      "winclip_minus_gemma_n2": 0.018467735454837597,
-      "winclip_minus_qwen3_n2": 0.04647319993571197
+      "winclip_minus_gemma_n2": 0.028773907103825214,
+      "winclip_minus_qwen3_n2": 0.05677937158469959
     },
     {
       "dataset": "visa",
@@ -185,67 +185,67 @@
     {
       "dataset": "mvtec",
       "category": "transistor",
-      "winclip_k2_auroc": 0.9116666666666666,
+      "winclip_k2_auroc": 0.9208333333333333,
       "gemma_zs": 0.7124999999999999,
       "gemma_n2": 0.709861111111111,
       "gemma_n30": 0.7097222222222221,
       "qwen3_zs": 0.575,
       "qwen3_n2": 0.6727777777777778,
       "qwen3_n30": 0.6713888888888889,
-      "winclip_minus_gemma_n2": 0.20180555555555557,
-      "winclip_minus_qwen3_n2": 0.23888888888888882
+      "winclip_minus_gemma_n2": 0.21097222222222223,
+      "winclip_minus_qwen3_n2": 0.24805555555555547
     },
     {
       "dataset": "mvtec",
       "category": "cable",
-      "winclip_k2_auroc": 0.8976761619190405,
+      "winclip_k2_auroc": 0.9104915627292736,
       "gemma_zs": 0.7230374174614821,
       "gemma_n2": 0.7469430178527757,
       "gemma_n30": 0.7320860846172659,
       "qwen3_zs": 0.574468085106383,
       "qwen3_n2": 0.7748838346784055,
       "qwen3_n30": 0.7708486182440695,
-      "winclip_minus_gemma_n2": 0.1507331440662648,
-      "winclip_minus_qwen3_n2": 0.12279232724063505
+      "winclip_minus_gemma_n2": 0.16354854487649784,
+      "winclip_minus_qwen3_n2": 0.13560772805086807
     },
     {
       "dataset": "mvtec",
       "category": "tile",
-      "winclip_k2_auroc": 0.998917748917749,
+      "winclip_k2_auroc": 0.9985905567300917,
       "gemma_zs": 0.7529950669485553,
       "gemma_n2": 0.807728447263331,
       "gemma_n30": 0.7544045102184637,
       "qwen3_zs": 0.5930232558139534,
       "qwen3_n2": 0.9936575052854123,
       "qwen3_n30": 0.9927178764388067,
-      "winclip_minus_gemma_n2": 0.19118930165441794,
-      "winclip_minus_qwen3_n2": 0.005260243632336681
+      "winclip_minus_gemma_n2": 0.19086210946676063,
+      "winclip_minus_qwen3_n2": 0.0049330514446793705
     },
     {
       "dataset": "mvtec",
       "category": "screw",
-      "winclip_k2_auroc": 0.8432055749128919,
+      "winclip_k2_auroc": 0.8276689324270292,
       "gemma_zs": 0.7550979608156737,
       "gemma_n2": 0.8501266160202585,
       "gemma_n30": 0.7351059576169533,
       "qwen3_zs": 0.639344262295082,
       "qwen3_n2": 0.9537518326002932,
       "qwen3_n30": 0.9514860722377716,
-      "winclip_minus_gemma_n2": -0.006921041107366577,
-      "winclip_minus_qwen3_n2": -0.11054625768740123
+      "winclip_minus_gemma_n2": -0.022457683593229305,
+      "winclip_minus_qwen3_n2": -0.12608290017326396
     },
     {
       "dataset": "mvtec",
       "category": "grid",
-      "winclip_k2_auroc": 0.9966583124477861,
+      "winclip_k2_auroc": 0.9936507936507937,
       "gemma_zs": 0.7777777777777777,
       "gemma_n2": 0.9719576719576719,
       "gemma_n30": 0.9722222222222222,
       "qwen3_zs": 0.7,
       "qwen3_n2": 0.9785714285714285,
       "qwen3_n30": 0.976984126984127,
-      "winclip_minus_gemma_n2": 0.024700640490114223,
-      "winclip_minus_qwen3_n2": 0.018086883876357596
+      "winclip_minus_gemma_n2": 0.021693121693121764,
+      "winclip_minus_qwen3_n2": 0.015079365079365137
     },
     {
       "dataset": "visa",
@@ -263,41 +263,41 @@
     {
       "dataset": "mvtec",
       "category": "toothbrush",
-      "winclip_k2_auroc": 0.9722222222222221,
+      "winclip_k2_auroc": 0.9555555555555555,
       "gemma_zs": 0.8472222222222224,
       "gemma_n2": 0.8574074074074074,
       "gemma_n30": 0.8731481481481481,
       "qwen3_zs": 0.6666666666666667,
       "qwen3_n2": 0.8305555555555556,
       "qwen3_n30": 0.8740740740740741,
-      "winclip_minus_gemma_n2": 0.1148148148148147,
-      "winclip_minus_qwen3_n2": 0.1416666666666665
+      "winclip_minus_gemma_n2": 0.0981481481481481,
+      "winclip_minus_qwen3_n2": 0.12499999999999989
     },
     {
       "dataset": "mvtec",
       "category": "carpet",
-      "winclip_k2_auroc": 0.997191011235955,
+      "winclip_k2_auroc": 1.0,
       "gemma_zs": 0.9718844984802432,
       "gemma_n2": 0.9949341438703141,
       "gemma_n30": 0.9955673758865248,
       "qwen3_zs": 0.5851063829787234,
       "qwen3_n2": 0.9960739614994935,
       "qwen3_n30": 0.9967071935157041,
-      "winclip_minus_gemma_n2": 0.002256867365640902,
-      "winclip_minus_qwen3_n2": 0.0011170497364615395
+      "winclip_minus_gemma_n2": 0.005065856129685908,
+      "winclip_minus_qwen3_n2": 0.003926038500506546
     },
     {
       "dataset": "mvtec",
       "category": "wood",
-      "winclip_k2_auroc": 0.9929824561403509,
+      "winclip_k2_auroc": 0.9949066213921902,
       "gemma_zs": 0.9847198641765704,
       "gemma_n2": 0.9949066213921902,
       "gemma_n30": 0.9957555178268251,
       "qwen3_zs": 0.6129032258064516,
       "qwen3_n2": 1.0,
       "qwen3_n30": 1.0,
-      "winclip_minus_gemma_n2": -0.0019241652518393604,
-      "winclip_minus_qwen3_n2": -0.007017543859649145
+      "winclip_minus_gemma_n2": 0.0,
+      "winclip_minus_qwen3_n2": -0.005093378607809784
     },
     {
       "dataset": "mvtec",
@@ -315,35 +315,11 @@
   ],
   "summary": {
     "n": 24,
-    "winclip_minus_gemma_n2_mean": 0.07230209254358134,
-    "winclip_minus_gemma_n2_median": 0.039350320245057135,
-    "winclip_minus_qwen3_n2_mean": 0.03481279286762337,
-    "winclip_minus_qwen3_n2_median": 0.03416603516953276,
+    "winclip_minus_gemma_n2_mean": 0.07355027330839799,
+    "winclip_minus_gemma_n2_median": 0.04138695355191263,
+    "winclip_minus_qwen3_n2_mean": 0.03606097363244001,
+    "winclip_minus_qwen3_n2_median": 0.04082838283828383,
     "winclip_beats_gemma_n2": "18/24",
     "winclip_beats_qwen3_n2": "18/24"
-  },
-  "statistical_analysis_24cat": {
-    "gemma_n2": {
-      "n": 24,
-      "mean": 0.07230209254358134,
-      "median": 0.039350320245057135,
-      "mean_95ci_low": 0.032681561596541266,
-      "mean_95ci_high": 0.11355754237688441,
-      "winclip_wins": 18,
-      "fsvlm_wins": 6,
-      "wilcoxon_p": 0.0017795562744140625,
-      "sign_test_p": 0.022655844688415527
-    },
-    "qwen3_n2": {
-      "n": 24,
-      "mean": 0.03481279286762337,
-      "median": 0.03416603516953276,
-      "mean_95ci_low": -0.011680804722435609,
-      "mean_95ci_high": 0.08044515318401049,
-      "winclip_wins": 18,
-      "fsvlm_wins": 6,
-      "wilcoxon_p": 0.08937323093414307,
-      "sign_test_p": 0.022655844688415527
-    }
   }
 }
