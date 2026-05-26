@@ -75,7 +75,7 @@ class ExperimentConfig:
     # Prompt
     inspection_prompt: str = (
         "You are a visual quality inspector. Examine this image of a hazelnut. "
-        "Respond with exactly PASS or FAIL on the first line. "
+        "Respond with exactly $pass_token or $fail_token on the first line. "
         "On the second line, describe what you see."
     )
 
@@ -288,13 +288,15 @@ def prepare_data(
             scale = config.max_image_size / max(w, h)
             img = img.resize((int(w * scale), int(h * scale)), Image.LANCZOS)
 
+        from fsvlm.prompts.verdict import resolve_inspection_prompt
+
         return {
             "messages": [
                 {
                     "role": "user",
                     "content": [
                         {"type": "image", "image": img},
-                        {"type": "text", "text": config.inspection_prompt},
+                        {"type": "text", "text": resolve_inspection_prompt(config.inspection_prompt)},
                     ],
                 },
                 {
@@ -583,12 +585,17 @@ def evaluate(
     y_scores: list[float] = []
     predictions: list[dict] = []
 
+    from fsvlm.prompts.verdict import resolve_inspection_prompt, verdict_token_ids, verdict_tokens
+
+    pass_str, fail_str = verdict_tokens()
+    pass_token_id, fail_token_id = verdict_token_ids(tokenizer)
+
     for i, sample in enumerate(val_samples):
         messages = sample["messages"]
 
         # Extract ground truth from the assistant response
         assistant_text = messages[1]["content"][0]["text"]
-        true_label = 0 if assistant_text.startswith("PASS") else 1
+        true_label = 0 if assistant_text.startswith(pass_str) else 1
 
         # Build inference input (user turn only)
         user_content = messages[0]["content"]
@@ -645,16 +652,11 @@ def evaluate(
             )
             output = gen_output.sequences
 
-            # Extract PASS/FAIL probability from the first generated token's scores
+            # Extract verdict probabilities from the first generated token's scores
             prob_pass = 0.5
             prob_fail = 0.5
             if hasattr(gen_output, 'scores') and gen_output.scores:
                 first_token_scores = gen_output.scores[0][0]  # [vocab_size]
-                # Processor wraps a tokenizer — use .tokenizer for encoding
-                _tok = tokenizer.tokenizer if hasattr(tokenizer, 'tokenizer') else tokenizer
-                pass_token_id = _tok.encode("PASS", add_special_tokens=False)[0]
-                fail_token_id = _tok.encode("FAIL", add_special_tokens=False)[0]
-
                 pass_logit = first_token_scores[pass_token_id].float()
                 fail_logit = first_token_scores[fail_token_id].float()
                 probs = torch.softmax(torch.stack([pass_logit, fail_logit]), dim=0)
@@ -662,7 +664,8 @@ def evaluate(
                 prob_fail = probs[1].item()
 
                 if i == 0:
-                    print(f"  Token probs working: P(PASS)={prob_pass:.4f}, P(FAIL)={prob_fail:.4f}")
+                    print(f"  Token probs working: P({pass_str})={prob_pass:.4f}, "
+                          f"P({fail_str})={prob_fail:.4f}")
 
         # Decode response (skip the input tokens)
         input_len = inputs["input_ids"].shape[-1]
@@ -672,12 +675,12 @@ def evaluate(
         # defect_score: probability that the image is defective (0 = good, 1 = defect)
         defect_score = prob_fail
 
-        # Parse PASS/FAIL from response text as primary classification
+        # Parse verdict from response text as primary classification
         response_upper = response.strip().upper()
-        if response_upper.startswith("PASS"):
+        if response_upper.startswith(pass_str.upper()):
             pred_label = 0
             confidence = prob_pass
-        elif response_upper.startswith("FAIL"):
+        elif response_upper.startswith(fail_str.upper()):
             pred_label = 1
             confidence = prob_fail
         else:
@@ -685,7 +688,7 @@ def evaluate(
             if prob_fail > prob_pass:
                 pred_label = 1
                 confidence = prob_fail
-            elif "FAIL" in response_upper or "DEFECT" in response_upper:
+            elif fail_str.upper() in response_upper or "DEFECT" in response_upper:
                 pred_label = 1
                 confidence = max(prob_fail, 0.6)
             else:

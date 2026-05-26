@@ -125,7 +125,8 @@ class MVTecAdapter(DatasetAdapter):
         pretty = category.replace("_", " ")
         return (
             f"Examine this {pretty}. Is it a normal, undamaged {pretty} or does it have "
-            "visible defects? Answer PASS if good, FAIL if defective. Then describe briefly."
+            "visible defects? Answer $pass_token if good, $fail_token if defective. "
+            "Then describe briefly."
         )
 
     def train_pool(self, category: str) -> tuple[list[TrainExample], list[TrainExample]]:
@@ -196,7 +197,7 @@ class VisAAdapter(DatasetAdapter):
         pretty = category.replace("_", " ")
         return (
             f"Examine this {pretty}. Is it normal or does it show a visible anomaly? "
-            "Answer PASS if normal, FAIL if abnormal. Then describe briefly."
+            "Answer $pass_token if normal, $fail_token if abnormal. Then describe briefly."
         )
 
     def train_pool(self, category: str) -> tuple[list[TrainExample], list[TrainExample]]:
@@ -277,7 +278,7 @@ class DeepPCBAdapter(DatasetAdapter):
         return (
             "Examine this PCB image. Is it a defect-free board or does it show PCB defects "
             "such as open, short, mousebite, spur, copper, or pin-hole? "
-            "Answer PASS if defect-free, FAIL if defective. Then describe briefly."
+            "Answer $pass_token if defect-free, $fail_token if defective. Then describe briefly."
         )
 
     def train_pool(self, category: str) -> tuple[list[TrainExample], list[TrainExample]]:
@@ -563,6 +564,28 @@ def run_one(
     learning_rate: float | None = None,
 ) -> RunRecord:
     """Run a single (dataset, category, n, seed) benchmark."""
+    # VRAM-leak guard. The parent process accumulates non-PyTorch GPU memory across
+    # cells (unsloth global state, lingering CUDA contexts) that plain
+    # gc.collect() + torch.cuda.empty_cache() cannot fully release. After ~40-50
+    # cells in a single parent process, free VRAM falls below the
+    # caching_allocator_warmup pre-allocation budget (~10 GiB) and the next cell
+    # OOMs. We pre-check headroom and abort cleanly here so the calling launch
+    # script can re-launch a fresh process and --resume picks up where we left off.
+    try:
+        import torch
+        gc.collect()
+        torch.cuda.empty_cache()
+        free_bytes, _total = torch.cuda.mem_get_info()
+        free_gib = free_bytes / (1024**3)
+        if free_gib < 6.0:
+            print(f"  VRAM-LEAK-GUARD: only {free_gib:.1f} GiB free (< 6.0 threshold). "
+                  f"Aborting this process so a fresh process can resume; "
+                  f"re-run the same launch script to continue from --resume.",
+                  flush=True)
+            raise SystemExit(2)  # exit code 2 signals "VRAM-leak abort, re-launch"
+    except ImportError:
+        pass
+
     git_hash, git_short, git_dirty = _git_provenance()
 
     is_zero_shot = (n_samples == 0)

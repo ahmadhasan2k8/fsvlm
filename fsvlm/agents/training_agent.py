@@ -108,13 +108,17 @@ class TrainingAgent:
     ) -> list[dict]:
         """Convert LabeledSamples into VLM conversation-format dicts."""
 
+        from fsvlm.prompts.verdict import resolve_inspection_prompt, verdict_tokens
         from fsvlm.utils.image import load_image
+
+        pass_str, fail_str = verdict_tokens(tc.model_name)
+        resolved_prompt = resolve_inspection_prompt(tc.inspection_prompt, tc.model_name)
 
         conversations = []
         for sample in samples:
             img = load_image(sample.image_path, max_size=tc.max_image_size)
 
-            pass_fail = "PASS" if sample.label == "good" else "FAIL"
+            pass_fail = pass_str if sample.label == "good" else fail_str
             if sample.description:
                 response_text = f"{pass_fail}\n{sample.description}"
             else:
@@ -135,7 +139,7 @@ class TrainingAgent:
                             "role": "user",
                             "content": [
                                 {"type": "image", "image": img},
-                                {"type": "text", "text": tc.inspection_prompt},
+                                {"type": "text", "text": resolved_prompt},
                             ],
                         },
                         {
@@ -169,10 +173,23 @@ class TrainingAgent:
         from unsloth import FastVisionModel
         from unsloth.trainer import UnslothVisionDataCollator
 
+        # Pixtral's dynamic image patching produces ~1200+ image tokens for a
+        # 560-pixel image (vs ~256 for Gemma/Qwen3), so the default 1024
+        # max_seq_length truncates image tokens and produces a text/input_id
+        # mismatch in the processor. Bump to 4096 to fit a single high-res
+        # image plus prompt; safe on 16 GB VRAM at batch=1.
+        effective_max_seq = tc.max_seq_length
+        if "Pixtral" in tc.model_name and effective_max_seq < 4096:
+            effective_max_seq = 4096
+            logger.info(
+                f"Bumping max_seq_length from {tc.max_seq_length} to {effective_max_seq} "
+                f"for Pixtral (dynamic image patching exceeds 1024)."
+            )
+
         # Load model
         model, tokenizer = FastVisionModel.from_pretrained(
             model_name=tc.model_name,
-            max_seq_length=tc.max_seq_length,
+            max_seq_length=effective_max_seq,
             load_in_4bit=tc.load_in_4bit,
             load_in_16bit=not tc.load_in_4bit,
             use_gradient_checkpointing="unsloth",
@@ -235,6 +252,16 @@ class TrainingAgent:
             f"total_optimizer_steps={total_optimizer_steps}, warmup_steps={warmup_steps}"
         )
 
+        # FSVLM_DISABLE_CHECKPOINTS=1 disables per-epoch checkpoint saving entirely.
+        # Useful for many-epoch runs where per-epoch checkpoints would fill /tmp.
+        # Note: this also forces load_best_model_at_end=False (last-epoch weights).
+        # See Pitfall #10 in docs/audit-trail.md — the policy affects seed dispersion
+        # at small N. Prefer save_total_limit=1 (the default below) which keeps the
+        # best checkpoint only, getting load_best_model_at_end=True at bounded disk cost.
+        _disable_checkpoints = os.environ.get("FSVLM_DISABLE_CHECKPOINTS", "0") == "1"
+        _save_strategy = "no" if _disable_checkpoints else "epoch"
+        _load_best = False if _disable_checkpoints else load_best
+
         training_args = SFTConfig(
             per_device_train_batch_size=tc.per_device_train_batch_size,
             gradient_accumulation_steps=eff_grad_accum,
@@ -250,11 +277,12 @@ class TrainingAgent:
             output_dir=str(output_dir / "checkpoints"),
             report_to="none",
             logging_steps=1,
-            save_strategy="epoch",
-            eval_strategy=eval_strategy,
-            load_best_model_at_end=load_best,
-            metric_for_best_model="eval_loss" if load_best else None,
-            greater_is_better=False if load_best else None,
+            save_strategy=_save_strategy,
+            save_total_limit=1,
+            eval_strategy=eval_strategy if not _disable_checkpoints else "no",
+            load_best_model_at_end=_load_best,
+            metric_for_best_model="eval_loss" if _load_best else None,
+            greater_is_better=False if _load_best else None,
             dataset_kwargs={"skip_prepare_dataset": True},
             remove_unused_columns=False,
             dataset_num_proc=4,

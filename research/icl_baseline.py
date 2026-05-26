@@ -33,13 +33,13 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
 
-def _system_prompt(category: str) -> str:
+def _system_prompt(category: str, pass_str: str, fail_str: str) -> str:
     pretty = category.replace("_", " ")
     return (
         f"You are an industrial quality-inspection assistant examining images of "
         f"{pretty}. Below are labeled reference examples. Then you will be asked to "
-        f"classify a new image as PASS (normal) or FAIL (defective). Begin each "
-        f"answer with the single word PASS or FAIL."
+        f"classify a new image as {pass_str} (normal) or {fail_str} (defective). "
+        f"Begin each answer with the single word {pass_str} or {fail_str}."
     )
 
 
@@ -47,6 +47,8 @@ def _build_icl_chat(
     reference_examples: list,
     query_image_path: Path,
     category: str,
+    pass_str: str,
+    fail_str: str,
 ):
     """Build a multi-image chat with reference examples and a query at the end.
 
@@ -54,12 +56,15 @@ def _build_icl_chat(
     each {"type": "image"} consumes one image from the images list in order.
     """
     content = []
-    content.append({"type": "text", "text": _system_prompt(category) + "\n\nReference examples:"})
+    content.append({"type": "text",
+                    "text": _system_prompt(category, pass_str, fail_str) + "\n\nReference examples:"})
     for ex in reference_examples:
         content.append({"type": "image"})
-        content.append({"type": "text", "text": f"Label: {ex.label.upper()}"})
+        ref_label = pass_str if ex.label == "good" else fail_str
+        content.append({"type": "text", "text": f"Label: {ref_label}"})
     content.append({"type": "text",
-                    "text": "\nNow classify this image. Answer with PASS or FAIL, then describe briefly:"})
+                    "text": f"\nNow classify this image. Answer with {pass_str} or {fail_str}, "
+                            "then describe briefly:"})
     content.append({"type": "image"})
     return [{"role": "user", "content": content}]
 
@@ -73,6 +78,8 @@ def run_icl_cell(
     tokenizer,
     pass_id: int,
     fail_id: int,
+    pass_str: str = "PASS",
+    fail_str: str = "FAIL",
 ) -> dict:
     """Run one (category, n_shots, seed) ICL evaluation. Returns a RunRecord-shaped dict."""
     import torch
@@ -104,7 +111,7 @@ def run_icl_cell(
     t0 = time.time()
     for i, test_ex in enumerate(test_set):
         query_img = load_image(test_ex.image_path, max_size=560)
-        chat = _build_icl_chat(references, test_ex.image_path, category)
+        chat = _build_icl_chat(references, test_ex.image_path, category, pass_str, fail_str)
 
         prompt_text = tokenizer.apply_chat_template(
             chat, add_generation_prompt=True, tokenize=False,
@@ -197,9 +204,10 @@ def main() -> int:
     )
     FastVisionModel.for_inference(model)
 
-    _tok = tokenizer.tokenizer if hasattr(tokenizer, "tokenizer") else tokenizer
-    pass_id = _tok.encode("PASS", add_special_tokens=False)[0]
-    fail_id = _tok.encode("FAIL", add_special_tokens=False)[0]
+    from fsvlm.prompts.verdict import verdict_token_ids, verdict_tokens
+
+    pass_id, fail_id = verdict_token_ids(tokenizer, args.model)
+    pass_str, fail_str = verdict_tokens(args.model)
 
     existing = []
     if args.output.exists():
@@ -228,6 +236,7 @@ def main() -> int:
                     try:
                         record = run_icl_cell(
                             adapter, cat, n, seed, model, tokenizer, pass_id, fail_id,
+                            pass_str, fail_str,
                         )
                     except Exception as exc:
                         print(f"  FAILED: {dname}/{cat} N={n} seed={seed}: {exc}")

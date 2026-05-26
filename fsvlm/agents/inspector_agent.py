@@ -66,9 +66,11 @@ class InspectorAgent:
         )
         FastVisionModel.for_inference(model)
 
-        _tok = tokenizer.tokenizer if hasattr(tokenizer, "tokenizer") else tokenizer
-        self._pass_token_id = _tok.encode("PASS", add_special_tokens=False)[0]
-        self._fail_token_id = _tok.encode("FAIL", add_special_tokens=False)[0]
+        from fsvlm.prompts.verdict import verdict_token_ids
+
+        self._pass_token_id, self._fail_token_id = verdict_token_ids(
+            tokenizer, self._config.default_model
+        )
 
         self._model = model
         self._tokenizer = tokenizer
@@ -113,12 +115,15 @@ class InspectorAgent:
         import torch
 
         from fsvlm.prompts.generic import INSPECTION_PROMPT
+        from fsvlm.prompts.verdict import resolve_inspection_prompt
         from fsvlm.utils.image import load_image
 
         start = time.perf_counter()
 
         img = load_image(image_path, max_size=self._config.max_image_size)
-        inspection_prompt = prompt or INSPECTION_PROMPT
+        inspection_prompt = resolve_inspection_prompt(
+            prompt or INSPECTION_PROMPT, self._config.default_model
+        )
 
         chat_messages = [
             {

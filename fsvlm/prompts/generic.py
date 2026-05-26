@@ -6,10 +6,14 @@ Vertical-specific templates (Phase 3+) will extend this.
 
 from __future__ import annotations
 
-# The inspection prompt that achieved AUROC 0.952, F1 0.846 in Phase 0
+from fsvlm.prompts.verdict import resolve_inspection_prompt, verdict_tokens
+
+# Canonical inspection prompt template. $pass_token / $fail_token are substituted
+# per-backbone via resolve_inspection_prompt — Gemma/Qwen/Llama get PASS/FAIL;
+# Pixtral (Mistral tokenizer) gets Pass/Fail.
 INSPECTION_PROMPT = (
     "You are a visual quality inspector. Examine this image. "
-    "Respond with exactly PASS or FAIL on the first line. "
+    "Respond with exactly $pass_token or $fail_token on the first line. "
     "On the second line, describe what you see."
 )
 
@@ -18,6 +22,7 @@ def build_training_conversation(
     label: str,
     prompt: str = INSPECTION_PROMPT,
     description: str = "",
+    model_name: str | None = None,
 ) -> list[dict[str, object]]:
     """Build a VLM conversation pair for SFT training.
 
@@ -25,11 +30,15 @@ def build_training_conversation(
         label: "good" or "defect".
         prompt: The inspection prompt to use.
         description: Optional description of what's in the image.
+        model_name: HF model name; selects the verdict pair. None uses
+            ``FSVLM_DEFAULT_MODEL`` env var or the default pair.
 
     Returns:
         List of message dicts in chat format (user + assistant).
     """
-    pass_fail = "PASS" if label == "good" else "FAIL"
+    pass_str, fail_str = verdict_tokens(model_name)
+    pass_fail = pass_str if label == "good" else fail_str
+    resolved_prompt = resolve_inspection_prompt(prompt, model_name)
 
     if description:
         response = f"{pass_fail}\n{description}"
@@ -46,7 +55,7 @@ def build_training_conversation(
             "role": "user",
             "content": [
                 {"type": "image"},
-                {"type": "text", "text": prompt},
+                {"type": "text", "text": resolved_prompt},
             ],
         },
         {

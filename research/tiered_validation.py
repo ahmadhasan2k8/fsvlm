@@ -33,7 +33,7 @@ DATASET_CONFIGS: dict[str, dict] = {
         "defect_prompt": (
             "Examine this hazelnut. Is it a normal, good quality hazelnut or does "
             "it have visible defects like cracks, holes, or damage? "
-            "Answer PASS if good, FAIL if defective. Then describe briefly."
+            "Answer $pass_token if good, $fail_token if defective. Then describe briefly."
         ),
         "defect_types": ["crack", "cut", "hole", "print"],
         "defect_descriptions": {
@@ -48,7 +48,7 @@ DATASET_CONFIGS: dict[str, dict] = {
         "defect_prompt": (
             "Examine this bottle. Is it a normal, undamaged bottle or does it have "
             "visible defects like cracks, chips, or contamination? "
-            "Answer PASS if good, FAIL if defective. Then describe briefly."
+            "Answer $pass_token if good, $fail_token if defective. Then describe briefly."
         ),
         "defect_types": ["broken_large", "broken_small", "contamination"],
         "defect_descriptions": {
@@ -62,7 +62,7 @@ DATASET_CONFIGS: dict[str, dict] = {
         "defect_prompt": (
             "Examine this metal nut (hardware fastener). Is it normal or defective? "
             "Look for flipping, discoloration, scratches, or bending. "
-            "Answer PASS if good, FAIL if defective. Then describe briefly."
+            "Answer $pass_token if good, $fail_token if defective. Then describe briefly."
         ),
         "defect_types": ["flip", "color", "scratch", "bent"],
         "defect_descriptions": {
@@ -163,33 +163,30 @@ def _run_base_model_inference(
     model_name = os.environ.get("FSVLM_DEFAULT_MODEL", "unsloth/gemma-4-E4B-it")
     print(f"Loading base model: {model_name}")
 
+    # Pixtral's dynamic image patching can produce 1200+ image tokens per
+    # high-res image; bump max_seq_length to fit prompt + image without
+    # processor truncation (which causes text/input_ids mismatch).
+    _max_seq = 4096 if "Pixtral" in model_name else 1024
     model, tokenizer = FastVisionModel.from_pretrained(
         model_name=model_name,
-        max_seq_length=1024,
+        max_seq_length=_max_seq,
         load_in_4bit=True,
         device_map="cuda:0",
     )
     FastVisionModel.for_inference(model)
 
+    from fsvlm.prompts.verdict import (
+        resolve_inspection_prompt,
+        verdict_token_ids,
+        verdict_tokens,
+    )
     from fsvlm.utils.image import load_image
 
-    # Pre-compute PASS/FAIL token IDs once (same pattern as adapter inference).
-    # Assertion guards against tokenizers that split PASS / FAIL into multiple
-    # subwords — taking [0] would silently score on the first subword (e.g. 'P'
-    # vs 'F'), which is not what the literature reports as P(PASS) vs P(FAIL).
-    _tok = tokenizer.tokenizer if hasattr(tokenizer, "tokenizer") else tokenizer
-    _pass_ids = _tok.encode("PASS", add_special_tokens=False)
-    _fail_ids = _tok.encode("FAIL", add_special_tokens=False)
-    assert len(_pass_ids) == 1, (
-        f"Tokenizer splits 'PASS' into {len(_pass_ids)} subwords {_pass_ids}; "
-        f"single-token logit scoring is invalid for this model."
-    )
-    assert len(_fail_ids) == 1, (
-        f"Tokenizer splits 'FAIL' into {len(_fail_ids)} subwords {_fail_ids}; "
-        f"single-token logit scoring is invalid for this model."
-    )
-    pass_id = _pass_ids[0]
-    fail_id = _fail_ids[0]
+    # Per-backbone verdict tokens — single-token PASS/FAIL for Gemma/Qwen/Llama;
+    # 'Pass'/'Fail' for Pixtral (Mistral tokenizer splits PASS/FAIL into subwords).
+    pass_id, fail_id = verdict_token_ids(tokenizer, model_name)
+    pass_str, fail_str = verdict_tokens(model_name)
+    prompt = resolve_inspection_prompt(prompt, model_name)
 
     scores = []
     for i, img_path in enumerate(image_paths):
@@ -208,20 +205,71 @@ def _run_base_model_inference(
         inputs = tokenizer(text=prompt_text, images=[img], return_tensors="pt", padding=True)
         inputs = {k: v.to(device) if isinstance(v, torch.Tensor) else v for k, v in inputs.items()}
 
-        with torch.no_grad():
-            gen = model.generate(
-                **inputs, max_new_tokens=128, do_sample=False,
-                return_dict_in_generate=True, output_scores=True,
-            )
+        # Bug 9b fix: opt-in constrained decoding forces the first generated
+        # token to be PASS or FAIL by masking all other vocabulary positions to
+        # -inf in the logits at generation step 0. This gives the deepest fix
+        # for backbones whose response style does not naturally include PASS/FAIL
+        # within the first K tokens (Llama-3.2-Vision emits "The image..." or
+        # "**ANALYSIS" instead). With the mask in place, the model emits PASS
+        # or FAIL at position 0 by force, and the standard position-0 logit-ratio
+        # scoring becomes well-defined for any backbone.
+        gen_kwargs = dict(
+            **inputs, max_new_tokens=128, do_sample=False,
+            return_dict_in_generate=True, output_scores=True,
+        )
+        if os.environ.get("FSVLM_CONSTRAINED_DECODING", "0") == "1":
+            from transformers import LogitsProcessorList, LogitsProcessor
 
-        # Token-logit probability of FAIL vs PASS at the first generated position.
-        # This is the v0.1 non-degenerate fallback — before, a "BASED" (or any
-        # non-keyword) first token sent us to the constant 0.75, producing AUROC=0.5.
+            class FirstTokenForcePassFail(LogitsProcessor):
+                """Mask all logits except PASS_id and FAIL_id at generation step 0."""
+                def __init__(self, pass_token_id, fail_token_id):
+                    self.pass_id = pass_token_id
+                    self.fail_id = fail_token_id
+                    self._steps = 0
+
+                def __call__(self, input_ids, scores):
+                    if self._steps == 0:
+                        mask = torch.full_like(scores, float("-inf"))
+                        mask[:, self.pass_id] = scores[:, self.pass_id]
+                        mask[:, self.fail_id] = scores[:, self.fail_id]
+                        scores = mask
+                    self._steps += 1
+                    return scores
+
+            gen_kwargs["logits_processor"] = LogitsProcessorList([
+                FirstTokenForcePassFail(pass_id, fail_id)
+            ])
+
+        with torch.no_grad():
+            gen = model.generate(**gen_kwargs)
+
+        # Token-logit probability of FAIL vs PASS.
+        #
+        # Default: position 0 — works for backbones that emit PASS/FAIL as token 0
+        # naturally (Gemma 4 E4B-it, Qwen3-VL-8B-Instruct), or for any backbone
+        # under FSVLM_CONSTRAINED_DECODING=1 (Bug 9b fix).
+        #
+        # FSVLM_RESPONSE_STYLE_AWARE=1 (Bug 9a fix, less complete than 9b):
+        # search the first 32 generated tokens for an occurrence of PASS or FAIL;
+        # use that position's logit ratio. Falls back to position 0 if neither
+        # token appears in the search window — for Llama-3.2-Vision this fallback
+        # is the only path because the model never emits PASS/FAIL naturally.
         prob_fail_logit = 0.5
+        scoring_pos = 0  # for logging
         if hasattr(gen, "scores") and gen.scores:
-            first_logits = gen.scores[0][0]
-            p_logit = first_logits[pass_id].float()
-            f_logit = first_logits[fail_id].float()
+            scoring_pos = 0
+            if os.environ.get("FSVLM_RESPONSE_STYLE_AWARE", "0") == "1":
+                # Search first K=32 generated tokens for PASS or FAIL token id
+                K = min(32, len(gen.scores))
+                input_len = inputs["input_ids"].shape[-1]
+                gen_tokens = gen.sequences[0][input_len:input_len + K].tolist()
+                for i, tok in enumerate(gen_tokens):
+                    if tok == pass_id or tok == fail_id:
+                        scoring_pos = i
+                        break
+            chosen_logits = gen.scores[scoring_pos][0]
+            p_logit = chosen_logits[pass_id].float()
+            f_logit = chosen_logits[fail_id].float()
             probs = torch.softmax(torch.stack([p_logit, f_logit]), dim=0)
             prob_fail_logit = probs[1].item()
 
@@ -243,9 +291,9 @@ def _run_base_model_inference(
         #   the v0.1 / v0.3-tier-a / v0.5-tier-a-qwen3 numbers; do NOT use for new
         #   ZS-vs-trained comparisons.
         if os.environ.get("FSVLM_ENABLE_CASCADE", "0") == "1":
-            if first_word == "FAIL":
+            if first_word == fail_str.upper():
                 score = 0.9
-            elif first_word == "PASS":
+            elif first_word == pass_str.upper():
                 score = 0.1
             else:
                 score = prob_fail_logit
@@ -482,6 +530,7 @@ def _run_adapter_inference(
     prompt: str,
 ) -> list[float]:
     """Run adapter inference, return defect scores."""
+    import os
     import torch
     import transformers.modeling_utils
     transformers.modeling_utils.caching_allocator_warmup = lambda *a, **kw: None
@@ -490,28 +539,27 @@ def _run_adapter_inference(
 
     from fsvlm.utils.image import load_image
 
+    # Pixtral's dynamic image patching can produce 1200+ image tokens per
+    # high-res image; bump max_seq_length to fit prompt + image without
+    # processor truncation. Inherited from the base-model registration.
+    base_model_for_seq = os.environ.get("FSVLM_DEFAULT_MODEL", "")
+    _max_seq = 4096 if "Pixtral" in base_model_for_seq else 1024
     print(f"Loading adapter: {adapter_path}")
     model, tokenizer = FastVisionModel.from_pretrained(
         model_name=str(adapter_path),
-        max_seq_length=1024,
+        max_seq_length=_max_seq,
         load_in_4bit=True,
         device_map="cuda:0",
     )
     FastVisionModel.for_inference(model)
 
-    _tok = tokenizer.tokenizer if hasattr(tokenizer, "tokenizer") else tokenizer
-    _pass_ids = _tok.encode("PASS", add_special_tokens=False)
-    _fail_ids = _tok.encode("FAIL", add_special_tokens=False)
-    assert len(_pass_ids) == 1, (
-        f"Tokenizer splits 'PASS' into {len(_pass_ids)} subwords {_pass_ids}; "
-        f"single-token logit scoring is invalid for this model."
-    )
-    assert len(_fail_ids) == 1, (
-        f"Tokenizer splits 'FAIL' into {len(_fail_ids)} subwords {_fail_ids}; "
-        f"single-token logit scoring is invalid for this model."
-    )
-    pass_id = _pass_ids[0]
-    fail_id = _fail_ids[0]
+    from fsvlm.prompts.verdict import resolve_inspection_prompt, verdict_token_ids
+
+    # Adapter inherits the base model's tokenizer; verdict tokens follow the
+    # base model registered in FSVLM_DEFAULT_MODEL.
+    base_model_name = os.environ.get("FSVLM_DEFAULT_MODEL", "unsloth/gemma-4-E4B-it")
+    pass_id, fail_id = verdict_token_ids(tokenizer, base_model_name)
+    prompt = resolve_inspection_prompt(prompt, base_model_name)
 
     scores = []
     for i, img_path in enumerate(image_paths):
@@ -533,17 +581,29 @@ def _run_adapter_inference(
                 return_dict_in_generate=True, output_scores=True,
             )
 
+        # Bug 9 fix: opt-in response-style-aware scoring (search first K=32
+        # generated tokens for PASS/FAIL). Default is position 0 for backward
+        # compatibility with v0.8 Gemma/Qwen3 numbers.
         prob_fail = 0.5
+        scoring_pos = 0
         if hasattr(gen, "scores") and gen.scores:
-            first = gen.scores[0][0]
-            p_logit = first[pass_id].float()
-            f_logit = first[fail_id].float()
+            if os.environ.get("FSVLM_RESPONSE_STYLE_AWARE", "0") == "1":
+                K = min(32, len(gen.scores))
+                input_len = inputs["input_ids"].shape[-1]
+                gen_tokens = gen.sequences[0][input_len:input_len + K].tolist()
+                for j, tok in enumerate(gen_tokens):
+                    if tok == pass_id or tok == fail_id:
+                        scoring_pos = j
+                        break
+            chosen = gen.scores[scoring_pos][0]
+            p_logit = chosen[pass_id].float()
+            f_logit = chosen[fail_id].float()
             probs = torch.softmax(torch.stack([p_logit, f_logit]), dim=0)
             prob_fail = probs[1].item()
 
         scores.append(prob_fail)
         if (i + 1) % 10 == 0 or i == len(image_paths) - 1:
-            print(f"  [{i+1}/{len(image_paths)}] processed")
+            print(f"  [{i+1}/{len(image_paths)}] processed (scoring_pos={scoring_pos})")
 
     del model, tokenizer
     gc.collect()

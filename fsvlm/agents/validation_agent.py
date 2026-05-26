@@ -90,10 +90,15 @@ class ValidationAgent:
 
         device = next(model.parameters()).device
 
-        # Get token IDs for PASS/FAIL
-        _tok = tokenizer.tokenizer if hasattr(tokenizer, "tokenizer") else tokenizer
-        pass_token_id = _tok.encode("PASS", add_special_tokens=False)[0]
-        fail_token_id = _tok.encode("FAIL", add_special_tokens=False)[0]
+        from fsvlm.prompts.verdict import (
+            resolve_inspection_prompt,
+            verdict_token_ids,
+            verdict_tokens,
+        )
+
+        pass_token_id, fail_token_id = verdict_token_ids(tokenizer, tc.model_name)
+        pass_str, fail_str = verdict_tokens(tc.model_name)
+        resolved_prompt = resolve_inspection_prompt(tc.inspection_prompt, tc.model_name)
 
         predictions: list[dict] = []
 
@@ -105,7 +110,7 @@ class ValidationAgent:
                     "role": "user",
                     "content": [
                         {"type": "image"},
-                        {"type": "text", "text": tc.inspection_prompt},
+                        {"type": "text", "text": resolved_prompt},
                     ],
                 }
             ]
@@ -150,10 +155,10 @@ class ValidationAgent:
 
             # Classify based on response text
             response_upper = response.strip().upper()
-            if response_upper.startswith("PASS"):
+            if response_upper.startswith(pass_str.upper()):
                 text_pred = 0
                 confidence = prob_pass
-            elif response_upper.startswith("FAIL"):
+            elif response_upper.startswith(fail_str.upper()):
                 text_pred = 1
                 confidence = prob_fail
             else:

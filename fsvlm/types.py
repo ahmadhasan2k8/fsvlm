@@ -118,7 +118,7 @@ class TrainingConfig:
 
     inspection_prompt: str = (
         "You are a visual quality inspector. Examine this image. "
-        "Respond with exactly PASS or FAIL on the first line. "
+        "Respond with exactly $pass_token or $fail_token on the first line. "
         "On the second line, describe what you see."
     )
 
