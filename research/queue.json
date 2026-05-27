@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "current_pass": null,
-  "current_pass_description": "Tier A completion: extend AUROC-vs-N curves to the remaining 24 MVTec + VisA categories at N in {2, 5, 10, 30} x 3 seeds. Tests whether the pre-registered distinctive/subtle taxonomy correctly predicts which categories show the N=2 knee vs the delayed-knee or null shape. Hard kill criterion: if the taxonomy rule does not hold, pivot the framing to whichever category-feature does predict lift. v0.2 release blocker.",
+  "current_pass": "pass8-pitfall10-capsule-policy-control",
+  "current_pass_description": "Capsule policy control: determine whether substitutability claim in v15 Section 6.5 survives under last-epoch checkpoint policy, after discovering Phase 1 inadvertently used best-eval-loss policy due to a pre-refactor env var being ignored.",
   "overarching_research_question": "How few natural-language-labeled images are enough to fine-tune a modern VLM (Gemma 4 E4B-it via QLoRA) into a useful industrial defect detector, and WHICH KINDS of defects obey this 'tiger-analogy' (few-shot suffices because the model already has relevant priors) vs. WHICH KINDS don't?",
   "passes": [
     {
@@ -363,6 +363,59 @@
       ],
       "expected_hours": 4,
       "unblocks_on": "user approval AND pass4 completed"
+    },
+    {
+      "id": "pass8-pitfall10-capsule-policy-control",
+      "status": "pending",
+      "preregistered_at": "2026-05-27T04:02:59Z",
+      "motivation": "Discovered 2026-05-26 during 2D N x epochs sweep cross-check: Phase 1 (v0.4-longepoch-validation) used best-eval-loss checkpoint policy because the pre-refactor code silently ignored FSVLM_DISABLE_CHECKPOINTS=1. The 2D sweep (v0.5-2d-sweep-50ep) uses last-epoch policy (post-refactor respects the env var). On capsule x 50ep x N=10 x {seed 42, 1337, 7}, this yields 0.876 (Phase 1) vs 0.823 (2D sweep) = 0.053 AUROC gap on identical cells. The substitutability claim in v15 paper Section 6.5 compares 50ep x N=10 against 3ep x N=full; both sides of that paired comparison in Phase 1 were under best-eval-loss policy. This control determines whether the substitutability holds when both sides are under last-epoch policy instead.",
+      "description": "Run mvtec/capsule x 3 epochs x N=full x 5 seeds x Gemma 4 E4B-it under FSVLM_DISABLE_CHECKPOINTS=1 (last-epoch policy). Compare new mean against Phase 1's 3ep x N=full x 5s value of 0.891 (best-eval-loss policy).",
+      "hypotheses": {
+        "H1_substitutability_survives": {
+          "prediction": "New 3ep x N=full x last-epoch mean lands at 0.84 +/- 0.02 (~ -0.05 from Phase 1's 0.891).",
+          "interpretation": "Both sides of the paired substitutability comparison shift down by ~0.05 under last-epoch policy. Substitutability holds at the lower absolute level. v15 Section 6.5 needs explicit policy labels but the claim survives.",
+          "paper_action_if_confirmed": "Path A: add '(best-eval-loss checkpoint policy)' labels to Phase 1 numbers in Section 6.5; mark 2D sweep figures as last-epoch; update Section 4.10b Pitfall #10 with per-cat magnitude note (capsule ~ +0.05)."
+        },
+        "H2_substitutability_weakens": {
+          "prediction": "New 3ep x N=full x last-epoch mean stays at 0.89 +/- 0.02.",
+          "interpretation": "Only 50ep x N=10 drops under last-epoch policy; the substitutability claim on capsule fails (Delta becomes ~ -0.07, no longer within seed noise). v15 Section 6.5 substitutability claim weakens on this cat.",
+          "paper_action_if_confirmed": "Path B: revise Section 6.5 substitutability claim from '6 of 7' to '5 of 7' with capsule moved to the failure side. Acknowledge the policy-confound in the substitutability claim's history."
+        },
+        "H3_inconclusive": {
+          "prediction": "New 3ep x N=full x last-epoch mean lands between 0.86 and 0.88 (neither -0.05 nor unchanged).",
+          "interpretation": "Effect is partial; can't cleanly attribute. Report as a limitation in Section 8 and defer cleaner resolution to follow-on work."
+        }
+      },
+      "decision_rule_locked": "If new mean is within 0.02 of 0.84 -> H1 confirmed, apply Path A. If within 0.02 of 0.89 -> H2 confirmed, apply Path B. Otherwise -> H3, report as Section 8 limitation.",
+      "configs": {
+        "datasets": [
+          "mvtec"
+        ],
+        "categories": [
+          "capsule"
+        ],
+        "n_values": [
+          -1
+        ],
+        "seeds": [
+          42,
+          1337,
+          7,
+          24,
+          99
+        ],
+        "epochs": 3,
+        "env": {
+          "FSVLM_DISABLE_CHECKPOINTS": "1"
+        },
+        "recipe_version": "v0.5-pitfall10-capsule-control",
+        "backbone": "unsloth/gemma-4-E4B-it"
+      },
+      "estimated_gpu_hours": 5,
+      "depends_on": [
+        "pass5-2d-sweep (in flight)"
+      ],
+      "decision_log_pointer": "_local/paper_workspace/decisions/2026-05-26_2d-sweep-pitfall10-policy-discrepancy.md"
     }
   ],
   "global_kill_conditions": [
