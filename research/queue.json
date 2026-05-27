@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "current_pass": "pass8-pitfall10-capsule-policy-control",
-  "current_pass_description": "Capsule policy control: determine whether substitutability claim in v15 Section 6.5 survives under last-epoch checkpoint policy, after discovering Phase 1 inadvertently used best-eval-loss policy due to a pre-refactor env var being ignored.",
+  "current_pass": "pass9-lr-sensitivity-3ep-small-N",
+  "current_pass_description": "LR sensitivity test at 3ep x small N: does the 'no lift at N<=10 x 3ep' claim survive a 20x LR sweep, or is it lr=2e-4-specific? Pre-registered hypotheses + decision rule locked before sweep launches (chains after pass8 completes).",
   "overarching_research_question": "How few natural-language-labeled images are enough to fine-tune a modern VLM (Gemma 4 E4B-it via QLoRA) into a useful industrial defect detector, and WHICH KINDS of defects obey this 'tiger-analogy' (few-shot suffices because the model already has relevant priors) vs. WHICH KINDS don't?",
   "passes": [
     {
@@ -416,6 +416,96 @@
         "pass5-2d-sweep (in flight)"
       ],
       "decision_log_pointer": "_local/paper_workspace/decisions/2026-05-26_2d-sweep-pitfall10-policy-discrepancy.md"
+    },
+    {
+      "id": "pass9-lr-sensitivity-3ep-small-N",
+      "status": "pending",
+      "preregistered_at": "2026-05-27T23:29:58Z",
+      "motivation": "v15 paper Section 5.3 Observation 1 claims: 'Few-shot regime (N <= 10) shows zero lift on either Gemma or Qwen3' under the default 3-epoch budget. The Section 8 limitations bullet explicitly flags this as conditional on lr=2e-4: 'a different lr at the same N=10 -- say lr=5e-4 or 1e-3 -- might extract signal where ours produces flatness. A full LR / WD / freeze sensitivity analysis at N=10 is the most important roadmap item; until it lands, Finding #1's substitutability portion should be read as within this recipe family rather than in general.' Reviewer-3 round 3-4 critiques converge on this exact gap. The LR sweep tests whether the no-lift result is recipe-specific or generalizable within a plausible LR range. Cells: 4 cats (capsule, transistor, bottle, pcb1) x N=10 x 4 alt LRs ({5e-5, 1e-4, 5e-4, 1e-3}) x 3 seeds + 4 cats x N=2 x 5 LRs ({5e-5, 1e-4, 2e-4, 5e-4, 1e-3}) x 3 seeds = 108 cells; 3 epochs; Gemma; last-epoch policy. Pre-registration locks the binding hypotheses BEFORE results land so the analysis cannot drift post-hoc.",
+      "description": "Run 108-cell LR sweep at the 3-epoch budget across the 4 representative cats. Test whether per-cat lift over ZS appears at any non-default LR. Compare best-LR lift to the lr=2e-4 baseline (from the 2D sweep cells at 3ep x N=10 and from new N=2 cells).",
+      "hypotheses": {
+        "H1_no_lift_robust": {
+          "prediction": "For every (cat x alt-LR) pair at 3ep x N=10 and 3ep x N=2, |AUROC - ZS| < 0.03 across the seed band. No alternative LR produces meaningful lift on any of the 4 cats.",
+          "interpretation": "The 'no lift at N<=10 x 3ep' result is robust to LR choice in the plausible range {5e-5 .. 1e-3}. The Section 5.3 Observation 1 claim generalizes within this recipe family; the Section 8 LR-sensitivity limitation can be tightened.",
+          "paper_action_if_confirmed": "Section 5.3 Obs 1: keep as-is; add a sentence noting that the no-lift result was validated across 4 alternative LRs spanning 20x dynamic range. Section 8: tighten the LR-sensitivity bullet from 'most important roadmap item' to 'tested across 5 LRs; consistent no-lift; further sensitivity to WD/freeze remains future work'. Add a small appendix table showing the per-cat per-LR results to make the falsification check visible to reviewers."
+        },
+        "H2_lr_recovery_exists": {
+          "prediction": "On at least one (cat x alt-LR) pair, AUROC at 3ep x N=10 (or N=2) exceeds ZS by >= 0.05 with mean lift band reproducible across 3 seeds (i.e. seed-mean lift > 0.05 with seed std < 0.04). This represents 'meaningful lift outside seed noise that we would have credited as a positive few-shot result if we'd seen it'.",
+          "interpretation": "The 'no lift at N<=10 x 3ep' result is lr=2e-4-specific on at least one cat. The Section 5.3 Obs 1 claim does NOT generalize; lr is a recipe parameter that determines whether few-shot lift appears. Reviewer-3's hyperparameter-sensitivity critique would be correct: our negative finding is conditional on a single LR choice.",
+          "paper_action_if_confirmed": "Section 5.3 Obs 1: revise to 'Few-shot regime (N <= 10) shows zero lift at lr=2e-4 on either Gemma or Qwen3. We further tested 4 alternative LRs ({5e-5, 1e-4, 5e-4, 1e-3}) and found that on (cat, lr) = (X, Y) and (X', Y'), AUROC lift exceeds 0.05; the no-lift result is therefore LR-conditional.' Section 6.5 substitutability claim weakens: if an alternative LR extracts signal at small N x 3ep, the substitutability operating point (50ep x N=10) might also be sensitive to LR -- need to caveat. Section 8: confirm LR sensitivity as a real recipe-bound limitation. Add per-LR figure to main text."
+        },
+        "H3_borderline": {
+          "prediction": "Lift of 0.03-0.05 on a small number of (cat, alt-LR) pairs but not consistently above 0.05; or lift only on 1 of 4 cats; or lift only at one alt-LR without a clear LR-vs-lift trend.",
+          "interpretation": "Recipe sensitivity is real but small; the qualitative no-lift finding survives with a caveat.",
+          "paper_action_if_confirmed": "Section 5.3 Obs 1: add 'we observed small lift (Delta AUROC ~ 0.03-0.05) on (cat, lr) = ... when sweeping LR x 20 dynamic range; the no-lift result is therefore approximately robust to LR choice in this range, with bounded exceptions noted in Appendix F.' Section 8: keep LR-sensitivity limitation phrased as 'small but non-zero effect; not paper-load-bearing'. Add per-LR appendix table."
+        }
+      },
+      "decision_rule_locked": "Compute per-(cat, n, lr) mean Delta = mean(AUROC at 3ep x n x lr x 3s) - ZS. If max |Delta| across all 32 (cat x n x alt-lr) cells is < 0.03 -> H1. If any (cat, n, lr) Delta >= 0.05 with seed std < 0.04 -> H2. Otherwise -> H3.",
+      "configs": {
+        "datasets": [
+          "mvtec",
+          "visa"
+        ],
+        "categories": [
+          "capsule",
+          "transistor",
+          "bottle",
+          "pcb1"
+        ],
+        "grid_n10": {
+          "n_values": [
+            10
+          ],
+          "lrs": [
+            5e-05,
+            0.0001,
+            0.0005,
+            0.001
+          ],
+          "seeds": [
+            42,
+            1337,
+            7
+          ],
+          "note": "lr=2e-4 baseline already from v0.5-2d-sweep-3ep at this cell"
+        },
+        "grid_n2": {
+          "n_values": [
+            2
+          ],
+          "lrs": [
+            5e-05,
+            0.0001,
+            0.0002,
+            0.0005,
+            0.001
+          ],
+          "seeds": [
+            42,
+            1337,
+            7
+          ],
+          "note": "include lr=2e-4 as new baseline at N=2 (not in 2D sweep)"
+        },
+        "epochs": 3,
+        "env": {
+          "FSVLM_DISABLE_CHECKPOINTS": "1"
+        },
+        "recipe_version_template": "v0.5-lr-sweep-lr{lr_value}-N{n_value}",
+        "backbone": "unsloth/gemma-4-E4B-it",
+        "policy": "last-epoch (FSVLM_DISABLE_CHECKPOINTS=1)"
+      },
+      "zs_references": {
+        "capsule": 0.859,
+        "transistor": 0.712,
+        "bottle": 0.715,
+        "pcb1": 0.75
+      },
+      "estimated_gpu_hours": 9,
+      "depends_on": [
+        "pass8-pitfall10-capsule-policy-control (in flight; LR sweep chains after pass8 completes)"
+      ],
+      "audit_trail_pointer": "research/logs/launches/phase5_lr_sweep.sh"
     }
   ],
   "global_kill_conditions": [
