@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "current_pass": "pass10-deferred-same-policy-controls",
-  "current_pass_description": "Deferred same-policy controls: run bottle, transistor, capsules-VisA x 3ep x N=full x 5s x Gemma under last-epoch policy to close the cross-policy gap for the substitutability claim on the remaining 3 of 5 paired cats. Pre-registered hypotheses lock paper-edit consequences. Chains after pass9 (LR sweep) completes.",
+  "current_pass": "pass12-upgrade-inconclusive-verdicts-via-additional-seeds",
+  "current_pass_description": "TOST decision rule applied to substitutability claim (pass11). Additional cells queued (pass12) to upgrade INCONCLUSIVE and COVERAGE-LIMITED verdicts.",
   "overarching_research_question": "How few natural-language-labeled images are enough to fine-tune a modern VLM (Gemma 4 E4B-it via QLoRA) into a useful industrial defect detector, and WHICH KINDS of defects obey this 'tiger-analogy' (few-shot suffices because the model already has relevant priors) vs. WHICH KINDS don't?",
   "passes": [
     {
@@ -621,6 +621,133 @@
         "pass9-lr-sensitivity-3ep-small-N (in flight; chains after pass9 completes)"
       ],
       "trigger": "TMLR adversarial review 2026-05-27 round N"
+    },
+    {
+      "id": "pass11-tost-substitutability-equivalence-test",
+      "status": "applied_to_existing_data",
+      "preregistered_at": "2026-05-28T18:23:18Z",
+      "motivation": "External methodology review flagged that the substitutability claim in the research write-up uses Welch's t non-significance as equivalence, which conflates absence-of-evidence with evidence-of-absence. The correct framing is a two-one-sided-tests (TOST) procedure against a pre-specified equivalence margin delta. We pre-register delta = 0.05 AUROC and the per-cat decision rule HERE, before applying the verdict to downstream analysis. This pre-registration is partly retroactive (the seed-level cells already exist) but the margin delta and the verdict rule are committed in this queue entry before downstream materials are updated.",
+      "margin_delta_AUROC": 0.05,
+      "justification_for_margin": [
+        "Internal consistency: delta = 0.05 is the same threshold the pre-registered LR sweep (pass9) uses to define 'lift' (H2 threshold). The same gap cannot be 'no lift' in one experiment and 'a real gap' in another.",
+        "Measured cross-policy effect on capsule \u00d7 50ep \u00d7 N=10 is approximately 0.05 AUROC (\u00a74.10b), so differences below this band are within the range a single recipe-detail (checkpoint policy) can move a number.",
+        "0.05 AUROC is below the threshold that would flip a typical deployment decision at the operating points discussed in \u00a78."
+      ],
+      "decision_rule_locked": "For each (cat, policy) pair where both sides of the substitutability comparison are multi-seed (n >= 3): compute the 90% Welch confidence interval for delta_mu = mu(50ep \u00d7 N=10) - mu(3ep \u00d7 N=full). VERDICT: SUBSTITUTABLE within delta if CI is fully inside [-delta, +delta]; NOT SUBSTITUTABLE if CI is fully outside [-delta, +delta] (one side); INCONCLUSIVE if CI straddles a boundary. If either side is single-seed, declare COVERAGE-LIMITED and report no TOST verdict; pcb1 may be additionally flagged 'catastrophic failure' since Delta_mu = -0.166 is obviously outside any reasonable equivalence band.",
+      "tost_results_on_existing_data": {
+        "policy": "best-eval-loss (Phase 1 trainer recipe)",
+        "verdicts": {
+          "capsule": {
+            "d_mu": -0.003,
+            "ci90": [
+              -0.025,
+              0.018
+            ],
+            "verdict": "SUBSTITUTABLE"
+          },
+          "transistor": {
+            "d_mu": -0.009,
+            "ci90": [
+              -0.036,
+              0.018
+            ],
+            "verdict": "SUBSTITUTABLE"
+          },
+          "bottle": {
+            "d_mu": -0.029,
+            "ci90": [
+              -0.068,
+              0.011
+            ],
+            "verdict": "INCONCLUSIVE (lower bound -0.068 crosses -0.05)"
+          },
+          "capsules-VisA": {
+            "d_mu": -0.016,
+            "ci90": "n/a (single-seed N=full)",
+            "verdict": "COVERAGE-LIMITED"
+          },
+          "pcb1": {
+            "d_mu": -0.166,
+            "ci90": "n/a (single-seed N=full)",
+            "verdict": "COVERAGE-LIMITED but Delta_mu = -0.166 obviously outside [-0.05, +0.05]; catastrophic failure"
+          }
+        },
+        "policy_2": "last-epoch (post-refactor + pass8 + pass10)",
+        "verdicts_2": {
+          "capsule": {
+            "d_mu": -0.06,
+            "ci90": [
+              -0.076,
+              -0.043
+            ],
+            "verdict": "INCONCLUSIVE (CI straddles -0.05, fails to demonstrate substitutability but does not fully exclude it)"
+          },
+          "transistor": {
+            "d_mu": -0.017,
+            "ci90": [
+              -0.062,
+              0.027
+            ],
+            "verdict": "INCONCLUSIVE"
+          },
+          "bottle": {
+            "d_mu": -0.04,
+            "ci90": [
+              -0.096,
+              0.015
+            ],
+            "verdict": "INCONCLUSIVE"
+          },
+          "capsules-VisA": {
+            "verdict": "COVERAGE-LIMITED (no 50ep \u00d7 N=10 LE \u2014 capsules-VisA not in 2D sweep)"
+          },
+          "pcb1": {
+            "verdict": "COVERAGE-LIMITED (no 3ep \u00d7 N=full LE \u2014 pcb1 not in pass10)"
+          }
+        }
+      },
+      "paper_action": "Substitutability narrative reframed in TOST verdicts. Headline at delta=0.05: BEL policy yields 2 SUBSTITUTABLE (capsule, transistor), 1 INCONCLUSIVE (bottle), 2 COVERAGE-LIMITED (capsules-VisA, pcb1; pcb1 catastrophic on point estimate). LE policy: all three testable cats INCONCLUSIVE due to small 50ep \u00d7 N=10 seed counts (3 from 2D sweep); upgrade requires pass12.",
+      "audit_trail_pointer": "research/dataset_size_results.json filtered on the recipe_versions in 'tost_results_on_existing_data.verdicts'",
+      "note": "This entry is committed BEFORE applying the rewrite to downstream analysis materials, so the rewrite is provably TOST-driven rather than narrative-driven."
+    },
+    {
+      "id": "pass12-upgrade-inconclusive-verdicts-via-additional-seeds",
+      "status": "pending",
+      "preregistered_at": "2026-05-28T18:23:18Z",
+      "motivation": "pass11 TOST decision rule shows the existing data is insufficient to produce conclusive verdicts on several (cat, policy) pairs at delta = 0.05: (1) bottle BEL is INCONCLUSIVE because the 50ep \u00d7 N=10 BEL side has sigma = 0.041 across 5 seeds; (2) all three LE-policy verdicts (capsule, transistor, bottle) are INCONCLUSIVE because the 50ep \u00d7 N=10 LE side has only 3 seeds (from 2D sweep) \u2014 adding 2 more seeds would tighten the CI; (3) capsules-VisA and pcb1 are COVERAGE-LIMITED because the 3ep \u00d7 N=full BEL side is single-seed. This pass extends the data minimally to push as many INCONCLUSIVE verdicts to SUBSTITUTABLE or NOT-SUBSTITUTABLE as is achievable within ~30h GPU.",
+      "cells_to_run": [
+        {
+          "cell": "capsule, transistor, bottle \u00d7 50ep \u00d7 N=10 \u00d7 seeds {24, 99} \u00d7 Gemma \u00d7 last-epoch",
+          "purpose": "Bring 2D-sweep 50ep \u00d7 N=10 cells from 3 seeds to 5 seeds. Tightens LE-policy CI on the 3 cats currently INCONCLUSIVE under LE.",
+          "recipe_version": "v0.5-2d-sweep-50ep (resume with --seeds 24 99)",
+          "estimated_gpu_hours": 5
+        },
+        {
+          "cell": "capsules-VisA \u00d7 3ep \u00d7 N=full \u00d7 seeds {7, 24, 99, 1337} \u00d7 Gemma \u00d7 best-eval-loss",
+          "purpose": "Upgrade capsules-VisA BEL substitutability verdict from COVERAGE-LIMITED to a TOST verdict.",
+          "recipe_version": "v0.8-fixed-pipeline-extension-best-eval-loss",
+          "trainer_recipe": "save_strategy=epoch + load_best_model_at_end=True (per the original Phase 1 pre-refactor behavior)",
+          "estimated_gpu_hours": 12
+        },
+        {
+          "cell": "pcb1 \u00d7 3ep \u00d7 N=full \u00d7 seeds {7, 24, 99, 1337} \u00d7 Gemma \u00d7 best-eval-loss",
+          "purpose": "Upgrade pcb1 BEL substitutability verdict from COVERAGE-LIMITED to a TOST verdict (Delta_mu = -0.166 will obviously fail substitutability but the multi-seed verification closes the methodological gap).",
+          "recipe_version": "v0.8-fixed-pipeline-extension-best-eval-loss",
+          "estimated_gpu_hours": 12
+        }
+      ],
+      "expected_outcomes": {
+        "capsule_LE": "Likely SUBSTITUTABLE or stays INCONCLUSIVE (CI currently -0.076 to -0.043; 2 more seeds will tighten but lower bound may still cross -0.05)",
+        "transistor_LE": "Likely SUBSTITUTABLE (Delta_mu only -0.017; tightening will most likely contain CI inside [-0.05, +0.05])",
+        "bottle_LE": "Uncertain \u2014 Delta_mu -0.040 is near boundary; could go either way",
+        "bottle_BEL": "INCONCLUSIVE currently; 2 more seeds on the BEL 50ep \u00d7 N=10 side would also help, though that cell is already 5-seed",
+        "capsules-VisA_BEL": "Expected SUBSTITUTABLE (Delta_mu currently -0.016 from single-seed; with multi-seed it should stay inside [-0.05, +0.05])",
+        "pcb1_BEL": "Expected NOT-SUBSTITUTABLE (Delta_mu = -0.166 obviously outside [-0.05, +0.05])"
+      },
+      "estimated_total_gpu_hours": 29,
+      "depends_on": [
+        "pass11 (decision rule applied to existing data)"
+      ]
     }
   ],
   "global_kill_conditions": [
