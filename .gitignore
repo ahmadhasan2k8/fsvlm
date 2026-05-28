@@ -63,6 +63,9 @@ notes.local/
 CLAUDE.md
 .claude/settings.local.json
 .claude/projects/
+.claude/scheduled_tasks.lock
+.claude/*.lock
+.claude/*.tmp
 .claude/skills/clean.md
 .claude/skills/docker-dev.md
 .claude/skills/launch-readiness.md

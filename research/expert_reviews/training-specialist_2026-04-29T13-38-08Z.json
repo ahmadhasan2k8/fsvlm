@@ -19,7 +19,7 @@
     "3 epochs at lr=2e-4 is undertrained for an 11B model; Llama-3.2 may need 5-10 epochs or higher LR to actually move adapter weights.",
     "Llama-3.2's chat template differs from Gemma/Qwen and may interact poorly with our PASS/FAIL token-logit extraction — the model may be generating reasonable responses that our scorer can't read.",
     "Gradient checkpointing or other unsloth optimizations may behave differently on the 11B Llama-3.2 architecture, leading to silently broken backprop on the visual head.",
-    "All five hypotheses are testable but each requires a separate diagnostic sweep (~3-6h compute each). Recommended as separate work-stream after current submission."
+    "All five hypotheses are testable but each requires a separate diagnostic sweep (~3-6h compute each). Recommended as separate work-stream after v0.1 release."
   ],
   "recommendation": "halt: done — multi-model phase data is complete and locked. The honest outcome is (Gemma+Qwen3 pass; Llama fails on this recipe). Documenting the failure as a model-architecture boundary is more rigorous than soft-pedaling it; the boundary itself is a useful finding. Three follow-up work-streams worth flagging in the limitations section: (1) Llama-3.2 with rank>=16 or epochs>=10 to test whether the failure is recipe-specific, (2) an alternative score extractor that's tokenizer-agnostic, (3) a fourth model family (Pixtral or LLaVA) to test whether 2-of-3-pass generalizes to N-of-N+1.",
   "confidence": "high",
@@ -29,6 +29,6 @@
     "Commit multi-model data + this review + updated queue.json (closing the multi-model phase).",
     "Write a final close-out commit message documenting outcome (Gemma+Qwen3 pass, Llama fails).",
     "If proceeding to write-up: frame Llama as a documented model-architecture boundary; the 2-of-3 result is a real cross-family transfer claim plus a real boundary finding.",
-    "Optional follow-up: try Llama with stronger recipe (rank=16, lr=4e-4, epochs=10) on 2-3 cats — would confirm recipe-vs-architecture root cause. ~3h compute. NOT required for current submission."
+    "Optional follow-up: try Llama with stronger recipe (rank=16, lr=4e-4, epochs=10) on 2-3 cats — would confirm recipe-vs-architecture root cause. ~3h compute. NOT required for v0.1 release."
   ]
 }

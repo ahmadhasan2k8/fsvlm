@@ -11,6 +11,50 @@ provenance on v0.1+ result rows and a 15-skill catalog of runtime-agnostic playb
 
 ---
 
+> **🛠 v0.2 audit notice (2026-05-02, updated 2026-05-27).** A pre-conclusion methodology audit found
+> [**ten implementation pitfalls**](docs/audit-trail.md) in the pipeline that, individually or
+> together, inflated apparent few-shot fine-tuning lift. Bugs 1–8 fixed in commit `6c8cc9e`; Bug 9
+> surfaced when integrating Llama-3.2-Vision and is documented with a response-style-aware scorer
+> opt-in; Pitfall #10 (checkpoint policy at long-epoch × small-N) surfaced 2026-05-26 during
+> cross-recipe checking and is now controllable via the post-refactor trainer. Corrected results
+> live under recipe versions `v0.7-zs-logit-only*`, `v0.8-fixed-pipeline*`, `v0.4-longepoch-validation*`,
+> and `v0.5-2d-sweep-*` in `research/dataset_size_results.json`.
+>
+> **What changed in framing.** fsvlm is positioned as a **reproducible, audited benchmark
+> for few-shot generative-VLM industrial AD** rather than a single-finding research codebase.
+> Backbone-swappable (Gemma 4, Qwen3-VL, Pixtral, Llama-3.2-Vision), provenance-stamped,
+> with a worked add-a-new-backbone walkthrough in
+> [CONTRIBUTING.md](CONTRIBUTING.md#adding-a-new-backbone). The 10-item pitfalls checklist is
+> part of the benchmark contract — every from-scratch implementer would plausibly hit them,
+> and we publish the hygiene checks that catch them.
+
+---
+
+## Current state (2026-05-27)
+
+**Headline characterization, all under the post-audit pipeline:**
+
+![Substitutability surface (capsule) + 4-pattern decomposition](docs/figures/fig_v15_teaser.png)
+
+- **3-backbone coverage.** Gemma 4 E4B-it (full 27-cat ZS + 27-cat 50ep × N=10 × 5-seed),
+  Qwen3-VL-8B-Instruct (full 27-cat ZS + 7-cat ZS-and-FT + 4-cat cross-family 5-seed FT),
+  Pixtral-12B-2409 (full 27-cat ZS + 4-cat cross-family 5-seed FT). All 16 GB laptop GPU.
+- **144-cell 2D substitutability sweep** on 4 representative cats (capsule, transistor,
+  bottle, pcb1) × 4 N values × 3 epoch budgets × 3 seeds, plus a **4-pattern decomposition**
+  of the catastrophic-Gemma cluster (pipe_fryum, pcb1, macaroni2, capsules-VisA) across the
+  three independent backbone families.
+- **Pre-registration discipline.** Three pre-registered passes locked in 2026-05-26/27 in
+  [`research/queue.json`](research/queue.json) before execution: `pass8-pitfall10-capsule-policy-control`
+  (committed `8517b57`, result confirms H2 — substitutability is policy-conditional on capsule);
+  `pass9-lr-sensitivity-3ep-small-N` (committed `3095d6f`, in flight); and
+  `pass10-deferred-same-policy-controls` (committed `e387483`, queued).
+- **10-item pitfalls checklist** — [`docs/audit-trail.md`](docs/audit-trail.md) — with per-bug
+  symptom / impact / fix / hygiene check. Pitfall #10's per-(cat × epochs) magnitude table is
+  the newest addition; it documents that disk-management workarounds for long training can
+  flip individual-cat substitutability conclusions.
+
+---
+
 ## What the tool actually shows
 
 ![AUROC vs N labeled examples on three categories](docs/figures/n_shot_curves.png)
@@ -371,37 +415,44 @@ had no prior baseline to compare against are marked `new_baseline`).
 
 ---
 
-## Honest scope — current state (post-v0.1, pre-v0.2)
+## Honest scope — current state (post-v0.1 audit, pre-v0.2 docs pass)
 
-- ✅ Three VLM families tested in the multi-model phase (Gemma 4 E4B-it, Qwen3-VL-8B-Instruct,
-  Llama-3.2-11B-Vision-Instruct). All via unsloth, all fitting on a 16 GB GPU at 4-bit.
-- ✅ Full Tier A coverage on Gemma — all 24 MVTec + VisA categories at N ∈ {0, 2, 10, 30}
-  with 3 seeds. Multi-model phase tested 5 cats per second/third model.
-- ✅ Recipe stability sub-study confirmed the rule survives rank ∈ {8, 16, 32} and
-  lr ∈ {1e-4, 2e-4} variation on Gemma (5 cats × 4 variants, all ρ = -1.0).
-- ✅ ICL extension on 6 high/low-lift categories — confirms FT > ICL at N=2 on most cats but
-  not all (chewinggum is FT ≈ ICL; transistor is ICL > FT due to model already being strong).
-- ✅ TRL 0.24 + transformers 5.5 + unsloth + Qwen/Llama compatibility patch (commit `376a4fb`)
-  documented and committed; multi-model FT on these stacks would otherwise fail at trainer
-  construction with a token-obfuscation bug.
-- ✅ Methodology + skills + provenance + framework — all production-quality and auditable.
-- ❌ Classical baselines (Anomalib PatchCore, WinCLIP+) not yet rerun on our splits — relevant
-  numbers cited from published papers, head-to-head AUROC on identical splits is on the v0.2 roadmap.
-- ❌ Llama-3.2-Vision recipe-vs-architecture diagnostic (testing whether rank=16 / lr=4e-4 /
-  epochs=10 closes the rule-transfer gap) — flagged as a v0.3 follow-up.
-- ❌ Edge deployment (ONNX export, INT8 quantization) — abstractions in place; exporters in v0.2.
-- ❌ Multi-GPU / cluster training — out of scope; this is a single-consumer-GPU framework.
+- ✅ **Eight-bug methodology audit completed.** All 8 fixes in commit `6c8cc9e`; full rationale
+  + before/after numbers + generalizable hygiene checks in [`docs/audit-trail.md`](docs/audit-trail.md).
+- ✅ **Two backbones validated under the post-audit pipeline** — Gemma 4 E4B-it (full coverage)
+  and Qwen3-VL-8B-Instruct (cross-family, 7 cats including the headroom-rich pcb1 / transistor).
+  Recipe versions `v0.7-zs-logit-only*`, `v0.8-fixed-pipeline*`. All on a 16 GB laptop GPU at 4-bit.
+- ✅ **WinCLIP+ K=2 specialist baseline integrated** with matched test splits (Bug 5 fix
+  applied). Lives in `research/baselines/run_winclip.py`.
+- ✅ **Multi-seed bootstrap CIs at the headline cells** — Gemma N=60/100/full × 4 cats × 5 seeds;
+  Qwen3 transistor × 5 seeds. Single-seed Qwen3 elsewhere (multi-seed extension to pcb1 is in
+  flight — see `research/logs/launches/`).
+- ✅ **Backbone-swappable architecture.** `FSVLM_DEFAULT_MODEL` env var binds via Pydantic
+  `BaseSettings`; both training and zero-shot eval honour it. Worked walkthrough in
+  [CONTRIBUTING.md § Adding a new backbone](CONTRIBUTING.md#adding-a-new-backbone).
+- ⚠️ **Pre-audit results superseded.** v0.1-cascade numbers in the figures above remain in git
+  history for transparency but should be read with [`docs/audit-trail.md`](docs/audit-trail.md)
+  alongside. The "ZS-vs-lift Spearman rule" finding was based on data partly affected by Bugs
+  1-4 and is being re-evaluated in the v0.2 docs pass.
+- ⚠️ **Llama-3.2-Vision** — pre-audit data exists at `v0.5-tier-a-llama32` (5 cats, single seed,
+  affected by some of the 8 bugs). A clean `v0.8-fixed-pipeline` re-run is on the v0.2 todo list
+  (~2h GPU). Adding it would let us claim "tested 3 backbones under the audited pipeline."
+- ❌ **Pixel-level localization** out of scope. Image-level PASS/FAIL only.
+- ❌ **Edge deployment** (ONNX export, INT8 quantization) — abstractions in place; exporters in v0.2.
+- ❌ **Multi-GPU / cluster training** — out of scope; this is a single-consumer-GPU framework.
 
 ---
 
 ## Documentation
 
+- [docs/audit-trail.md](docs/audit-trail.md) — **the eight-bug methodology audit + fixes**
 - [POSITIONING.md](POSITIONING.md) — what this is and is not, scoping decisions, decision date
 - [skills/README.md](skills/README.md) — the 15-skill catalog index
 - [docs/skills.md](docs/skills.md) — narrative overview of how skills work
 - [docs/autoresearch.md](docs/autoresearch.md) — the loop pattern, ranked contributions, worked example
 - [docs/benchmarks.md](docs/benchmarks.md) — methodology, coverage, failure modes
 - [docs/research-log.md](docs/research-log.md) — decisions, findings, and failures along the way
+- [CONTRIBUTING.md § Adding a new backbone](CONTRIBUTING.md#adding-a-new-backbone) — worked walkthrough
 - [CONTRIBUTING.md](CONTRIBUTING.md) — how to contribute
 - [SECURITY.md](SECURITY.md) — how to report vulnerabilities
 - [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) — community standards
