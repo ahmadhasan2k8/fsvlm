@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "current_pass": "pass9-lr-sensitivity-3ep-small-N",
-  "current_pass_description": "LR sensitivity test at 3ep x small N: does the 'no lift at N<=10 x 3ep' claim survive a 20x LR sweep, or is it lr=2e-4-specific? Pre-registered hypotheses + decision rule locked before sweep launches (chains after pass8 completes).",
+  "current_pass": "pass10-deferred-same-policy-controls",
+  "current_pass_description": "Deferred same-policy controls: run bottle, transistor, capsules-VisA x 3ep x N=full x 5s x Gemma under last-epoch policy to close the cross-policy gap for the substitutability claim on the remaining 3 of 5 paired cats. Pre-registered hypotheses lock paper-edit consequences. Chains after pass9 (LR sweep) completes.",
   "overarching_research_question": "How few natural-language-labeled images are enough to fine-tune a modern VLM (Gemma 4 E4B-it via QLoRA) into a useful industrial defect detector, and WHICH KINDS of defects obey this 'tiger-analogy' (few-shot suffices because the model already has relevant priors) vs. WHICH KINDS don't?",
   "passes": [
     {
@@ -506,6 +506,121 @@
         "pass8-pitfall10-capsule-policy-control (in flight; LR sweep chains after pass8 completes)"
       ],
       "audit_trail_pointer": "research/logs/launches/phase5_lr_sweep.sh"
+    },
+    {
+      "id": "pass10-deferred-same-policy-controls",
+      "status": "pending",
+      "preregistered_at": "2026-05-28T01:31:39Z",
+      "motivation": "TMLR adversarial review (2026-05-27) flagged that 3 of 5 paired substitutability cats (bottle, transistor, capsules-VisA) are explicitly untested under same-policy controls \u2014 that the cross-policy generalization of the substitutability claim is unresolved on those 3 cats. The pass8 capsule control confirmed H2 (substitutability falsifies on capsule under last-epoch policy). For TMLR submission readiness, all 5 paired cats must have same-policy controls before the substitutability claim can be reported as 'all controls landed' rather than 'deferred to follow-on work'. Pre-registered hypotheses lock the binding paper-edit consequences ahead of execution; chains after pass9 (LR sweep) completes.",
+      "description": "Run 3 cells x 5 seeds each: (a) bottle x 3ep x N=full x 5s x Gemma under last-epoch policy; (b) transistor x 3ep x N=full x 5s x Gemma under last-epoch policy; (c) capsules-VisA x 3ep x N=full x 5s x Gemma under last-epoch policy. Compare each new mean against Phase 1's same-cell best-eval-loss value to determine whether the substitutability claim survives the policy switch on that cat.",
+      "phase1_references_best_eval_loss": {
+        "bottle": {
+          "value": 0.802,
+          "n_seeds": 5,
+          "source": "Phase 1 v0.8-fixed-pipeline"
+        },
+        "transistor": {
+          "value": 0.763,
+          "n_seeds": 6,
+          "source": "Phase 1 v0.8-fixed-pipeline + N=100 multi-seed"
+        },
+        "capsules": {
+          "value": 0.636,
+          "n_seeds": 1,
+          "source": "Phase 1 v0.8-fixed-pipeline single seed"
+        }
+      },
+      "phase1_50ep_N10_best_eval_loss": {
+        "bottle": {
+          "value": 0.773,
+          "n_seeds": 5
+        },
+        "transistor": {
+          "value": 0.749,
+          "n_seeds": 5
+        },
+        "capsules": {
+          "value": 0.62,
+          "n_seeds": 5
+        }
+      },
+      "twoD_sweep_50ep_N10_last_epoch": {
+        "bottle": {
+          "value": 0.773,
+          "n_seeds": 3,
+          "note": "matches Phase 1 - Pitfall #10 magnitude on bottle is ~0"
+        },
+        "transistor": {
+          "value": 0.704,
+          "n_seeds": 3,
+          "note": "Phase 1 - 0.045 - Pitfall #10 magnitude on transistor is meaningful"
+        },
+        "capsules": {
+          "value": "n/a (not in 2D sweep)",
+          "n_seeds": 0
+        }
+      },
+      "hypotheses_per_cat": {
+        "bottle": {
+          "H1_substitutability_survives": "new 3ep x N=full x last-epoch mean lands at 0.80 +/- 0.02. Both sides of paired comparison invariant under policy; substitutability holds. Predicted from 2D sweep Pitfall #10 magnitude on bottle = 0.000 at 50ep x N=10.",
+          "H2_substitutability_weakens": "new mean stays at 0.85 +/- 0.02 (or higher). The 50ep x N=10 side dropped under last-epoch by ~0.05 but the 3ep x N=full side didn't, so substitutability claim on bottle weakens. Unlikely given Pitfall #10 magnitude on bottle is ~0 at long-epoch as well.",
+          "H3_inconclusive": "new mean lands at 0.82 +/- 0.02. Effect bounded but ambiguous.",
+          "expected_outcome_a_priori": "H1 strongly favored (~80% confidence) because 2D sweep showed Pitfall #10 magnitude on bottle is ~0 at 50ep x N=10."
+        },
+        "transistor": {
+          "H1_substitutability_survives": "new 3ep x N=full x last-epoch mean lands at 0.72 +/- 0.02 (Phase 1 0.763 minus ~0.04 = within the 2D sweep transistor Pitfall #10 magnitude). Both sides shift by ~0.05 under last-epoch; substitutability holds.",
+          "H2_substitutability_weakens": "new mean stays at 0.76 +/- 0.02. Only 50ep x N=10 side dropped; substitutability falsifies on transistor (Delta becomes ~ -0.06, beyond noise).",
+          "H3_inconclusive": "new mean lands at 0.74 +/- 0.02.",
+          "expected_outcome_a_priori": "Closer to 50/50 because transistor's Pitfall #10 magnitude at 3ep is unmeasured. Genuinely binary risk to substitutability claim."
+        },
+        "capsules-VisA": {
+          "H1_substitutability_survives": "new 3ep x N=full x last-epoch mean lands at 0.62 +/- 0.04. Both sides at similar level under last-epoch; substitutability holds at lower numbers (cat is borderline anyway).",
+          "H2_substitutability_weakens": "new mean stays at 0.65 +/- 0.04. 50ep x N=10 drops; substitutability falsifies on capsules-VisA.",
+          "H3_inconclusive": "new mean between 0.63 and 0.65.",
+          "expected_outcome_a_priori": "Less informative because the absolute values are all in the 0.60-0.65 range with high seed dispersion; substitutability is moot if all numbers are below deployment thresholds anyway."
+        }
+      },
+      "decision_rule_locked": "For each cat, compute (new last-epoch 3ep x N=full mean) - (Phase 1 best-eval-loss 3ep x N=full value). If within 0.03 of expected H1 shift (cat-specific) -> H1 confirmed (substitutability holds on that cat under policy switch). If new value stays within 0.02 of Phase 1 best-eval-loss value -> H2 confirmed (substitutability fails on that cat). Otherwise -> H3.",
+      "paper_action_per_outcome": {
+        "all_H1": "Section 6.5: report '4 of 5 paired cats hold within seed noise under both best-eval-loss AND last-epoch policy; capsule is the documented policy-conditional exception'. Removes 'deferred to follow-on work' caveat from substitutability claim.",
+        "mixed_H1_H2": "Section 6.5: report 'X of 4 deferred cats hold under same-policy; capsule + {H2 cats} are policy-conditional exceptions; bottle/transistor/capsules-VisA tested'. List H2 cats by name.",
+        "all_H2": "Section 6.5: report 'substitutability is policy-conditional on 4 of 5 lift-bearing cats (only pcb1 robust because it has no lift to select); claim weakens substantially under same-policy generalization'. Major substitutability claim revision.",
+        "any_H3": "Section 8: list inconclusive cats as 'partial result; same-policy boundary unclear'."
+      },
+      "configs": {
+        "datasets": [
+          "mvtec",
+          "mvtec",
+          "visa"
+        ],
+        "categories": [
+          "bottle",
+          "transistor",
+          "capsules"
+        ],
+        "n_values": [
+          -1
+        ],
+        "seeds": [
+          42,
+          1337,
+          7,
+          24,
+          99
+        ],
+        "epochs": 3,
+        "env": {
+          "FSVLM_DISABLE_CHECKPOINTS": "1"
+        },
+        "recipe_version": "v0.5-pitfall10-deferred-controls",
+        "backbone": "unsloth/gemma-4-E4B-it",
+        "policy": "last-epoch (FSVLM_DISABLE_CHECKPOINTS=1)"
+      },
+      "estimated_gpu_hours": 15,
+      "depends_on": [
+        "pass9-lr-sensitivity-3ep-small-N (in flight; chains after pass9 completes)"
+      ],
+      "trigger": "TMLR adversarial review 2026-05-27 round N"
     }
   ],
   "global_kill_conditions": [
