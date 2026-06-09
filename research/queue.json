@@ -712,7 +712,8 @@
     },
     {
       "id": "pass12-upgrade-inconclusive-verdicts-via-additional-seeds",
-      "status": "pending",
+      "status": "completed",
+      "verdict_summary": "14 cells run (LE 50ep x N=10 x seeds {24,99} on capsule/transistor/bottle = 6; BEL 3ep x N=full x seeds {7,24,99,1337} on visa/capsules + pcb1 = 8). TOST verdicts at delta=0.05 upgraded from the pass11 placeholders: transistor LE inconclusive -> substitutable (CI [-0.036,+0.022]); visa/capsules BEL coverage-limited -> substitutable (Dmu -0.004, CI [-0.044,+0.036]); pcb1 BEL prior single-seed 0.785 confirmed an outlier, 4-seed mean 0.631 +/- 0.056 -> inconclusive (Dmu -0.012, CI [-0.076,+0.052]). Final BEL: 3 substitutable (capsule, transistor, visa/capsules), 2 inconclusive (bottle, pcb1), 0 not-substitutable. Final LE: 1 of 3 testable substitutable (transistor); capsule cannot-establish (CI [-0.071,-0.037], policy-conditional); bottle inconclusive. pcb1 per-seed BEL: 7=0.6233, 24=0.5844, 99=0.7111, 1337=0.6053.",
       "preregistered_at": "2026-05-28T18:23:18Z",
       "motivation": "pass11 TOST decision rule shows the existing data is insufficient to produce conclusive verdicts on several (cat, policy) pairs at delta = 0.05: (1) bottle BEL is INCONCLUSIVE because the 50ep \u00d7 N=10 BEL side has sigma = 0.041 across 5 seeds; (2) all three LE-policy verdicts (capsule, transistor, bottle) are INCONCLUSIVE because the 50ep \u00d7 N=10 LE side has only 3 seeds (from 2D sweep) \u2014 adding 2 more seeds would tighten the CI; (3) capsules-VisA and pcb1 are COVERAGE-LIMITED because the 3ep \u00d7 N=full BEL side is single-seed. This pass extends the data minimally to push as many INCONCLUSIVE verdicts to SUBSTITUTABLE or NOT-SUBSTITUTABLE as is achievable within ~30h GPU.",
       "cells_to_run": [
