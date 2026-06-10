@@ -777,22 +777,23 @@
           1337,
           7
         ],
-        "alt_learning_rates": [
+        "checkpoint_policy": "last-epoch (the trainer's VRAM heuristic skips eval for Gemma 50ep on the 16GB GPU, free VRAM <6GB after model load, so load_best_model_at_end is off). To avoid the Pitfall #10 cross-policy confound, the 2e-4 baseline is run IN-PASS under identical conditions, so every cell (baseline + alternatives) is last-epoch and the only variable is LR. The published v0.4 50ep numbers are best-eval-loss; since last-epoch and best-eval-loss agree within ~0.04 on these cats, the LR-robustness conclusion transfers.",
+        "recipe_version_pattern": "v0.6-lr-sweep-50ep-lr{LR}",
+        "lora_rank": 8,
+        "learning_rates_in_pass": [
+          "2e-4 (baseline)",
           "5e-5",
           "1e-4",
           "5e-4",
           "1e-3"
-        ],
-        "baseline_lr": "2e-4 (already run: v0.4-longepoch-validation / v0.5-2d-sweep-50ep)",
-        "checkpoint_policy": "best-eval-loss (trainer default; matches the v0.4-longepoch-validation baseline cells)",
-        "recipe_version_pattern": "v0.6-lr-sweep-50ep-lr{LR}",
-        "lora_rank": 8
+        ]
       },
-      "expected_cells": 60,
-      "estimated_gpu_hours": 8.3,
+      "expected_cells": 75,
+      "estimated_gpu_hours": 10.4,
       "depends_on": [
         "pass9 (3-epoch LR sweep, the parallel falsification check at the short budget)"
-      ]
+      ],
+      "amendment_note": "Amended 2026-06-10 BEFORE any result landed (0 v0.6 rows in results JSON at amendment time): corrected the policy spec from 'best-eval-loss' to the trainer's actual VRAM-driven last-epoch behavior, and added the 2e-4 baseline in-pass so the baseline and alternatives share policy exactly. Hypotheses and decision rule unchanged."
     }
   ],
   "global_kill_conditions": [
