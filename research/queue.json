@@ -795,6 +795,49 @@
         "pass9 (3-epoch LR sweep, the parallel falsification check at the short budget)"
       ],
       "amendment_note": "Amended 2026-06-10 BEFORE any result landed (0 v0.6 rows in results JSON at amendment time): corrected the policy spec from 'best-eval-loss' to the trainer's actual VRAM-driven last-epoch behavior, and added the 2e-4 baseline in-pass so the baseline and alternatives share policy exactly. Hypotheses and decision rule unchanged."
+    },
+    {
+      "id": "pass14-same-policy-completion",
+      "status": "pending",
+      "preregistered_at": "2026-06-10T15:48:30Z",
+      "motivation": "Three coverage gaps remain after pass13. (A) The cross-family 50ep x N=10 table mixes checkpoint policies: the Gemma column is best-eval-loss (pre-refactor code, decision log 2026-05-26) while the Qwen3/Pixtral columns are very likely last-epoch (post-refactor working tree + VRAM heuristic on larger models). Gemma last-epoch cells exist for pcb1 and macaroni2 but NOT for pipe_fryum and visa/capsules; completing them enables an all-last-epoch same-policy table. (B) The last-epoch 5-seed pools used in equivalence testing mix environment eras (3 seeds from the 2026-05-26 env, 2 from the rebuilt env); extending the pass13 2e-4 cells from seeds {42,1337,7} to {42,1337,7,24,99} yields uniform same-recipe same-env 5-seed pools. (C) The favorable bottle x 1e-3 result (0.860 +/- 0.027, 3 seeds) gets extended to 5 seeds before any downstream claim rests on it. (D, conditional) A same-era policy-only magnitude for the checkpoint-policy pitfall: capsule x 50ep x N=10 x best-eval-loss in TODAY's environment via a new FSVLM_FORCE_EVAL override (the VRAM heuristic otherwise forces last-epoch); runs only if a single trial cell does not OOM at ~4.6GB free.",
+      "cells_to_run": [
+        {
+          "group": "A",
+          "cell": "pipe_fryum + visa/capsules x 50ep x N=10 x seeds {42,1337,7,24,99} x Gemma x last-epoch",
+          "recipe_version": "v0.6-longepoch-le-completion",
+          "count": 10
+        },
+        {
+          "group": "B",
+          "cell": "capsule, transistor, bottle x 50ep x N=10 x seeds {24,99} x Gemma x last-epoch x lr=2e-4",
+          "recipe_version": "v0.6-lr-sweep-50ep-lr2e-4 (extend)",
+          "count": 6
+        },
+        {
+          "group": "C",
+          "cell": "bottle x 50ep x N=10 x seeds {24,99} x Gemma x last-epoch x lr=1e-3",
+          "recipe_version": "v0.6-lr-sweep-50ep-lr1e-3 (extend)",
+          "count": 2
+        },
+        {
+          "group": "D-conditional",
+          "cell": "capsule x 50ep x N=10 x seeds {42,1337,7} x Gemma x best-eval-loss via FSVLM_FORCE_EVAL=1",
+          "recipe_version": "v0.6-longepoch-bel-forced",
+          "count": 3,
+          "condition": "trial seed-42 cell completes without OOM"
+        }
+      ],
+      "expectations_locked": {
+        "A": "pipe_fryum LE expected ~0.50-0.58 and visa/capsules LE expected ~0.57-0.67 (no-lift cats; checkpoint-policy delta ~0 per the pcb1 control, plus cross-env drift). If LE means land within 0.05 of the published BEL-column values, the cross-family conclusions are policy-robust and the same-policy table strengthens them; if any cat diverges >0.05, the mixed-policy labeling must stay and the divergence is reported.",
+        "B": "Seeds 24/99 expected within the pass13 3-seed band per cat (same env, same recipe). Resulting uniform 5-seed pools replace the mixed-era pools in downstream equivalence rows.",
+        "C": "Bottle 1e-3 seeds 24/99 expected in 0.80-0.90. If the 5-seed mean stays >=0.83 with sigma<0.05, the favorable high-LR bottle result is seed-robust; if the new seeds fall below 0.80, the result is downgraded to a 3-seed observation.",
+        "D": "Same-era policy-only capsule magnitude = mean(BEL-forced) - 0.8327 (pass13 2e-4 LE). Expect +0.02 to +0.05 if the historical +0.045-0.053 capsule gap was policy-dominated; ~0 if it was mostly environment drift. Either outcome is reportable and refines the pitfall's quoted magnitude."
+      },
+      "estimated_total_gpu_hours": 3.0,
+      "depends_on": [
+        "pass13-lr-sensitivity-50ep (completed)"
+      ]
     }
   ],
   "global_kill_conditions": [
