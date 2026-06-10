@@ -748,6 +748,51 @@
       "depends_on": [
         "pass11 (decision rule applied to existing data)"
       ]
+    },
+    {
+      "id": "pass13-lr-sensitivity-50ep",
+      "status": "pending",
+      "preregistered_at": "2026-06-10T01:43:16Z",
+      "motivation": "The 50ep x N=10 results carry both the positive findings (compute-for-data equivalence on capsule/transistor/bottle) and the catastrophic-failure characterization (Gemma stays ~0.62 on pcb1 and ~0.57 on macaroni2, the latter below its own zero-shot). All of these were run at a single learning rate (2e-4). The existing pre-registered LR sweep (pass9) only covers the 3-epoch budget, so LR sensitivity at the 50-epoch budget is uncharacterized. This pass tests whether the 50-epoch results are robust to LR across the same 20x range used in pass9, BEFORE any result lands.",
+      "hypotheses": {
+        "H1_failures_are_real_ceilings": "For pcb1 and macaroni2 at 50ep x N=10, no alternative LR in {5e-5,1e-4,5e-4,1e-3} lifts mean AUROC by >= 0.05 over the 2e-4 baseline (with seed std < 0.04). Interpretation: the catastrophic-failure characterization is LR-robust, not a 2e-4 artifact; the 'Gemma fails these categories even at long compute' claim stands and is strengthened.",
+        "H2_failures_are_LR_conditional": "At least one alternative LR lifts pcb1 or macaroni2 by >= 0.05 (seed std < 0.04) over the 2e-4 baseline. Interpretation: the failure characterization is LR-specific; the 'Gemma fails X' claim and the macaroni2 data-fundamental reading must be revised to 'at LR=2e-4'.",
+        "H3_substitutability_LR_robustness": "For capsule/transistor/bottle, no alternative LR changes the qualitative 50ep x N=10 level by >= 0.05 in a way that would flip the substitutability reading. Interpretation: the compute-for-data verdicts do not hinge on the specific LR."
+      },
+      "decision_rule_locked": "Compute per-(cat,LR) mean Delta = mean(AUROC at 50ep x N=10 x 3 seeds x altLR) - (2e-4 50ep x N=10 baseline mean for that cat). If max lift on pcb1 and macaroni2 across the four alt LRs is < 0.05 -> H1. If any (cat in {pcb1,macaroni2}, altLR) Delta >= 0.05 with seed std < 0.04 -> H2. For capsule/transistor/bottle report whether any altLR shifts the cell by >= 0.05 (H3 check). Threshold mirrors pass9 H2 (Delta >= 0.05, sigma < 0.04).",
+      "configs": {
+        "categories": [
+          "capsule",
+          "transistor",
+          "bottle",
+          "macaroni2",
+          "pcb1"
+        ],
+        "n_values": [
+          10
+        ],
+        "epochs": 50,
+        "seeds": [
+          42,
+          1337,
+          7
+        ],
+        "alt_learning_rates": [
+          "5e-5",
+          "1e-4",
+          "5e-4",
+          "1e-3"
+        ],
+        "baseline_lr": "2e-4 (already run: v0.4-longepoch-validation / v0.5-2d-sweep-50ep)",
+        "checkpoint_policy": "best-eval-loss (trainer default; matches the v0.4-longepoch-validation baseline cells)",
+        "recipe_version_pattern": "v0.6-lr-sweep-50ep-lr{LR}",
+        "lora_rank": 8
+      },
+      "expected_cells": 60,
+      "estimated_gpu_hours": 8.3,
+      "depends_on": [
+        "pass9 (3-epoch LR sweep, the parallel falsification check at the short budget)"
+      ]
     }
   ],
   "global_kill_conditions": [
