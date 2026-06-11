@@ -839,6 +839,30 @@
       "depends_on": [
         "pass13-lr-sensitivity-50ep (completed)"
       ]
+    },
+    {
+      "id": "pass15-era-consistency-audit",
+      "status": "pending",
+      "preregistered_at": "2026-06-10T19:55:00Z",
+      "type": "analysis-only (no new cells)",
+      "motivation": "pass14-D showed the same-era checkpoint-policy effect on capsule is ~0, implying the historical +0.05 gap was environment drift across the 2026-05-26/27 rebuild (GPU driver + torch/unsloth env change). Every equivalence-scoreboard row that mixes input cells from both sides of that boundary is therefore suspect. This pass locks an era classification and recomputes each row era-consistently BEFORE any downstream verdict language is rewritten.",
+      "era_classification_locked": {
+        "era1_pre_rebuild": "v0.1-v0.3*, v0.5-tier-a-*, v0.7-zs-*, v0.8-fixed-pipeline / -full / -qwen3 / rank tags (Apr 30 - May 2), v0.4-longepoch-validation(+qwen3/pixtral/besteval) (May 24-26), v0.5-2d-sweep-* RESTRICTED to seeds {42,1337,7} (May 26)",
+        "era2_post_rebuild": "v0.5-2d-sweep-50ep seeds {24,99} (May 28 resume), v0.5-pitfall10-capsule-control (pass8), v0.5-pitfall10-deferred-controls (pass10), v0.8-fixed-pipeline-extension-best-eval-loss (pass12), v0.5-lr-sweep-* (pass9, May 28), all v0.6-* (pass13/14, Jun 10)",
+        "basis": "run-session dates from session logs and memory; rows carry no timestamps. Tags whose date is uncertain are flagged rather than guessed.",
+        "era2_internal_noise_denominator": "quantified from the 6 duplicated (cat, seed) cells run in both May-28 (v0.5-2d-sweep-50ep seeds 24/99) and Jun-10 (v0.6-lr-sweep-50ep-lr2e-4 seeds 24/99)"
+      },
+      "decision_rules_locked": {
+        "procedure": "Recompute every \u00a7-scoreboard row using only era2 inputs on both sides where constructible. TOST parameters identical to pass11: delta=0.05, 90% Welch CI, sample std (n-1).",
+        "row_outcomes": "each row labeled VERDICT-UNCHANGED / VERDICT-CHANGED (old->new stated) / NOT-CONSTRUCTIBLE (missing side named)",
+        "constructibility_expected": "LE rows constructible for capsule, transistor, bottle (pass14-B pools vs pass8/pass10) and NEWLY for visa/capsules (pass14-A vs pass10) which upgrades it from coverage-limited. pcb1 LE not constructible (no era2 N=full LE). All BEL rows except none are constructible era2 at 50ep x N=10 (only capsule has a forced-BEL cell, but no era2 BEL N=full comparator exists for capsule) -> BEL rows reported as not-constructible / era-mixed.",
+        "interpretation_rule": "If an era-consistent verdict differs from the published mixed-era verdict, the published row is re-labeled era-sensitive; the policy-conditional language is retained ONLY where a same-era policy contrast supports it (none currently does, per pass14-D)."
+      },
+      "depends_on": [
+        "pass14-same-policy-completion (completed)",
+        "pass11 (TOST procedure)"
+      ],
+      "note": "Analysis pass; partly retroactive like pass11 (input cells exist). The lock is on classification + procedure before verdict deltas are computed and before any downstream materials change."
     }
   ],
   "global_kill_conditions": [
