@@ -843,7 +843,7 @@
     {
       "id": "pass15-era-consistency-audit",
       "status": "pending",
-      "preregistered_at": "2026-06-10T19:55:00Z",
+      "preregistered_at": "2026-06-11T06:41:35Z",
       "type": "analysis-only (no new cells)",
       "motivation": "pass14-D showed the same-era checkpoint-policy effect on capsule is ~0, implying the historical +0.05 gap was environment drift across the 2026-05-26/27 rebuild (GPU driver + torch/unsloth env change). Every equivalence-scoreboard row that mixes input cells from both sides of that boundary is therefore suspect. This pass locks an era classification and recomputes each row era-consistently BEFORE any downstream verdict language is rewritten.",
       "era_classification_locked": {
@@ -862,7 +862,7 @@
         "pass14-same-policy-completion (completed)",
         "pass11 (TOST procedure)"
       ],
-      "note": "Analysis pass; partly retroactive like pass11 (input cells exist). The lock is on classification + procedure before verdict deltas are computed and before any downstream materials change."
+      "note": "Analysis pass; partly retroactive like pass11 (input cells exist). The lock is on classification + procedure before verdict deltas are computed and before any downstream materials change. Field correction: preregistered_at initially mistyped as 2026-06-10T19:55:00Z; corrected to match the actual prereg commit time (2fcffd7) before any analysis ran."
     }
   ],
   "global_kill_conditions": [
