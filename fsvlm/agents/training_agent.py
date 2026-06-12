@@ -219,13 +219,20 @@ class TrainingAgent:
         train_dataset = Dataset.from_list(train_convos)
         val_dataset = Dataset.from_list(val_convos)
 
-        # VRAM headroom check — skip eval during training if tight
+        # VRAM headroom check — skip eval during training if tight.
+        # FSVLM_FORCE_EVAL=1 overrides the heuristic and runs per-epoch eval +
+        # best-eval-loss selection regardless of headroom (may OOM on tight GPUs);
+        # needed to measure checkpoint-policy effects when headroom is below the
+        # threshold. The chosen policy is logged either way.
         vram_free = torch.cuda.mem_get_info()[0] / (1024**3)
-        if vram_free < 6.0:
-            logger.info(f"VRAM headroom: {vram_free:.1f}GB free — skipping eval during training")
+        _force_eval = os.environ.get("FSVLM_FORCE_EVAL", "0") == "1"
+        if vram_free < 6.0 and not _force_eval:
+            logger.info(f"VRAM headroom: {vram_free:.1f}GB free — skipping eval during training (last-epoch policy)")
             eval_strategy = "no"
             load_best = False
         else:
+            if _force_eval and vram_free < 6.0:
+                logger.info(f"VRAM headroom: {vram_free:.1f}GB free — FSVLM_FORCE_EVAL=1, running eval anyway (best-eval-loss policy)")
             eval_strategy = "epoch"
             load_best = True
 
