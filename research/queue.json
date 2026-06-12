@@ -749,6 +749,123 @@
       "depends_on": [
         "pass11 (decision rule applied to existing data)"
       ]
+    },
+    {
+      "id": "pass13-lr-sensitivity-50ep",
+      "status": "completed",
+      "verdict_summary": "75/75 cells complete (7 cells initially lost to a DNS outage mid-run, recovered via --resume with HF_HUB_OFFLINE=1; documented for the audit trail). All cells last-epoch, 3 seeds, in-pass 2e-4 baseline. VERDICTS vs locked rule: (1) pcb1 -> H2 TRIGGERS at 5e-5 only (Delta=+0.075, sigma=0.025): the 50ep failure is LR-conditional AS WORDED, but interpretation is ZS-preservation, not rescue -- zero of 15 pcb1 cells beat zero-shot 0.750 (closest 0.7497 at 5e-5); training degrades pcb1's prior roughly in proportion to effective LR (0.723/0.663/0.648/0.665/0.604 ascending LR, high-LR cells noisy sigma~0.09). The 1e-4 mid-point landed inside the 0.65-0.72 window predicted before those cells ran. (2) macaroni2 -> H1: no (LR,seed-gate) rescue anywhere (max Delta +0.028 at 1e-3 with sigma=0.104, fails gate); note one 1e-3 lottery seed at 0.7125 vs ZS 0.586, flanked by 0.51/0.56 -- reliably unlearnable, isolated escapes exist. (3) H3: capsule/transistor robust (no upward shift >=0.05; 1e-3 damages both); BOTTLE EXCEPTION: 1e-3 lifts bottle to 0.860+/-0.027 (Delta=+0.065 over 2e-4, passes both gates), exceeding even the full-pool 3ep best-eval reference 0.802 -- bottle's compute-for-data trade strengthens at high LR; report as favorable-direction LR sensitivity. META: sigma rises sharply with LR (0.004-0.046 at <=2e-4 vs 0.056-0.112 at >=5e-4, bottle-1e-3 excepted): adaptation stability is LR-dependent within a backbone, complementing the cross-backbone stability axis. Replication note: the in-pass 2e-4 cells re-ran the prior 2D-sweep config (same seeds/policy); same-seed AUROC reproduced within ~+0.01-0.04 mean (max per-seed deviation +0.07) across the environment rebuild -- cross-environment drift bounds per-seed reproducibility and is reportable.",
+      "preregistered_at": "2026-06-10T01:43:16Z",
+      "motivation": "The 50ep x N=10 results carry both the positive findings (compute-for-data equivalence on capsule/transistor/bottle) and the catastrophic-failure characterization (Gemma stays ~0.62 on pcb1 and ~0.57 on macaroni2, the latter below its own zero-shot). All of these were run at a single learning rate (2e-4). The existing pre-registered LR sweep (pass9) only covers the 3-epoch budget, so LR sensitivity at the 50-epoch budget is uncharacterized. This pass tests whether the 50-epoch results are robust to LR across the same 20x range used in pass9, BEFORE any result lands.",
+      "hypotheses": {
+        "H1_failures_are_real_ceilings": "For pcb1 and macaroni2 at 50ep x N=10, no alternative LR in {5e-5,1e-4,5e-4,1e-3} lifts mean AUROC by >= 0.05 over the 2e-4 baseline (with seed std < 0.04). Interpretation: the catastrophic-failure characterization is LR-robust, not a 2e-4 artifact; the 'Gemma fails these categories even at long compute' claim stands and is strengthened.",
+        "H2_failures_are_LR_conditional": "At least one alternative LR lifts pcb1 or macaroni2 by >= 0.05 (seed std < 0.04) over the 2e-4 baseline. Interpretation: the failure characterization is LR-specific; the 'Gemma fails X' claim and the macaroni2 data-fundamental reading must be revised to 'at LR=2e-4'.",
+        "H3_substitutability_LR_robustness": "For capsule/transistor/bottle, no alternative LR changes the qualitative 50ep x N=10 level by >= 0.05 in a way that would flip the substitutability reading. Interpretation: the compute-for-data verdicts do not hinge on the specific LR."
+      },
+      "decision_rule_locked": "Compute per-(cat,LR) mean Delta = mean(AUROC at 50ep x N=10 x 3 seeds x altLR) - (2e-4 50ep x N=10 baseline mean for that cat). If max lift on pcb1 and macaroni2 across the four alt LRs is < 0.05 -> H1. If any (cat in {pcb1,macaroni2}, altLR) Delta >= 0.05 with seed std < 0.04 -> H2. For capsule/transistor/bottle report whether any altLR shifts the cell by >= 0.05 (H3 check). Threshold mirrors pass9 H2 (Delta >= 0.05, sigma < 0.04).",
+      "configs": {
+        "categories": [
+          "capsule",
+          "transistor",
+          "bottle",
+          "macaroni2",
+          "pcb1"
+        ],
+        "n_values": [
+          10
+        ],
+        "epochs": 50,
+        "seeds": [
+          42,
+          1337,
+          7
+        ],
+        "checkpoint_policy": "last-epoch (the trainer's VRAM heuristic skips eval for Gemma 50ep on the 16GB GPU, free VRAM <6GB after model load, so load_best_model_at_end is off). To avoid the Pitfall #10 cross-policy confound, the 2e-4 baseline is run IN-PASS under identical conditions, so every cell (baseline + alternatives) is last-epoch and the only variable is LR. The published v0.4 50ep numbers are best-eval-loss; since last-epoch and best-eval-loss agree within ~0.04 on these cats, the LR-robustness conclusion transfers.",
+        "recipe_version_pattern": "v0.6-lr-sweep-50ep-lr{LR}",
+        "lora_rank": 8,
+        "learning_rates_in_pass": [
+          "2e-4 (baseline)",
+          "5e-5",
+          "1e-4",
+          "5e-4",
+          "1e-3"
+        ]
+      },
+      "expected_cells": 75,
+      "estimated_gpu_hours": 10.4,
+      "depends_on": [
+        "pass9 (3-epoch LR sweep, the parallel falsification check at the short budget)"
+      ],
+      "amendment_note": "Amended 2026-06-10 BEFORE any result landed (0 v0.6 rows in results JSON at amendment time): corrected the policy spec from 'best-eval-loss' to the trainer's actual VRAM-driven last-epoch behavior, and added the 2e-4 baseline in-pass so the baseline and alternatives share policy exactly. Hypotheses and decision rule unchanged."
+    },
+    {
+      "id": "pass14-same-policy-completion",
+      "status": "completed",
+      "verdict_summary": "21/21 cells complete (A=10, B=6, C=2, D=3; D-trial passed without OOM so D ran in full). A: cross-family conclusions are POLICY-ROBUST \u2014 pipe_fryum LE 0.565+/-0.069 vs published column 0.535 (Delta +0.030), visa/capsules LE 0.653+/-0.064 vs 0.620 (Delta +0.033); both inside the locked 0.05 bound. Same-policy table enabled. Note wide seed spreads on both hard cats (sigma ~0.06-0.07): more seed-lottery behavior. B: uniform same-env 5-seed LE pools landed within the pass13 bands as expected: capsule 0.8287+/-0.0075, transistor 0.7309+/-0.0293, bottle 0.7803+/-0.0423; these supersede the mixed-era pools for equivalence rows. C: bottle 1e-3 is SEED-ROBUST at 5 seeds: 0.8724+/-0.0359 (gates: mean>=0.83 and sigma<0.05 both pass; seed 99 reached 0.9266). D (KEY RESULT): same-era policy-only capsule magnitude = -0.0058 (BEL-forced 0.8269+/-0.0286 vs LE 0.8287+/-0.0075, identical env/recipe/seeds). The historical cross-era estimate (+0.045 to +0.053) attributed to checkpoint policy is NOT reproduced when era is controlled: the gap was predominantly environment/version drift, not policy. With a 2-image validation set, best-eval-loss selection is effectively noise. Combined with the pcb1 same-era control (~0), the checkpoint-policy pitfall's measured per-cat magnitudes must be re-attributed: policy effect ~0 within noise on the cells we can control; the real, newly-quantified hazard is cross-environment drift (same seed/recipe reproduces within ~+0.01-0.04 mean, up to 0.07 per-seed, structured per-cat). Downstream equivalence rows that mix eras need an era-consistency audit before any verdict labeled policy-conditional is retained.",
+      "preregistered_at": "2026-06-10T15:48:30Z",
+      "motivation": "Three coverage gaps remain after pass13. (A) The cross-family 50ep x N=10 table mixes checkpoint policies: the Gemma column is best-eval-loss (pre-refactor code, decision log 2026-05-26) while the Qwen3/Pixtral columns are very likely last-epoch (post-refactor working tree + VRAM heuristic on larger models). Gemma last-epoch cells exist for pcb1 and macaroni2 but NOT for pipe_fryum and visa/capsules; completing them enables an all-last-epoch same-policy table. (B) The last-epoch 5-seed pools used in equivalence testing mix environment eras (3 seeds from the 2026-05-26 env, 2 from the rebuilt env); extending the pass13 2e-4 cells from seeds {42,1337,7} to {42,1337,7,24,99} yields uniform same-recipe same-env 5-seed pools. (C) The favorable bottle x 1e-3 result (0.860 +/- 0.027, 3 seeds) gets extended to 5 seeds before any downstream claim rests on it. (D, conditional) A same-era policy-only magnitude for the checkpoint-policy pitfall: capsule x 50ep x N=10 x best-eval-loss in TODAY's environment via a new FSVLM_FORCE_EVAL override (the VRAM heuristic otherwise forces last-epoch); runs only if a single trial cell does not OOM at ~4.6GB free.",
+      "cells_to_run": [
+        {
+          "group": "A",
+          "cell": "pipe_fryum + visa/capsules x 50ep x N=10 x seeds {42,1337,7,24,99} x Gemma x last-epoch",
+          "recipe_version": "v0.6-longepoch-le-completion",
+          "count": 10
+        },
+        {
+          "group": "B",
+          "cell": "capsule, transistor, bottle x 50ep x N=10 x seeds {24,99} x Gemma x last-epoch x lr=2e-4",
+          "recipe_version": "v0.6-lr-sweep-50ep-lr2e-4 (extend)",
+          "count": 6
+        },
+        {
+          "group": "C",
+          "cell": "bottle x 50ep x N=10 x seeds {24,99} x Gemma x last-epoch x lr=1e-3",
+          "recipe_version": "v0.6-lr-sweep-50ep-lr1e-3 (extend)",
+          "count": 2
+        },
+        {
+          "group": "D-conditional",
+          "cell": "capsule x 50ep x N=10 x seeds {42,1337,7} x Gemma x best-eval-loss via FSVLM_FORCE_EVAL=1",
+          "recipe_version": "v0.6-longepoch-bel-forced",
+          "count": 3,
+          "condition": "trial seed-42 cell completes without OOM"
+        }
+      ],
+      "expectations_locked": {
+        "A": "pipe_fryum LE expected ~0.50-0.58 and visa/capsules LE expected ~0.57-0.67 (no-lift cats; checkpoint-policy delta ~0 per the pcb1 control, plus cross-env drift). If LE means land within 0.05 of the published BEL-column values, the cross-family conclusions are policy-robust and the same-policy table strengthens them; if any cat diverges >0.05, the mixed-policy labeling must stay and the divergence is reported.",
+        "B": "Seeds 24/99 expected within the pass13 3-seed band per cat (same env, same recipe). Resulting uniform 5-seed pools replace the mixed-era pools in downstream equivalence rows.",
+        "C": "Bottle 1e-3 seeds 24/99 expected in 0.80-0.90. If the 5-seed mean stays >=0.83 with sigma<0.05, the favorable high-LR bottle result is seed-robust; if the new seeds fall below 0.80, the result is downgraded to a 3-seed observation.",
+        "D": "Same-era policy-only capsule magnitude = mean(BEL-forced) - 0.8327 (pass13 2e-4 LE). Expect +0.02 to +0.05 if the historical +0.045-0.053 capsule gap was policy-dominated; ~0 if it was mostly environment drift. Either outcome is reportable and refines the pitfall's quoted magnitude."
+      },
+      "estimated_total_gpu_hours": 3.0,
+      "depends_on": [
+        "pass13-lr-sensitivity-50ep (completed)"
+      ]
+    },
+    {
+      "id": "pass15-era-consistency-audit",
+      "status": "completed",
+      "verdict_summary": "Analysis complete under the locked rules. ERA2-CONSISTENT LE SCOREBOARD (50ep x N=10 vs 3ep x N=full, both sides era2): capsule \u0394\u03bc=-0.0537 CI[-0.0698,-0.0377] INCONCLUSIVE-toward-not (matches the published mixed-era LE row almost exactly -- the capsule non-equivalence at the long budget is REAL in era2, not an artifact); transistor \u0394\u03bc=+0.0095 CI[-0.0223,+0.0413] SUBSTITUTABLE (unchanged); bottle \u0394\u03bc=-0.0328 CI[-0.0839,+0.0183] INCONCLUSIVE (unchanged); visa/capsules \u0394\u03bc=+0.0244 CI[-0.0367,+0.0855] INCONCLUSIVE (UPGRADED from coverage-limited via the pass14-A cells); pcb1 NOT-CONSTRUCTIBLE (no era2 last-epoch N=full side). BEL ROWS: none are era2-constructible (capsule has a forced-BEL 50ep cell but no era2 BEL N=full comparator; transistor/bottle lack forced-BEL 50ep cells; capsules/pcb1 lack 50ep BEL cells). The published 'BEL: 3 substitutable' rows are therefore era1 or era-mixed by construction. KEY REINTERPRETATION: the published capsule policy-flip (substitutable under best-eval-loss, cannot-establish under last-epoch) is ERA-conditional, not policy-conditional: within era1 both sides give \u0394\u03bc=-0.003 (substitutable); within era2 the LE pair gives \u0394\u03bc=-0.054 (cannot establish); and the pass14-D same-era policy contrast is ~0. The 50ep x N=10 capsule cell moved -0.04 across the rebuild while the N=full cell did not -- differential environment drift flipped the verdict. Within-era2 rerun noise (6 duplicated cells, May-28 vs Jun-10): mean|\u0394|=0.0214, so the cross-era capsule shift is ~2x within-era noise. ROW OUTCOMES: VERDICT-UNCHANGED capsule/transistor/bottle (LE); VERDICT-UPGRADED visa/capsules; NOT-CONSTRUCTIBLE pcb1 (LE) and all BEL rows. Downstream language must replace 'policy-conditional' with 'environment-sensitive at this margin', cite pass14-D for policy~0, and label every scoreboard row with its era construction.",
+      "preregistered_at": "2026-06-11T06:41:35Z",
+      "type": "analysis-only (no new cells)",
+      "motivation": "pass14-D showed the same-era checkpoint-policy effect on capsule is ~0, implying the historical +0.05 gap was environment drift across the 2026-05-26/27 rebuild (GPU driver + torch/unsloth env change). Every equivalence-scoreboard row that mixes input cells from both sides of that boundary is therefore suspect. This pass locks an era classification and recomputes each row era-consistently BEFORE any downstream verdict language is rewritten.",
+      "era_classification_locked": {
+        "era1_pre_rebuild": "v0.1-v0.3*, v0.5-tier-a-*, v0.7-zs-*, v0.8-fixed-pipeline / -full / -qwen3 / rank tags (Apr 30 - May 2), v0.4-longepoch-validation(+qwen3/pixtral/besteval) (May 24-26), v0.5-2d-sweep-* RESTRICTED to seeds {42,1337,7} (May 26)",
+        "era2_post_rebuild": "v0.5-2d-sweep-50ep seeds {24,99} (May 28 resume), v0.5-pitfall10-capsule-control (pass8), v0.5-pitfall10-deferred-controls (pass10), v0.8-fixed-pipeline-extension-best-eval-loss (pass12), v0.5-lr-sweep-* (pass9, May 28), all v0.6-* (pass13/14, Jun 10)",
+        "basis": "run-session dates from session logs and memory; rows carry no timestamps. Tags whose date is uncertain are flagged rather than guessed.",
+        "era2_internal_noise_denominator": "quantified from the 6 duplicated (cat, seed) cells run in both May-28 (v0.5-2d-sweep-50ep seeds 24/99) and Jun-10 (v0.6-lr-sweep-50ep-lr2e-4 seeds 24/99)"
+      },
+      "decision_rules_locked": {
+        "procedure": "Recompute every \u00a7-scoreboard row using only era2 inputs on both sides where constructible. TOST parameters identical to pass11: delta=0.05, 90% Welch CI, sample std (n-1).",
+        "row_outcomes": "each row labeled VERDICT-UNCHANGED / VERDICT-CHANGED (old->new stated) / NOT-CONSTRUCTIBLE (missing side named)",
+        "constructibility_expected": "LE rows constructible for capsule, transistor, bottle (pass14-B pools vs pass8/pass10) and NEWLY for visa/capsules (pass14-A vs pass10) which upgrades it from coverage-limited. pcb1 LE not constructible (no era2 N=full LE). All BEL rows except none are constructible era2 at 50ep x N=10 (only capsule has a forced-BEL cell, but no era2 BEL N=full comparator exists for capsule) -> BEL rows reported as not-constructible / era-mixed.",
+        "interpretation_rule": "If an era-consistent verdict differs from the published mixed-era verdict, the published row is re-labeled era-sensitive; the policy-conditional language is retained ONLY where a same-era policy contrast supports it (none currently does, per pass14-D)."
+      },
+      "depends_on": [
+        "pass14-same-policy-completion (completed)",
+        "pass11 (TOST procedure)"
+      ],
+      "note": "Analysis pass; partly retroactive like pass11 (input cells exist). The lock is on classification + procedure before verdict deltas are computed and before any downstream materials change. Field correction: preregistered_at initially mistyped as 2026-06-10T19:55:00Z; corrected to match the actual prereg commit time (2fcffd7) before any analysis ran.",
+      "verdict_addendum": "ADDENDUM (2026-06-11, launch-log archaeology, post-verdict but pre-rewrite): the surviving launch scripts and run logs in research/logs/(launches/) settle the policy question definitively and SIMPLIFY the era story. The VRAM heuristic line ('skipping eval during training') appears in the run logs of EVERY training campaign: v0.8 (Apr 30-May 1), v0.4-longepoch Gemma (May 4), Qwen3 cross-family (May 5-6), Pixtral cross-family (May 25-26), AND the dedicated v0.4-longepoch-validation-besteval pcb1 control (May 6-7), whose launch script unset FSVLM_DISABLE_CHECKPOINTS believing that would enable best-eval selection -- the heuristic silently overrode it. CONCLUSION: every training cell in the study ran LAST-EPOCH; no best-eval-loss data existed anywhere until pass14-D's FSVLM_FORCE_EVAL cells (whose logs confirm 'running eval anyway (best-eval-loss policy)'). Consequences: (1) all BEL labels in downstream materials are mislabeled LE -- there was never policy mixing because there was only one policy; (2) the published 'BEL' equivalence rows are era1-LE rows and the published 'LE' rows are era2-LE rows: the verdict differences are PURELY era/environment effects, completing pass15's reinterpretation with logged evidence; (3) the 'besteval' pcb1 control was a placebo (LE vs LE replication), consistent with its ~0 delta; (4) the single true policy contrast (pass14-D, pre-registered) measures the checkpoint-policy effect at -0.006 ~ 0 with a 2-image validation set; (5) the deeper documented hazard is that a silent resource-based fallback caused the experimenters to mislabel their own checkpoint policy for the entire study, including in the control designed to measure it -- detected only because the heuristic logged its decision and the logs were retained."
     }
   ],
   "global_kill_conditions": [

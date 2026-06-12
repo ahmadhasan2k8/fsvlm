@@ -287,7 +287,8 @@ def fig_24cat_buckets(rows):
     n_mid = sum(1 for m in means if 0.70 <= m < 0.85)
     n_borderline = sum(1 for m in means if 0.65 <= m < 0.70)
     n_cat = sum(1 for m in means if m < 0.65)
-    ax.set_title("Gemma 4 E4B-it: 50ep × N=10 × 5 seeds across 24 MVTec AD + VisA cats — "
+    n_total = n_sat + n_strong + n_mid + n_borderline + n_cat
+    ax.set_title(f"Gemma 4 E4B-it: 50ep × N=10 × 5 seeds across {n_total} MVTec AD + VisA cats, "
                  f"{n_sat} saturated, {n_strong} strong, {n_mid} mid, {n_borderline} borderline, {n_cat} catastrophic",
                  fontsize=10)
     # Bucket legend
