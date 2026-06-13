@@ -866,6 +866,65 @@
       ],
       "note": "Analysis pass; partly retroactive like pass11 (input cells exist). The lock is on classification + procedure before verdict deltas are computed and before any downstream materials change. Field correction: preregistered_at initially mistyped as 2026-06-10T19:55:00Z; corrected to match the actual prereg commit time (2fcffd7) before any analysis ran.",
       "verdict_addendum": "ADDENDUM (2026-06-11, launch-log archaeology, post-verdict but pre-rewrite): the surviving launch scripts and run logs in research/logs/(launches/) settle the policy question definitively and SIMPLIFY the era story. The VRAM heuristic line ('skipping eval during training') appears in the run logs of EVERY training campaign: v0.8 (Apr 30-May 1), v0.4-longepoch Gemma (May 4), Qwen3 cross-family (May 5-6), Pixtral cross-family (May 25-26), AND the dedicated v0.4-longepoch-validation-besteval pcb1 control (May 6-7), whose launch script unset FSVLM_DISABLE_CHECKPOINTS believing that would enable best-eval selection -- the heuristic silently overrode it. CONCLUSION: every training cell in the study ran LAST-EPOCH; no best-eval-loss data existed anywhere until pass14-D's FSVLM_FORCE_EVAL cells (whose logs confirm 'running eval anyway (best-eval-loss policy)'). Consequences: (1) all BEL labels in downstream materials are mislabeled LE -- there was never policy mixing because there was only one policy; (2) the published 'BEL' equivalence rows are era1-LE rows and the published 'LE' rows are era2-LE rows: the verdict differences are PURELY era/environment effects, completing pass15's reinterpretation with logged evidence; (3) the 'besteval' pcb1 control was a placebo (LE vs LE replication), consistent with its ~0 delta; (4) the single true policy contrast (pass14-D, pre-registered) measures the checkpoint-policy effect at -0.006 ~ 0 with a 2-image validation set; (5) the deeper documented hazard is that a silent resource-based fallback caused the experimenters to mislabel their own checkpoint policy for the entire study, including in the control designed to measure it -- detected only because the heuristic logged its decision and the logs were retained."
+    },
+    {
+      "id": "pass16-frozen-environment-substitutability",
+      "status": "pending",
+      "preregistered_at": "2026-06-13T08:27:15Z",
+      "motivation": "An adversarial review showed the substitutability evidence draws the same nominal cell from different runs spanning the mid-study environment rebuild: reachability table (v0.4), 2D surface (v0.5-2d-sweep), and TOST scoreboard (v0.6) disagree on 50ep x N=10 cells by up to 0.04, and the marquee surface corner (50ep x N=40, 0.918) is compared against a full-pool reference (0.872) from yet another run. This pass re-measures the ENTIRE substitutability arm -- the full 2D surface AND its full-pool 3-epoch references -- as one contiguous batch in the current post-rebuild environment, so every cell feeding the compute-data reachability claim is same-environment.",
+      "configs": {
+        "surface_categories": [
+          "capsule",
+          "transistor",
+          "bottle",
+          "pcb1"
+        ],
+        "surface_N": [
+          5,
+          10,
+          20,
+          40
+        ],
+        "surface_epochs": [
+          3,
+          25,
+          50
+        ],
+        "surface_seeds": [
+          42,
+          1337,
+          7
+        ],
+        "surface_recipe_pattern": "v0.6-2d-frozen-{ep}ep",
+        "fullpool_categories": [
+          "capsule",
+          "transistor",
+          "bottle",
+          "pcb1"
+        ],
+        "fullpool_N": [
+          -1
+        ],
+        "fullpool_epochs": 3,
+        "fullpool_seeds": [
+          42,
+          1337,
+          7,
+          24,
+          99
+        ],
+        "fullpool_recipe": "v0.6-fullpool-3ep-frozen",
+        "policy": "last-epoch (VRAM heuristic; consistent across the whole batch)",
+        "learning_rate": "2e-4",
+        "environment": "post-rebuild torch 2.10.0+cu128; single contiguous run"
+      },
+      "decision_rule_locked": "Per category compute the 50ep x N=40 surface-corner mean and the same-batch 3ep x N=full reference mean. Label: EXCEEDS if corner > ref; REACHES if corner >= ref - 0.05; BELOW if corner < ref - 0.05. Reachability claim holds iff EXCEEDS or REACHES. Report all four against the prior cross-run reading (capsule/bottle EXCEEDS, transistor REACHES, pcb1 BELOW). Also recompute TOST Env-B (50ep x N=10 vs 3ep x N=full) within this single batch.",
+      "expectation_locked": "Post-rebuild 50ep cells run ~0.04 below the pre-rebuild surface (capsule 50ep x N=10 was 0.869 pre, 0.829 post) while the post-rebuild full-pool reference is ~0.01 above 0.872, so the capsule corner-vs-reference margin will TIGHTEN and may flip EXCEEDS->REACHES or BELOW. We pre-commit to reporting whatever the frozen batch shows.",
+      "expected_cells": 164,
+      "estimated_gpu_hours": 16,
+      "depends_on": [
+        "pass13/14/15"
+      ]
     }
   ],
   "global_kill_conditions": [
