@@ -648,12 +648,12 @@ def fig_2d_substitutability_4cat(rows):
     ns = [5, 10, 20, 40]
 
     fig, axes = plt.subplots(2, 2, figsize=(13, 10), constrained_layout=True)
-    fig.suptitle("Compute-data substitution surface (4 cats x 4 N x 3 epochs x 3 seeds, last-epoch policy)",
+    fig.suptitle("Operating-point reachability surface (4 cats x 4 N x 3 epochs x 3 seeds, last-epoch, single frozen environment)",
                  fontsize=12)
 
     for k, (cat, ds, label, vrange) in enumerate(cats):
         ax = axes[k // 2, k % 2]
-        sweep = [r for r in rows if r.get('recipe_version','').startswith('v0.5-2d-sweep')
+        sweep = [r for r in rows if r.get('recipe_version','').startswith('v0.6-2d-frozen')
                  and r.get('category') == cat]
         grid = np.full((len(epochs), len(ns)), np.nan)
         sd_grid = np.full_like(grid, np.nan)
@@ -673,7 +673,7 @@ def fig_2d_substitutability_4cat(rows):
         ref_aurs = [r['auroc'] for r in rows
                     if r.get('category') == cat and r.get('dataset') == ds
                     and r.get('n_samples') == -1
-                    and r.get('recipe_version') == 'v0.8-fixed-pipeline']
+                    and r.get('recipe_version') == 'v0.6-fullpool-3ep-frozen']
         nfull_3ep = statistics.mean(ref_aurs) if ref_aurs else None
 
         norm = mcolors.Normalize(vmin=vrange[0], vmax=vrange[1])
@@ -714,7 +714,7 @@ def fig_2d_substitutability_4cat(rows):
 
         sub = label
         if nfull_3ep is not None:
-            sub += f"\n3ep x N=full ref (best-eval-loss): {nfull_3ep:.3f}"
+            sub += f"\n3ep x N=full ref (same batch): {nfull_3ep:.3f}"
         ax.set_title(sub, fontsize=10)
 
         cbar = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
@@ -746,7 +746,7 @@ def fig_v15_teaser(rows):
 
     # LEFT PANEL: capsule 2D substitutability heatmap
     ax1 = fig.add_subplot(gs[0, 0])
-    sweep = [r for r in rows if r.get('recipe_version','').startswith('v0.5-2d-sweep')
+    sweep = [r for r in rows if r.get('recipe_version','').startswith('v0.6-2d-frozen')
              and r.get('category') == 'capsule']
     epochs = [3, 25, 50]
     ns = [5, 10, 20, 40]
@@ -777,7 +777,7 @@ def fig_v15_teaser(rows):
     ax1.set_yticklabels([f"{ep}ep" for ep in epochs], fontsize=10)
     ax1.set_xlabel("Training-pool size N", fontsize=10)
     ax1.set_ylabel("Epoch budget", fontsize=10)
-    ax1.set_title("Substitutability surface (capsule, mvtec)\nmore compute trades for less data:\n50ep x N=40 = 0.918 reaches above 3ep x N=full",
+    ax1.set_title("Operating-point reachability (capsule, mvtec)\nmore compute reaches what more labels reach:\n50ep x N=40 = 0.909 vs 3ep x N=full = 0.894 (same batch)",
                   fontsize=10)
     fig.colorbar(im, ax=ax1, fraction=0.046, pad=0.04, label="AUROC")
 
@@ -823,7 +823,7 @@ def fig_v15_teaser(rows):
     ax2.legend(loc='upper right', fontsize=9)
     ax2.grid(axis='y', alpha=0.3)
 
-    fig.suptitle("Headline findings: compute-data substitution on the substitutability surface (left) and"
+    fig.suptitle("Headline findings: operating-point reachability surface (left) and"
                  " 4-pattern catastrophic-Gemma decomposition (right)",
                  fontsize=11, y=1.04)
     out = OUT / "fig_v15_teaser.png"
