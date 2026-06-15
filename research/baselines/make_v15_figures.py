@@ -648,7 +648,7 @@ def fig_2d_substitutability_4cat(rows):
     ns = [5, 10, 20, 40]
 
     fig, axes = plt.subplots(2, 2, figsize=(13, 10), constrained_layout=True)
-    fig.suptitle("Operating-point reachability surface (4 cats x 4 N x 3 epochs x 3 seeds, last-epoch, single frozen environment)",
+    fig.suptitle("Epoch budget at fixed N: a category-conditional effect (4 cats x 4 N x 3 epochs x 3 seeds, last-epoch, frozen environment)",
                  fontsize=12)
 
     for k, (cat, ds, label, vrange) in enumerate(cats):
@@ -777,7 +777,7 @@ def fig_v15_teaser(rows):
     ax1.set_yticklabels([f"{ep}ep" for ep in epochs], fontsize=10)
     ax1.set_xlabel("Training-pool size N", fontsize=10)
     ax1.set_ylabel("Epoch budget", fontsize=10)
-    ax1.set_title("Operating-point reachability (capsule, mvtec)\nmore compute reaches what more labels reach:\n50ep x N=40 = 0.909 vs 3ep x N=full = 0.894 (same batch)",
+    ax1.set_title("Epoch budget at fixed N (capsule, mvtec)\nmore epochs help at a fixed small pool:\n3ep->50ep at N=40: 0.829->0.909 (+0.080, p=0.006)",
                   fontsize=10)
     fig.colorbar(im, ax=ax1, fraction=0.046, pad=0.04, label="AUROC")
 
@@ -823,7 +823,7 @@ def fig_v15_teaser(rows):
     ax2.legend(loc='upper right', fontsize=9)
     ax2.grid(axis='y', alpha=0.3)
 
-    fig.suptitle("Headline findings: operating-point reachability surface (left) and"
+    fig.suptitle("Headline findings: category-conditional epoch-budget effect at fixed N (left) and"
                  " 4-pattern catastrophic-Gemma decomposition (right)",
                  fontsize=11, y=1.04)
     out = OUT / "fig_v15_teaser.png"
