@@ -777,7 +777,7 @@ def fig_v15_teaser(rows):
     ax1.set_yticklabels([f"{ep}ep" for ep in epochs], fontsize=10)
     ax1.set_xlabel("Training-pool size N", fontsize=10)
     ax1.set_ylabel("Epoch budget", fontsize=10)
-    ax1.set_title("Epoch budget at fixed N (capsule, mvtec)\nmore epochs help at a fixed small pool:\n3ep->50ep at N=40: 0.829->0.909 (+0.080, p=0.006)",
+    ax1.set_title("Epoch budget at fixed N (capsule, mvtec)\nmore epochs help at a fixed small pool:\n3ep->50ep at N=40: 0.829->0.909 (+0.080, p=0.008)",
                   fontsize=10)
     fig.colorbar(im, ax=ax1, fraction=0.046, pad=0.04, label="AUROC")
 
